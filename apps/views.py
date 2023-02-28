@@ -1,22 +1,25 @@
-
 # -*- encoding: utf-8 -*-
 """
 Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request
+from flask   import render_template, request, flash, redirect, url_for
 from jinja2  import TemplateNotFound
+from .models import User
+from flask_login import login_user, login_required, current_user, logout_user
+from werkzeug.security import generate_password_hash, check_password_hash
+from .models import db 
 
 # App modules
 from apps import app
-
 
 # Pages -- Dashboard
 @app.route('/', defaults={'path': 'dashboard.html'})
 @app.route('/')
 def pages_dashboard():
   return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+
 
 # Pages
 
@@ -54,9 +57,40 @@ def pages_examples_500():
 def accounts_sign_in():
   return render_template('accounts/sign-in.html', segment='sign_in', parent='accounts')
 
-@app.route('/accounts/sign-up/')
+@app.route('/accounts/sign-up/', methods=['GET', 'POST'])
 def accounts_sign_up():
-  return render_template('accounts/sign-up.html', segment='sign_up', parent='accounts')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password1 = request.form.get('password1')
+        password2 = request.form.get('password2')
+        #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+
+        user = User.query.filter_by(email= email).first()
+        if user:
+            flash('Email already exists.', category='error')
+            #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+        elif len(email) < 4:
+            flash('Email must be greater than 3 characters.', category='error')
+            #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+        elif password1 != password2:
+            flash('Passwords don\'t match.', category='error')
+            #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+        elif len(password1) < 7:
+            flash('Password must be at least 7 characters.', category='error')
+            #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+        else:
+            print('yalaaaaaaaaaaaahwaaaaaaaaaaaaaay')
+            new_user = User(email=email, password= generate_password_hash(password1, method='sha256')) 
+            db.session.add(new_user)
+            db.session.commit()
+            login_user(new_user, remember=True)
+            flash('Account created!', category='success')
+            # return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+            return redirect(url_for('pages_dashboard'))
+
+    # return render_template("sign_up.html", user=current_user) 
+    return render_template('accounts/sign-up.html', segment='sign_up', parent='accounts')
+
 
 @app.route('/accounts/forgot-password/')
 def accounts_forgot_password():
