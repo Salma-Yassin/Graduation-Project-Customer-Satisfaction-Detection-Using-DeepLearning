@@ -26,7 +26,7 @@ app.config.from_object( Config )
 from apps import views
 
 login_manager = LoginManager()
-login_manager.login_view = 'views.accounts_sign_up'
+login_manager.login_view = 'accounts_sign_in'
 login_manager.init_app(app)
 
 @login_manager.user_loader

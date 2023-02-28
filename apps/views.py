@@ -15,10 +15,11 @@ from .models import db
 from apps import app
 
 # Pages -- Dashboard
-@app.route('/', defaults={'path': 'dashboard.html'})
+# @app.route('/', defaults={'path': 'dashboard.html'})
 @app.route('/')
+@login_required
 def pages_dashboard():
-  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
+  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
 # Pages
@@ -53,8 +54,22 @@ def pages_examples_500():
 
 # Accounts
 
-@app.route('/accounts/sign-in/')
+@app.route('/accounts/sign-in/', methods=['GET', 'POST'])
 def accounts_sign_in():
+  if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        user = User.query.filter_by(email=email).first()
+        if user:
+            if check_password_hash(user.password, password):
+                flash('Logged in successfuly!', category='success')
+                login_user(user, remember=True)
+                return redirect(url_for('pages_dashboard'))
+            else:
+                flash('Incorrect password, try again.', category='error')
+        else:
+            flash('Email does not exist.', category='error')
+  #return render_template("sign-in.html", user=current_user)
   return render_template('accounts/sign-in.html', segment='sign_in', parent='accounts')
 
 @app.route('/accounts/sign-up/', methods=['GET', 'POST'])
@@ -79,7 +94,6 @@ def accounts_sign_up():
             flash('Password must be at least 7 characters.', category='error')
             #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
         else:
-            print('yalaaaaaaaaaaaahwaaaaaaaaaaaaaay')
             new_user = User(email=email, password= generate_password_hash(password1, method='sha256')) 
             db.session.add(new_user)
             db.session.commit()
