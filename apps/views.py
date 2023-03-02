@@ -122,6 +122,12 @@ def accounts_lock():
 def accounts_password_change():
   return render_template('accounts/password-change.html', segment='password-change', parent='accounts')
 
+@app.route('/accounts/logout/')
+@login_required # makes sure that the user is logged out only if they are logged in
+def logout():
+    logout_user()
+    return redirect(url_for('accounts_sign_in'))
+
 # Pages Components
 
 @app.route('/pages/components/buttons/')
