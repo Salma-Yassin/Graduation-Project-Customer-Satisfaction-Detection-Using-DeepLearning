@@ -29,8 +29,9 @@ def pages_transactions():
   return render_template('pages/transactions.html', segment='transactions', parent='pages')
 
 @app.route('/pages/settings/')
+@login_required
 def pages_settings():
-  return render_template('pages/settings.html', segment='settings', parent='pages')
+  return render_template('pages/settings.html', segment='settings', parent='pages',user=current_user)
 
 @app.route('/pages/upgrade-to-pro/')
 def pages_upgrade_to_pro():
