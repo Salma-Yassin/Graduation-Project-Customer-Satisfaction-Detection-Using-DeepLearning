@@ -24,9 +24,10 @@ def pages_dashboard():
 
 # Pages
 
-@app.route('/pages/transactions/')
-def pages_transactions():
-  return render_template('pages/transactions.html', segment='transactions', parent='pages')
+@app.route('/pages/history/')
+@login_required
+def pages_history():
+  return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
 @app.route('/pages/settings/')
 @login_required
@@ -40,8 +41,9 @@ def pages_upgrade_to_pro():
 # Pages -- Tables
 
 @app.route('/pages/tables/bootstrap-tables/')
+@login_required
 def pages_tables_bootstrap_tables():
-  return render_template('pages/tables/bootstrap-tables.html', segment='bootstrap_tables', parent='tables')
+  return render_template('pages/tables/bootstrap-tables.html', segment='bootstrap_tables', parent='tables', user=current_user)
 
 # Pages -- Pages examples
 
