@@ -4,22 +4,32 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, flash, redirect, url_for
+from flask   import render_template, request, flash, redirect, url_for, jsonify
 from jinja2  import TemplateNotFound
 from .models import User
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
+from random import sample 
 
 # App modules
 from apps import app
+
+@app.route('/data')
+def get_chart_data():
+   # generating random data for testing 
+   return jsonify({'series':sample(range(1,100),7)})
+
 
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
 @app.route('/')
 @login_required
 def pages_dashboard():
-  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+
+  data = [10,20,80,100,50,60,100]
+
+  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user , chart_data = data)
 
 
 # Pages

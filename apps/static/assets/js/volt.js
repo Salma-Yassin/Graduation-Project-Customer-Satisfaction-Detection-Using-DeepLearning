@@ -17,6 +17,7 @@
 
 "use strict";
 const d = document;
+
 d.addEventListener("DOMContentLoaded", function(event) {
 
     const swalWithBootstrapButtons = Swal.mixin({
@@ -171,35 +172,45 @@ d.addEventListener("DOMContentLoaded", function(event) {
 
     //Chartist
 
-    if(d.querySelector('.ct-chart-sales-value')) {
-        //Chart 5
-          new Chartist.Line('.ct-chart-sales-value', {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-            series: [
-                [0, 10, 30, 40, 80, 60, 100]
-            ]
-          }, {
-            low: 0,
-            showArea: true,
-            fullWidth: true,
-            plugins: [
-              Chartist.plugins.tooltip()
-            ],
-            axisX: {
-                // On the x-axis start means top and end means bottom
-                position: 'end',
-                showGrid: true
-            },
-            axisY: {
-                // On the y-axis start means left and end means right
-                showGrid: false,
-                showLabel: false,
-                labelInterpolationFnc: function(value) {
-                    return '$' + (value / 1) + 'k';
+    var getData = $.get('/data');
+    
+    getData.done(function(results){
+
+        if(d.querySelector('.ct-chart-sales-value')) {
+            //Chart 5
+              console.log(typeof(JSON.parse(d.querySelector('.ct-chart-sales-value').getAttribute("data-chart"))))
+              var  chartData = JSON.parse(d.querySelector('.ct-chart-sales-value').getAttribute("data-chart"))
+       
+              new Chartist.Line('.ct-chart-sales-value', {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                series: [results.series]
+            
+              }, {
+                low: 0,
+                showArea: true,
+                fullWidth: true,
+                plugins: [
+                  Chartist.plugins.tooltip()
+                ],
+                axisX: {
+                    // On the x-axis start means top and end means bottom
+                    position: 'end',
+                    showGrid: true
+                },
+                axisY: {
+                    // On the y-axis start means left and end means right
+                    showGrid: false,
+                    showLabel: false,
+                    labelInterpolationFnc: function(value) {
+                        return '$' + (value / 1) + 'k';
+                    }
                 }
-            }
-        });
-    }
+            });
+        }
+
+    });
+
+    
 
     if(d.querySelector('.ct-chart-ranking')) {
         var chart = new Chartist.Bar('.ct-chart-ranking', {
