@@ -169,11 +169,12 @@ d.addEventListener("DOMContentLoaded", function(event) {
             f[b].textContent = a[b]
         });
     }
+    
 
     //Chartist
 
     var getData = $.get('/data');
-    
+
     getData.done(function(results){
 
         if(d.querySelector('.ct-chart-sales-value')) {

@@ -23,13 +23,13 @@ def get_chart_data():
 
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
-
-  data = [10,20,80,100,50,60,100]
-
-  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user , chart_data = data)
+  if request.method == 'POST':
+     # call for inference 
+     return redirect(url_for('pages_history'))
+  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
 # Pages
