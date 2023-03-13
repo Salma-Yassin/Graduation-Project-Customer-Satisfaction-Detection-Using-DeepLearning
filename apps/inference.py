@@ -5,8 +5,8 @@ API_URL = "https://api-inference.huggingface.co/models/superb/hubert-large-super
 headers = {"Authorization": "Bearer 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"}
 
 @app.route('/tone_inference')
-def query(filename):
-    with open(filename, "rb") as f:
-        data = f.read()
-    response = requests.post(API_URL, headers=headers, data=data)
+def query(file_url):
+    cont = requests.get(file_url, verify= False)
+    response = requests.post(API_URL, headers=headers, data=cont, verify= False)
+    
     return response.json()
