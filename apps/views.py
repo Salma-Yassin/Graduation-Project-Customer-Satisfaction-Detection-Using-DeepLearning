@@ -20,6 +20,11 @@ def get_chart_data():
    # generating random data for testing 
    return jsonify({'series':sample(range(1,100),7)})
 
+@app.route('/media_data')
+def get_media_data():
+   # generating random data for testing 
+   return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','Employee ID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','Employee ID' : '201871501'}]})
+
 
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
@@ -27,7 +32,8 @@ def get_chart_data():
 @login_required
 def pages_dashboard():
   if request.method == 'POST':
-     # call for inference 
+     # add record to database 
+     #show data 
      return redirect(url_for('pages_history'))
   return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
