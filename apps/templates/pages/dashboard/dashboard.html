@@ -4,21 +4,22 @@
 {% block content %}
 {% if not user.is_authenticated %}
 
-<a  id="login" href="/accounts/sign-in/">Login</a>
+<a id="login" href="/accounts/sign-in/">Login</a>
 {% endif %}
 
 <div class="py-4">
-  <div >
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo">
+  <div>
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+      data-bs-whatever="@mdo">
       <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
         xmlns="http://www.w3.org/2000/svg">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
       </svg>
-      Upload a Media file 
+      Upload a Media file
     </button>
     </button>
-    
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" >
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -36,11 +37,12 @@
                 <input type="text" class="form-control" name="media_type">
               </div>
               <div class="mb-3">
-                <label for="recipient-name" class="col-form-label" id="employee_id">Employee ID</label> <!-- assuming employee has a n id -->
+                <label for="recipient-name" class="col-form-label" id="employee_id">Employee ID</label>
+                <!-- assuming employee has a n id -->
                 <input type="text" class="form-control" id="recipient-name">
               </div>
               <div class="mb-3">
-                <label for="recipient-name" class="col-form-label" id="location">Location</label> 
+                <label for="recipient-name" class="col-form-label" id="location">Location</label>
                 <input type="text" class="form-control" id="recipient-name">
               </div>
               <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
@@ -102,105 +104,15 @@
         </div>
       </div>
       <div class="card-body p-2">
-        
-        <div class="ct-chart-sales-value ct-double-octave ct-series-g" ></div>
+
+        <div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
       </div>
     </div>
   </div>
-  <div class="col-12 col-sm-6 col-xl-4 mb-4">
-    <div class="card border-0 shadow">
-      <div class="card-body">
-        <div class="row d-block d-xl-flex align-items-center">
-          <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-            <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
-              <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-laughing" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z"/>
-              </svg>
-            </div>
-          </div>
-          <div class="col-12 col-xl-7 px-xl-0">
-            <div class="d-none d-sm-block">
-              <h2 class="h6 text-gray-400 mb-0">Satisfied Customers</h2>
-              <h3 class="fw-extrabold mb-2">300k</h3>
-            </div>
-            
-            <div class="small d-flex mt-1">
-              <div>Since last month <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                    clip-rule="evenodd"></path>
-                </svg><span class="text-success fw-bolder">22%</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-xl-4 mb-4">
-    <div class="card border-0 shadow">
-      <div class="card-body">
-        <div class="row d-block d-xl-flex align-items-center">
-          <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-            <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-              <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-emoji-expressionless" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="M4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm5 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z"/>
-              </svg>
-            </div>
-          </div>
-          <div class="col-12 col-xl-7 px-xl-0">
-            <div class="d-none d-sm-block">
-              <h2 class="h6 text-gray-400 mb-0">Neutral Customers</h2>
-              <h3 class="fw-extrabold mb-2">500k</h3>
-            </div>
-            <div class="small d-flex mt-1">
-              <div>Since last month <svg class="icon icon-xs text-danger" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                    d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
-                    clip-rule="evenodd"></path>
-                </svg><span class="text-danger fw-bolder">2%</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="col-12 col-sm-6 col-xl-4 mb-4">
-    <div class="card border-0 shadow">
-      <div class="card-body">
-        <div class="row d-block d-xl-flex align-items-center">
-          <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-            <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
-              <svg xmlns="http://www.w3.org/2000/svg"  fill="currentColor" class="bi bi-emoji-frown" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z"/>
-              </svg>
-            </div>
-          </div>
-          <div class="col-12 col-xl-7 px-xl-0">
-            <div class="d-none d-sm-block">
-              <h2 class="h6 text-gray-400 mb-0"> Unsatisfied Customers</h2>
-              <h3 class="fw-extrabold mb-2">50k</h3>
-            </div>
-            <div class="small d-flex mt-1">
-              <div>Since last month <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path fill-rule="evenodd"
-                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                    clip-rule="evenodd"></path>
-                </svg><span class="text-success fw-bolder">4%</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+
 </div>
 <div class="row">
-  <div class="col-12 col-xl-8">
+  <!--<div class="col-12 col-xl-8">
     <div class="row">
       <div class="col-12 col-xxl-6 mb-4">
         <div class="card border-0 shadow">
@@ -213,7 +125,7 @@
               <li class="list-group-item px-0">
                 <div class="row align-items-center">
                   <div class="col-auto">
-                    <!-- Avatar -->
+                    <!- Avatar ->
                     <a href="#" class="avatar">
                       <img class="rounded" alt="Image placeholder"
                         src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-1.jpg' )}}">
@@ -229,7 +141,7 @@
               <li class="list-group-item px-0">
                 <div class="row align-items-center">
                   <div class="col-auto">
-                    <!-- Avatar -->
+                    <!- Avatar ->
                     <a href="#" class="avatar">
                       <img class="rounded" alt="Image placeholder"
                         src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-2.jpg' )}}">
@@ -245,7 +157,7 @@
               <li class="list-group-item px-0">
                 <div class="row align-items-center">
                   <div class="col-auto">
-                    <!-- Avatar -->
+                    <!- Avatar ->
                     <a href="#" class="avatar">
                       <img class="rounded" alt="Image placeholder"
                         src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-3.jpg' )}}">
@@ -261,7 +173,7 @@
               <li class="list-group-item px-0">
                 <div class="row align-items-center">
                   <div class="col-auto">
-                    <!-- Avatar -->
+                    <!- Avatar ->
                     <a href="#" class="avatar">
                       <img class="rounded" alt="Image placeholder"
                         src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-4.jpg' )}}">
@@ -285,7 +197,7 @@
             <a href="#" class="btn btn-sm btn-primary">See tasks</a>
           </div>
           <div class="card-body">
-            <!-- Project 1 -->
+            <!- Project 1 ->
             <div class="row mb-4">
               <div class="col-auto">
                 <svg class="icon icon-sm text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -309,7 +221,7 @@
                 </div>
               </div>
             </div>
-            <!-- Project 2 -->
+            <!- Project 2 ->
             <div class="row align-items-center mb-4">
               <div class="col-auto">
                 <svg class="icon icon-sm text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -333,7 +245,7 @@
                 </div>
               </div>
             </div>
-            <!-- Project 3 -->
+            <!- Project 3 ->
             <div class="row align-items-center mb-4">
               <div class="col-auto">
                 <svg class="icon icon-sm text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -357,7 +269,7 @@
                 </div>
               </div>
             </div>
-            <!-- Project 4 -->
+            <!- Project 4 ->
             <div class="row align-items-center mb-3">
               <div class="col-auto">
                 <svg class="icon icon-sm text-gray-500" fill="currentColor" viewBox="0 0 20 20"
@@ -385,8 +297,8 @@
         </div>
       </div>
     </div>
-  </div>
-  <div class="col-12 col-xl-4">
+  </div>-->
+  <div class="col-12 col-xl-8 mb-4">
     <div class="col-12 px-0 mb-4">
       <div class="card border-0 shadow">
         <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
@@ -415,6 +327,110 @@
       </div>
     </div>
   </div>
+  <div class="col-12 col-xl-4">
+  <div class="row">
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow">
+        <div class="card-body">
+          <div class="row d-block d-xl-flex align-items-center">
+            <div
+              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+              <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-laughing"
+                  viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                  <path
+                    d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
+                </svg>
+              </div>
+            </div>
+            <div class="col-12 col-xl-7 px-xl-0">
+              <div class="d-none d-sm-block">
+                <h2 class="h6 text-gray-400 mb-0">Satisfied Customers</h2>
+                <h3 class="fw-extrabold mb-2">300k</h3>
+              </div>
+
+              <div class="small d-flex mt-1">
+                <div>Since last month <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                      clip-rule="evenodd"></path>
+                  </svg><span class="text-success fw-bolder">22%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow">
+        <div class="card-body">
+          <div class="row d-block d-xl-flex align-items-center">
+            <div
+              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+              <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-expressionless"
+                  viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                  <path
+                    d="M4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm5 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                </svg>
+              </div>
+            </div>
+            <div class="col-12 col-xl-7 px-xl-0">
+              <div class="d-none d-sm-block">
+                <h2 class="h6 text-gray-400 mb-0">Neutral Customers</h2>
+                <h3 class="fw-extrabold mb-2">500k</h3>
+              </div>
+              <div class="small d-flex mt-1">
+                <div>Since last month <svg class="icon icon-xs text-danger" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z"
+                      clip-rule="evenodd"></path>
+                  </svg><span class="text-danger fw-bolder">2%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 mb-4">
+      <div class="card border-0 shadow">
+        <div class="card-body">
+          <div class="row d-block d-xl-flex align-items-center">
+            <div
+              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+              <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-frown"
+                  viewBox="0 0 16 16">
+                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                  <path
+                    d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
+                </svg>
+              </div>
+            </div>
+            <div class="col-12 col-xl-7 px-xl-0">
+              <div class="d-none d-sm-block">
+                <h2 class="h6 text-gray-400 mb-0"> Unsatisfied Customers</h2>
+                <h3 class="fw-extrabold mb-2">50k</h3>
+              </div>
+              <div class="small d-flex mt-1">
+                <div>Since last month <svg class="icon icon-xs text-success" fill="currentColor" viewBox="0 0 20 20"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd"
+                      d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                      clip-rule="evenodd"></path>
+                  </svg><span class="text-success fw-bolder">4%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 </div>
 
 {% endblock content %}
