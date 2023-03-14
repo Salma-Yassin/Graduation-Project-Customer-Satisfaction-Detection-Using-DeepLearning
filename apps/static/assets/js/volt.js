@@ -178,40 +178,33 @@ d.addEventListener("DOMContentLoaded", function (event) {
             var table = jQuery('#example').DataTable({
                 data:results.data,
                 columns:[{data:'URL'},{data:'Type'},{data:'Location'},{data:'EmployeeID'}],
-                searchPanes: true
+                //searchPanes: true
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            var select = $('<select><option value=""></option></select>')
+                                .appendTo($(column.footer()).empty())
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+         
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+         
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append('<option value="' + d + '">' + d + '</option>');
+                                });
+                        });
+                },
             });
-            table.searchPanes.container().prependTo(table.table().container());
-            table.searchPanes.resizePanes();
-
-            /*function functionaddRow(oneRecord) {
-                var tableRow = d.getElementById("Histoy_Table");
-                var row = d.createElement("tr");
-                var cell1 = d.createElement("td");
-                var cell2 = d.createElement("td");
-                var cell3 = d.createElement("td");
-                var cell4 = d.createElement("td");
-                var cell5 = d.createElement("td");
-                var cell6 = d.createElement("td");
-                var cell7 = d.createElement("td");
-                cell1.innerHTML = 1;
-                cell2.innerHTML = oneRecord.URL;
-                cell3.innerHTML = oneRecord.Type;
-                cell4.innerHTML = "Cell of New Row";
-                cell5.innerHTML = "Cell of New Row"; 
-                cell6.innerHTML = oneRecord.EmployeeID;
-                cell7.innerHTML = oneRecord.Location;
-                row.appendChild(cell1);
-                row.appendChild(cell2);
-                row.appendChild(cell3);
-                row.appendChild(cell4);
-                row.appendChild(cell5);
-                row.appendChild(cell6);
-                row.appendChild(cell7);
-                tableRow.appendChild(row);
-            };
-            //console.log(results.data)
-            var analysis = results.data;
-            analysis.forEach(number => functionaddRow(number));*/
+            
+            //table.searchPanes.container().prependTo(table.table().container());
+            //table.searchPanes.resizePanes();
         }
     })
 
