@@ -1,45 +1,57 @@
-{% extends 'layouts/base.html' %}
+{% extends 'layouts/base.html' %} {% block content %}
 
+<div class="py-4">
 
-{% block content %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.2.0/css/bootstrap.min.css"/>
 
-  <div class="py-4">
-    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-
-        
-    </nav>
-    <div class="d-flex justify-content-between w-100 flex-wrap">
-      <div class="mb-3 mb-lg-0">
-        <h1 class="h4">Data History</h1>
-        <h1 class="h4">{{ resulto }}</h1>
-        <p class="mb-0">List of the uploaded data</p>
-      </div>
+  <link rel="stylesheet"href="https://cdn.datatables.net/1.13.4/css/dataTables.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/searchpanes/2.1.2/css/searchPanes.bootstrap5.min.css"/>
+  <link rel="stylesheet" href="https://cdn.datatables.net/select/1.6.2/css/select.bootstrap5.min.css"/>
+  <nav aria-label="breadcrumb" class="d-none d-md-inline-block"></nav>
+  <div class="d-flex justify-content-between w-100 flex-wrap">
+    <div class="mb-3 mb-lg-0">
+      <h1 class="h4">Data History</h1>
+      <h1 class="h4">{{ resulto }}</h1>
+      <p class="mb-0">List of the uploaded data</p>
     </div>
   </div>
+</div>
 
-  <div class="card border-0 shadow mb-4">
-    <div class="card-body">
-      <div class="table-responsive">
-        <table class="table table-centered table-nowrap mb-0 rounded">
-          <thead class="thead-light">
-            <tr>
-              <th class="border-0 rounded-start">#</th>
-              <th class="border-0">Media Link</th>
-              <th class="border-0">Media Type</th>
-              <th class="border-0">Uploaded Date</th>
-              <th class="border-0">Results</th>
-              <th class="border-0">Employee ID</th>
-              <th class="border-0 rounded-end">Location</th>
+<div class="card border-0 shadow mb-4">
+  <div class="card-body">
+    <div class="table-responsive">
+     <table id="example" class="table table-striped nowrap" style="width: 100%">
 
-            </tr>
-          </thead>
-          <tbody id="Histoy_Table">
-            <!-- End of Item -->
-          </tbody>
-        </table>
-      </div>
+      <thead class="thead-light">
+        <tr>
+          <!-- <th class="border-0 rounded-start">#</th>-->
+           <th class="border-0">Media Link</th>
+           <th class="border-0">Media Type</th>
+           <!--<th class="border-0">Uploaded Date</th>-->
+           <!--<th class="border-0">Results</th>-->
+           <th class="border-0">Employee ID</th>
+           <th class="border-0 rounded-end">Location</th>
+         </tr>
+      </thead>
+
+      <tbody>   
+      </tbody>
+
+        <tfoot>
+          <tr>
+            <!-- <th class="border-0 rounded-start">#</th>-->
+             <th class="border-0">Media Link</th>
+             <th class="border-0">Media Type</th>
+             <!--<th class="border-0">Uploaded Date</th>-->
+             <!--<th class="border-0">Results</th>-->
+             <th class="border-0">Employee ID</th>
+             <th class="border-0 rounded-end">Location</th>
+           </tr>
+        </tfoot>
+
+      </table>
     </div>
   </div>
-  
+</div>
 
 {% endblock content %}

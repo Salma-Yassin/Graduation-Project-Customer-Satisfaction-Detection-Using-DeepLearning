@@ -173,8 +173,17 @@ d.addEventListener("DOMContentLoaded", function (event) {
     var getMediaData = $.get('/media_data');
 
     getMediaData.done(function (results) {
-        if (d.querySelector('#Histoy_Table')) {
-            function functionaddRow(oneRecord) {
+        if (d.querySelector('#example')) {
+
+            var table = jQuery('#example').DataTable({
+                data:results.data,
+                columns:[{data:'URL'},{data:'Type'},{data:'Location'},{data:'EmployeeID'}],
+                searchPanes: true
+            });
+            table.searchPanes.container().prependTo(table.table().container());
+            table.searchPanes.resizePanes();
+
+            /*function functionaddRow(oneRecord) {
                 var tableRow = d.getElementById("Histoy_Table");
                 var row = d.createElement("tr");
                 var cell1 = d.createElement("td");
@@ -202,7 +211,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             };
             //console.log(results.data)
             var analysis = results.data;
-            analysis.forEach(number => functionaddRow(number));
+            analysis.forEach(number => functionaddRow(number));*/
         }
     })
 
@@ -401,5 +410,8 @@ d.addEventListener("DOMContentLoaded", function (event) {
             }
         });
     }
+    
+    
+
 
 });
