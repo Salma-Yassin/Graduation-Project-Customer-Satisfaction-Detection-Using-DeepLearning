@@ -174,10 +174,11 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     getMediaData.done(function (results) {
         if (d.querySelector('#example')) {
+            console.log(results)
 
             var table = jQuery('#example').DataTable({
-                data:results.data,
-                columns:[{data:'URL'},{data:'Type'},{data:'Location'},{data:'EmployeeID'}],
+                data:results,
+                columns:[{data:'url'},{data:'type'},{data:'results'},{data:'member_id'},{data:'location_address'} ],
                 //searchPanes: true
                 initComplete: function () {
                     this.api()
