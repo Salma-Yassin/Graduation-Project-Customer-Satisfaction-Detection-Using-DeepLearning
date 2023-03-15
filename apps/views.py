@@ -38,7 +38,7 @@ def pages_dashboard():
      url = request.form.get('url')
      category = query(url)        
 
-     # add record to database 
+  
      #show data 
      #return redirect(url_for('pages_history'))
      return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= category)
