@@ -13,6 +13,7 @@ from .models import db
 from random import sample 
 from .inference import query
 import sys
+from .controller import controller
 
 # App modules
 from apps import app
@@ -24,19 +25,32 @@ def get_chart_data():
 
 @app.route('/media_data')
 def get_media_data():
+   #history_table = User.query.filter_by(email=email).first()
    # generating random data for testing 
-   return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
+   return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},
+                           {'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},
+                           {'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},
+                           {'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},
+                           {'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
 
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/dashboard/<user_email>', methods=['GET', 'POST'])
 @login_required
-def pages_dashboard():
+def pages_dashboard(user_email):
   if request.method == 'POST':
      # retrive fields from data base 
+     
      url = request.form.get('url')
-     category = query(url)        
+     media_type = request.form.get('media_type')
+     emp_id = request.form.get('employee_id')
+     location_add = request.form.get('location')
+     category = query(url) 
+     user = User.query.filter_by(email=user_email).first()
+     user_id = user.id
+
+     new_media = controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id)      
 
      # add record to database 
      #show data 
@@ -80,7 +94,7 @@ def pages_examples_500():
 
 # Accounts
 
-@app.route('/accounts/sign-in/', methods=['GET', 'POST'])
+@app.route('/', methods=['GET', 'POST'])
 def accounts_sign_in():
   if request.method == 'POST':
         email = request.form.get('email')
@@ -90,7 +104,7 @@ def accounts_sign_in():
             if check_password_hash(user.password, password):
                 flash('Logged in successfuly!', category='success')
                 login_user(user, remember=True)
-                return redirect(url_for('pages_dashboard'))
+                return redirect(url_for('pages_dashboard', user_email = user.email))
             else:
                 flash('Incorrect password, try again.', category='error')
         else:
@@ -120,13 +134,16 @@ def accounts_sign_up():
             flash('Password must be at least 7 characters.', category='error')
             #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
         else:
+            #new_user=controller.addUser(email=email, password= generate_password_hash(password1, method='sha256'))
             new_user = User(email=email, password= generate_password_hash(password1, method='sha256')) 
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
             flash('Account created!', category='success')
+            user_created= User.query.filter_by(email= email).first()
+            
             # return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
-            return redirect(url_for('pages_dashboard'))
+            return redirect(url_for('pages_dashboard', user_email= email))
 
     # return render_template("sign_up.html", user=current_user) 
     return render_template('accounts/sign-up.html', segment='sign_up', parent='accounts')
