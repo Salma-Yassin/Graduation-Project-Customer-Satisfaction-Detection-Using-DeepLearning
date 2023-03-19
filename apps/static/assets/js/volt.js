@@ -178,7 +178,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
             var table = jQuery('#example').DataTable({
                 data:results,
-                columns:[{data:'url'},{data:'type'},{data:'results'},{data:'member_id'},{data:'location_address'} ],
+                columns:[{data:'id'},{data:'type'},{data:'results'},{data:'member_id'},{data:'location_address'},{data:'url'} ],
                 //searchPanes: true
                 initComplete: function () {
                     this.api()

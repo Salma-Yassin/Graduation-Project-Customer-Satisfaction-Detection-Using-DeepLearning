@@ -29,7 +29,7 @@ def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
    #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-   history_table = Media.query.all()
+   history_table = Media.query.filter_by(user_id= current_user.id).all()
    return jsonify(history_table)
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
@@ -62,9 +62,23 @@ def pages_dashboard():
 
 # Pages
 
-@app.route('/pages/history/')
+@app.route('/pages/history/', methods=['GET', 'POST'])
 @login_required
 def pages_history():
+  if request.method == 'POST':
+     # retrive fields from data base 
+     url = request.form.get('url')
+     media_type = request.form.get('media_type')
+     emp_id = request.form.get('employee_id')
+     location_add = request.form.get('location')
+     category = query(url) 
+     
+
+     user_id = current_user.id
+
+     controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id, results = category[0]['label'])
+     created_media = Media.query.filter_by(url=url).first() 
+     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
 @app.route('/pages/settings/')
