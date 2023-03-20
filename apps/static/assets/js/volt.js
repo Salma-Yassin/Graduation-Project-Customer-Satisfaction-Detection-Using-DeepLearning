@@ -177,8 +177,18 @@ d.addEventListener("DOMContentLoaded", function (event) {
             console.log(results)
 
             var table = jQuery('#example').DataTable({
-                data:results,
-                columns:[{data:'id'},{data:'type'},{data:'results'},{data:'member_id'},{data:'location_address'},{data:'url'} ],
+                data: results,
+                columns: [{ data: 'id' },
+                { data: 'type' },
+                { data: 'results' },
+                { data: 'member_id' },
+                { data: 'location_address' },
+                {
+                    data: 'url', 
+                    render: function (data) {
+                        return '<a href="' +data+ '" target="_blank">' + data + '</a>';
+                    }
+                }],
                 //searchPanes: true
                 initComplete: function () {
                     this.api()
@@ -189,10 +199,10 @@ d.addEventListener("DOMContentLoaded", function (event) {
                                 .appendTo($(column.footer()).empty())
                                 .on('change', function () {
                                     var val = $.fn.dataTable.util.escapeRegex($(this).val());
-         
+
                                     column.search(val ? '^' + val + '$' : '', true, false).draw();
                                 });
-         
+
                             column
                                 .data()
                                 .unique()
@@ -203,7 +213,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                         });
                 },
             });
-            
+
             //table.searchPanes.container().prependTo(table.table().container());
             //table.searchPanes.resizePanes();
         }
@@ -212,85 +222,75 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     //Chartist
 
-    var getData = $.get('/data');
+    const handleChartData = (results) => {
+        var cat = ['hap','sad','neu','ang']
+        var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
-    getData.done(function (results) {
+        
+        var all = []
 
-        if (d.querySelector('.ct-chart-sales-value')) {
-            //Chart 5
-            console.log(typeof (JSON.parse(d.querySelector('.ct-chart-sales-value').getAttribute("data-chart"))))
-            var chartData = JSON.parse(d.querySelector('.ct-chart-sales-value').getAttribute("data-chart"))
+        for (let i = 0 ; i < cat.length ; i++){
+            var series = []
+            for (let j = 0 ; j < days.length ; j++)
+            {
+                series = [...series , results.data.filter(row =>((row.results)).includes(cat[i])).filter(row =>((row.created_at)).includes(days[j])).length]
+            }
+            all = [...all,series]
+        }
+       
+       return all
 
-            new Chartist.Line('.ct-chart-sales-value', {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                series: [results.series]
+    }
 
+    var getMedia_dummy_Data = $.get('/data');
+
+    getMedia_dummy_Data.done(function(results){
+        if (d.querySelector('.ct-chart-ranking')) {
+           var all = handleChartData(results)
+           console.log(all)
+
+            //var series = results.data.filter(row =>((row.created_at)).includes('Fri')
+
+
+
+            var chart = new Chartist.Bar('.ct-chart-ranking', {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                series: all
             }, {
                 low: 0,
                 showArea: true,
-                fullWidth: true,
                 plugins: [
                     Chartist.plugins.tooltip()
                 ],
                 axisX: {
                     // On the x-axis start means top and end means bottom
-                    position: 'end',
-                    showGrid: true
+                    position: 'end'
                 },
                 axisY: {
                     // On the y-axis start means left and end means right
                     showGrid: false,
                     showLabel: false,
-                    labelInterpolationFnc: function (value) {
-                        return '$' + (value / 1) + 'k';
-                    }
+                    offset: 0
+                }
+            });
+    
+            chart.on('draw', function (data) {
+                if (data.type === 'line' || data.type === 'area') {
+                    data.element.animate({
+                        d: {
+                            begin: 2000 * data.index,
+                            dur: 2000,
+                            from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                            to: data.path.clone().stringify(),
+                            easing: Chartist.Svg.Easing.easeOutQuint
+                        }
+                    });
                 }
             });
         }
 
     });
-
-
-
-    if (d.querySelector('.ct-chart-ranking')) {
-        var chart = new Chartist.Bar('.ct-chart-ranking', {
-            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
-            series: [
-                [1, 5, 2, 5, 4, 3],
-                [2, 3, 4, 8, 1, 2],
-            ]
-        }, {
-            low: 0,
-            showArea: true,
-            plugins: [
-                Chartist.plugins.tooltip()
-            ],
-            axisX: {
-                // On the x-axis start means top and end means bottom
-                position: 'end'
-            },
-            axisY: {
-                // On the y-axis start means left and end means right
-                showGrid: false,
-                showLabel: false,
-                offset: 0
-            }
-        });
-
-        chart.on('draw', function (data) {
-            if (data.type === 'line' || data.type === 'area') {
-                data.element.animate({
-                    d: {
-                        begin: 2000 * data.index,
-                        dur: 2000,
-                        from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
-                        to: data.path.clone().stringify(),
-                        easing: Chartist.Svg.Easing.easeOutQuint
-                    }
-                });
-            }
-        });
-    }
+    
 
     if (d.querySelector('.ct-chart-traffic-share')) {
         var data = {
@@ -404,8 +404,8 @@ d.addEventListener("DOMContentLoaded", function (event) {
             }
         });
     }
-    
-    
+
+
 
 
 });

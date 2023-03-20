@@ -19,10 +19,11 @@ from .controller import controller
 # App modules
 from apps import app
 
-@app.route('/data')
+@app.route('/data') # this is a dummy api that should be removed 
 def get_chart_data():
    # generating random data for testing 
-   return jsonify({'series':sample(range(1,100),7)})
+   f = open("apps\Media_data.json")
+   return json.load(f)
 
 @app.route('/media_data')
 def get_media_data():

@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from dataclasses import dataclass
+import datetime
 
 db = SQLAlchemy()
 
@@ -46,6 +47,7 @@ class Media(db.Model):
     type : str
     user_id : int
     results : str
+    created_at : datetime.datetime
     
     id = db.Column(db.Integer, primary_key=True)
     url = db.Column(db.String(150), unique=True, nullable=False)
@@ -55,6 +57,7 @@ class Media(db.Model):
     member_id = db.Column(db.Integer)
     type = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True),server_default=func.now())
     results = db.Column(db.String(150), nullable=False)
     #results = relationship("AnalysisResults", backref="Media", passive_deletes=True)
 
