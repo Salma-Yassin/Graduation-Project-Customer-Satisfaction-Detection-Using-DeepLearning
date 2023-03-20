@@ -82,6 +82,11 @@ def pages_history():
      return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
+@app.route('/pages/manage/')
+@login_required
+def pages_manage():
+  return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
+
 @app.route('/pages/settings/')
 @login_required
 def pages_settings():
