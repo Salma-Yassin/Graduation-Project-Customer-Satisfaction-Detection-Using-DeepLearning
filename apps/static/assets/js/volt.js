@@ -245,13 +245,13 @@ d.addEventListener("DOMContentLoaded", function (event) {
     var getMedia_dummy_Data = $.get('/data');
 
     getMedia_dummy_Data.done(function(results){
+       
+        var all = handleChartData(results)
+        console.log(all)
+
         if (d.querySelector('.ct-chart-ranking')) {
-           var all = handleChartData(results)
-           console.log(all)
-
+           
             //var series = results.data.filter(row =>((row.created_at)).includes('Fri')
-
-
 
             var chart = new Chartist.Bar('.ct-chart-ranking', {
                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
@@ -285,6 +285,33 @@ d.addEventListener("DOMContentLoaded", function (event) {
                             easing: Chartist.Svg.Easing.easeOutQuint
                         }
                     });
+                }
+            });
+        }
+        if(d.querySelector('.ct-chart-sales-value')) {
+            //Chart 5
+              new Chartist.Line('.ct-chart-sales-value', {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                series: all
+              }, {
+                low: 0,
+                showArea: true,
+                fullWidth: true,
+                plugins: [
+                  Chartist.plugins.tooltip()
+                ],
+                axisX: {
+                    // On the x-axis start means top and end means bottom
+                    position: 'end',
+                    showGrid: true
+                },
+                axisY: {
+                    // On the y-axis start means left and end means right
+                    showGrid: false,
+                    showLabel: false,
+                    labelInterpolationFnc: function(value) {
+                        return '$' + (value / 1) + 'k';
+                    }
                 }
             });
         }
