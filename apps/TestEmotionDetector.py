@@ -22,13 +22,13 @@ def predictEmotionFace(url_base):
     emotion_counts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
 
     # load json and create model
-    json_file = open('model/emotion_model.json', 'r')
+    json_file = open('apps/model/emotion_model.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     emotion_model = model_from_json(loaded_model_json)
 
     # load weights into new model
-    emotion_model.load_weights("model/emotion_model.h5")
+    emotion_model.load_weights("apps/model/emotion_model.h5")
     print("Loaded model from disk")
 
     id = extractIDfromURL(url_base)
@@ -115,8 +115,3 @@ def predictEmotionFace(url_base):
     cv2.destroyAllWindows()
 
     return emotion_dict[dominant_emotion]
-
-
-# test the model 
-url_base = "https://drive.google.com/file/d/1LZjt3v687ZVgVsHosUeaGf1ilM5A546Q/view"
-response = predictEmotionFace(url_base)

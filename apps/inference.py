@@ -1,5 +1,6 @@
 import requests
 from apps import app
+from .TestEmotionDetector import predictEmotionFace
 
 API_URL = "https://api-inference.huggingface.co/models/superb/hubert-large-superb-er"
 headers = {"Authorization": "Bearer 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"}
@@ -14,7 +15,8 @@ def query(file_url):
 
 @app.route('/face_inference')
 def query_face(file_url):
-    cont = requests.get(file_url, verify= False)
-    response = requests.post(API_URL, headers=headers, data=cont, verify= False)
+
+    # cont = requests.get(file_url, verify= False)
+    response = predictEmotionFace(file_url)
     
-    return response.json()
+    return response
