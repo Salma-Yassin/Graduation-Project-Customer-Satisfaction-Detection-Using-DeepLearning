@@ -10,3 +10,11 @@ def query(file_url):
     response = requests.post(API_URL, headers=headers, data=cont, verify= False)
     
     return response.json()
+
+
+@app.route('/face_inference')
+def query_face(file_url):
+    cont = requests.get(file_url, verify= False)
+    response = requests.post(API_URL, headers=headers, data=cont, verify= False)
+    
+    return response.json()
