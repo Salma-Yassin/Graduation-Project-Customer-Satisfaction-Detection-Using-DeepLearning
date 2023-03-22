@@ -5,7 +5,7 @@ import re
 
 def extractIDfromURL(url):
     
-    id_regex = r"/d/(\w+)/"
+    id_regex = r'/d/([-\w]+)'
     match = re.search(id_regex, url)
     
     if match:
@@ -55,7 +55,7 @@ def predictEmotionFace(url_base):
         # resize the video frame
         frame = cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_LINEAR)
 
-        face_detector = cv2.CascadeClassifier('haarcascades/haarcascade_frontalface_default.xml')
+        face_detector = cv2.CascadeClassifier('apps/haarcascades/haarcascade_frontalface_default.xml')
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
         # detect faces available on camera
@@ -71,10 +71,7 @@ def predictEmotionFace(url_base):
             emotion_prediction = emotion_model.predict(cropped_img)
             maxindex = int(np.argmax(emotion_prediction))
             emotion_counts[maxindex] += 1
-            # cv2.putText(frame, emotion_dict[maxindex], (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-            # output_file.write(frame)
-            # cv2.imshow('Emotion Detection', frame)
-            #print('showed')
+
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
@@ -89,7 +86,7 @@ def predictEmotionFace(url_base):
 
     # create a VideoWriter object to save the output video
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video = cv2.VideoWriter('output_video_6.mp4', fourcc, 30, (frame_width, frame_height))
+    #output_video = cv2.VideoWriter('output_video_6.mp4', fourcc, 30, (frame_width, frame_height))
 
     cap = cv2.VideoCapture(url)
     print(cap.isOpened()) # add this line after line 20 
@@ -106,12 +103,14 @@ def predictEmotionFace(url_base):
         cv2.putText(frame, f"Detected: {emotion_dict[dominant_emotion]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # write the modified frame to the output video
-        output_video.write(frame)
+        #output_video.write(frame)
         print('1')
 
     # release the resources
     cap.release()
-    output_video.release()
+    #output_video.release()
     cv2.destroyAllWindows()
 
     return emotion_dict[dominant_emotion]
+
+# predictEmotionFace("https://drive.google.com/file/d/1wYtw4JCeZCBiE-UqUlHv93RF61P3kgPx/view")

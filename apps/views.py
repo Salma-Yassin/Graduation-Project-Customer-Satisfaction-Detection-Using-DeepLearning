@@ -12,7 +12,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
 from random import sample 
-from .inference import query
+from .inference import query, query_face
 import sys
 from .controller import controller
 
@@ -35,29 +35,30 @@ def get_media_data():
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
 
-# Pages -- Dashboard
-# @app.route('/', defaults={'path': 'dashboard.html'})
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
+
   if request.method == 'POST':
-     # retrive fields from data base 
-     url = request.form.get('url')
-     media_type = request.form.get('media_type')
-     emp_id = request.form.get('employee_id')
-     location_add = request.form.get('location')
-     category = query(url) 
-     
+    # retrieve fields from database 
+    url = request.form.get('url')
+    media_type = request.form.get('media_type')
+    emp_id = request.form.get('employee_id')
+    location_add = request.form.get('location')
+    
+    if media_type == 'audio':
+      category = query(url)
+    elif media_type == 'video':
+      category = query_face(url)
+    else:
+      category = 'Unknown'
 
-     user_id = current_user.id
+    user_id = current_user.id
+    controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = category)
+    # created_media = Media.query.filter_by(url=url).first()  
 
-     controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id, results = category[0]['label'])
-     created_media = Media.query.filter_by(url=url).first()  
+    return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto=user_id)
 
-     #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
-     #show data 
-     #return redirect(url_for('pages_history'))
-     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
   return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
