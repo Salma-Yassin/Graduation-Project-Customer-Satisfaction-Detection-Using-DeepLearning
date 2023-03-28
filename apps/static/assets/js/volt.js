@@ -224,7 +224,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     const handleChartData = (results) => {
         var cat = ['hap','sad','neu','ang']
-        var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+        var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
         
         var all = []
@@ -254,7 +254,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             //var series = results.data.filter(row =>((row.created_at)).includes('Fri')
 
             var chart = new Chartist.Bar('.ct-chart-ranking', {
-                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 series: all
             }, {
                 low: 0,

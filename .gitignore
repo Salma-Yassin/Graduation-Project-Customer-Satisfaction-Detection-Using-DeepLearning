@@ -3,7 +3,7 @@ flask/
 dev
 node_modules
 apps/instance/database.db
-apps/build
+app/build
 yarn.lock
 yarn-error.log
 *.psd
