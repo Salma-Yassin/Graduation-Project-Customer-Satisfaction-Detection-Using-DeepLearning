@@ -87,6 +87,18 @@ def pages_history():
 def pages_manage():
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
+# Adding Media Analysis view 
+@app.route('/pages/MediaAnalysis/')
+@login_required
+def pages_analysis():
+  return render_template('pages/dashboard/mediaAnalysis.html', segment='media', parent='pages',user=current_user)
+
+# Adding Media Analysis view 
+@app.route('/pages/UploadAnalysis/')
+@login_required
+def pages_uploadMedia():
+  return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
+
 @app.route('/pages/settings/')
 @login_required
 def pages_settings():

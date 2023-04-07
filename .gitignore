@@ -10,4 +10,4 @@ yarn-error.log
 env/
 env__/
 .vscode/symbols.json
-app/db.sqlite3
+apps/db.sqlite3
