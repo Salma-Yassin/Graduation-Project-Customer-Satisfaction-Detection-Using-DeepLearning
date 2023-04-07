@@ -174,50 +174,71 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     getMediaData.done(function (results) {
         if (d.querySelector('#example')) {
-            console.log(results)
+          console.log(results);
+      
+          var table = jQuery('#example').DataTable({
+            data: results,
+            scrollX: false,
+            columns: [
+              { data: 'id' , title: '<b>ID</b>' },
+              { data: 'type' },
+              { data: 'results' },
+              { data: 'member_id' },
+              { data: 'location_address' },
+              {
+                data: 'url', 
+                render: function (data) {
+                  return '<a href="' +data+ '" target="_blank">' + data + '</a>';
+                }
+              },
+              {
+                data: null,
+                className: 'details-control',
+                defaultContent: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo"><svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>Details</button>',
+                orderable: false
+              }
+            ],
+            columnDefs: [
+              {
+                targets: 5, // url column
+                width: '20%'
+              }
+            ],
 
-            var table = jQuery('#example').DataTable({
-                data: results,
-                columns: [{ data: 'id' },
-                { data: 'type' },
-                { data: 'results' },
-                { data: 'member_id' },
-                { data: 'location_address' },
-                {
-                    data: 'url', 
-                    render: function (data) {
-                        return '<a href="' +data+ '" target="_blank">' + data + '</a>';
-                    }
-                }],
-                //searchPanes: true
-                initComplete: function () {
-                    this.api()
-                        .columns()
-                        .every(function () {
-                            var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                .appendTo($(column.footer()).empty())
-                                .on('change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
-
-                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
-                                });
-
-                            column
-                                .data()
-                                .unique()
-                                .sort()
-                                .each(function (d, j) {
-                                    select.append('<option value="' + d + '">' + d + '</option>');
-                                });
-                        });
-                },
-            });
-
-            //table.searchPanes.container().prependTo(table.table().container());
-            //table.searchPanes.resizePanes();
+            initComplete: function () {
+              this.api()
+                .columns()
+                .every(function () {
+                  var column = this;
+                  if (!column.nodes().to$().hasClass('details-control')) {
+                    var select = $('<select><option value=""></option></select>')
+                      .appendTo($(column.footer()).empty())
+                      .on('change', function () {
+                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+      
+                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                      });
+      
+                    column
+                      .data()
+                      .unique()
+                      .sort()
+                      .each(function (d, j) {
+                        select.append('<option value="' + d + '">' + d + '</option>');
+                      });
+                  }
+                });
+            }
+          });
+      
+          $('#example tbody').on('click', 'button', function () {
+            var data = table.row($(this).parents('tr')).data();
+            // Navigate to another view
+            window.location.href = '/pages/MediaAnalysis/';
+          });
         }
-    })
+      });
+      
 
 
     //Chartist
