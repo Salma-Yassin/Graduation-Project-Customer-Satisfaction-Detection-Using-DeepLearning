@@ -41,9 +41,9 @@ class controller:
         db.session.delete(userLocation)
         db.session.commit()
 
-    def addUserMember(name, user_id, location_id=0):
+    def addUserMember(name, user_id, member_id, member_gender, location_id=0):
         newUserMember = UserMembers(
-            name=name, user_id=user_id, location_id=location_id)
+            name=name, user_id=user_id, member_id = member_id, gender= member_gender, location_id=location_id)
         db.session.add(newUserMember)
         db.session.commit()
 

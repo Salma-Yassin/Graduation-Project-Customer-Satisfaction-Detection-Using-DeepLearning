@@ -1,51 +1,8 @@
 {% extends 'layouts/base.html' %} {% block content %}
 
-<div class="py-4">
-  <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-      data-bs-whatever="@mdo">
-      <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-      </svg>
-      Upload a Media file
-    </button>
-    </button>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Uploading</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST">
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">URL</label>
-                <input type="text" class="form-control" name="url">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Type</label>
-                <input type="text" class="form-control" name="media_type">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Employee ID</label>
-                <!-- assuming employee has a n id -->
-                <input type="text" class="form-control" id="recipient-name" name="employee_id">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Location</label>
-                <input type="text" class="form-control" id="recipient-name" name="location">
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div class="py-4">
+  {% include 'pages/dashboard/uploadMediaForm.html' %} 
 
   <nav aria-label="breadcrumb" class="d-none d-md-inline-block"></nav>
   <div class="d-flex justify-content-between w-100 flex-wrap">

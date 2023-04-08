@@ -45,39 +45,17 @@
         data-bs-parent="#accordionFlushExample">
         <div class="accordion-body">
           <div class="card card-body border-0 shadow mb-4">
-            <form>
-              <div class="mb-3">
-                <label for="location1" class="form-label">Location 1</label>
-                <input type="text" class="form-control" id="location1" name="location1">
-              </div>
-              <div id="location-list"></div>
-              <div id="add-locations">
-                <button type="button" class="btn btn-primary" id="add-location">Add Location</button>
-              </div>
-            </form>
-            
-            
-            
-            <script>
-              let locationCount = 1;
-              const addLocationButton = document.querySelector('#add-location');
-              const locationList = document.querySelector('#location-list');
-            
-              addLocationButton.addEventListener('click', () => {
-                locationCount++;
-                const newLocation = `
-                  <div class="mb-3">
-                    <label for="location${locationCount}" class="form-label">Location ${locationCount}</label>
-                    <input type="text" class="form-control" id="location${locationCount}" name="location${locationCount}">
-                  </div>
-                `;
-                locationList.insertAdjacentHTML('beforeend', newLocation);
-              });
-            </script>
-            
-           <!--<form>
+            <form method="POST">
+              <input type="hidden" name="Location_form" value="1">
               <div class="row align-items-center">
                 <div class="col-md-6 mb-3">
+                  <div>
+                    <label for="first_name">Location</label>
+                    <input class="form-control" type="text" name="location" id="location" aria-label="Location select example" placeholder="Enter your location"
+                      required>
+                  </div>
+                </div>
+                <!--<div class="col-md-6 mb-3">
                   <label for="location">Location</label>
                   <select class="form-select mb-0" id="location" aria-label="Location select example">
                     <option selected>Location</option>
@@ -87,15 +65,12 @@
                     <option value="4">October</option>
                     <option value="5">Maadi</option>
                   </select>
-                </div>
+                </div>-->
               </div>
               <div class="mt-3">
-                <button class="btn btn-gray-800 mt-2 animate-up-2" type="button">Add New Location</button>
+                <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save Location</button>
               </div>
-              <div class="mt-3">
-                <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
-              </div>
-            </form>-->
+            </form>
           </div>
         </div>
       </div>
@@ -111,24 +86,33 @@
         data-bs-parent="#accordionFlushExample">
         <div class="accordion-body">
           <div class="card card-body border-0 shadow mb-4">
-            <form>
+            <form method="POST">
+              <input type="hidden" name="Employee_form" value="1">
               <div class="row">
                 <div class="col-md-6 mb-3">
                   <div>
-                    <label for="first_name">First Name</label>
-                    <input class="form-control" id="first_name" type="text" placeholder="Enter your first name"
+                    <label for="name">Name</label>
+                    <input class="form-control" name="name" id="name" type="text" placeholder="Enter your name"
                       required>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
+                  <label for="gender">Gender</label>
+                  <select class="form-select mb-0" name="gender" id="gender" aria-label="Gender select example">
+                    <option selected>Gender</option>
+                    <option value="1">Female</option>
+                    <option value="2">Male</option>
+                  </select>
+                </div>
+                <!--<div class="col-md-6 mb-3">
                   <div>
                     <label for="last_name">Last Name</label>
-                    <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required>
+                    <input class="form-control" name="last_name" id="last_name" type="text" placeholder="Also your last name" required>
                   </div>
-                </div>
+                </div>-->
               </div>
               <div class="row align-items-center">
-                <div class="col-md-6 mb-3">
+                <!--<div class="col-md-6 mb-3">
                   <label for="birthday">Birthday</label>
                   <div class="input-group">
                     <span class="input-group-text">
@@ -139,41 +123,29 @@
                           clip-rule="evenodd"></path>
                       </svg>
                     </span>
-                    <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy"
+                    <input data-datepicker="" class="form-control" name="birthday" id="birthday" type="text" placeholder="dd/mm/yyyy"
                       required>
                   </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="gender">Gender</label>
-                  <select class="form-select mb-0" id="gender" aria-label="Gender select example">
-                    <option selected>Gender</option>
-                    <option value="1">Female</option>
-                    <option value="2">Male</option>
-                  </select>
-                </div>
+                </div>-->
+                
               </div>
               <div class="row">
-                <div class="col-md-6 mb-3">
+                <!--<div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label for="email">Email</label>
-                    <input class="form-control" id="email" type="email" placeholder="name@company.com" required>
+                    <input class="form-control" name="email" id="email" type="email" placeholder="name@company.com" required>
                   </div>
-                </div>
+                </div>-->
                 <div class="col-md-6 mb-3">
                   <div class="form-group">
                     <label for="id">ID</label>
-                    <input class="form-control" id="id" type="number" placeholder="202018018" required>
+                    <input class="form-control" name="id" id="id" type="number" placeholder="202018018" required>
                   </div>
                 </div>
                 <div class="col-md-6 mb-3">
                   <label for="location">Location</label>
-                  <select class="form-select mb-0" id="location" aria-label="Location select example">
-                    <option selected>Location</option>
-                    <option value="1">Cairo</option>
-                    <option value="2">Alex</option>
-                    <option value="3">Giza</option>
-                    <option value="4">October</option>
-                    <option value="5">Maadi</option>
+                  <select class="form-select mb-0" name="location" id="empolyee_location" aria-label="Location select example">
+                 
                   </select>
                 </div>
               </div>

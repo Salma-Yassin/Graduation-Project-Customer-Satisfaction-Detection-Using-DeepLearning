@@ -25,6 +25,16 @@ def get_chart_data():
    f = open("apps\Media_data.json")
    return json.load(f)
 
+@app.route('/location_data')
+def get_location_data():
+   locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
+   return jsonify(locations_table)
+
+@app.route('/empolyee_data')
+def get_empolyee_data():
+   empolyee_table = UserMembers.query.filter_by(user_id= current_user.id).all()
+   return jsonify(empolyee_table)
+
 @app.route('/media_data')
 def get_media_data():
    # generating random data for testing 
@@ -82,9 +92,22 @@ def pages_history():
      return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
-@app.route('/pages/manage/')
+@app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
+  if request.method == 'POST':
+     user_id = current_user.id
+     if request.form.get('Location_form'):       
+        location = request.form.get('location')
+        controller.addUserLocation(name=location, user_id=user_id)
+
+     elif request.form.get('Employee_form'):
+        empo_name = request.form.get('name')
+        empo_gender = request.form.get('gender')
+        empo_id = request.form.get('id')
+        empo_location = request.form.get('location')
+        controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+        
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
 # Adding Media Analysis view 

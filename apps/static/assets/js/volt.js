@@ -170,108 +170,141 @@ d.addEventListener("DOMContentLoaded", function (event) {
         });
     }
 
+    var getLocationData = $.get('/empolyee_data');
+    getLocationData.done(function (empolyees) {
+        if (d.querySelector('#empolyee_id_data')) {
+            console.log(empolyees);
+            const select = d.getElementById('empolyee_id_data');
+
+            empolyees.forEach(option => {
+                const optionElem = d.createElement('option');
+                optionElem.value = option.member_id;
+                optionElem.text = option.member_id;
+                select.appendChild(optionElem);
+            });
+
+        }
+    })
+
+    var getLocationData = $.get('/location_data');
+    getLocationData.done(function (locations) {
+        if (d.querySelector('#empolyee_location')) {
+            console.log(locations);
+            const select = d.getElementById('empolyee_location');
+
+            locations.forEach(option => {
+                const optionElem = d.createElement('option');
+                optionElem.value = option.name;
+                optionElem.text = option.name;
+                select.appendChild(optionElem);
+            });
+
+        }
+    })
+
+
+
     var getMediaData = $.get('/media_data');
 
     getMediaData.done(function (results) {
         if (d.querySelector('#example')) {
-          console.log(results);
-      
-          var table = jQuery('#example').DataTable({
-            data: results,
-            scrollX: false,
-            columns: [
-              { data: 'id' , title: '<b>ID</b>' },
-              { data: 'type' },
-              { data: 'results' },
-              { data: 'member_id' },
-              { data: 'location_address' },
-              {
-                data: 'url', 
-                render: function (data) {
-                  return '<a href="' +data+ '" target="_blank">' + data + '</a>';
-                }
-              },
-              {
-                data: null,
-                className: 'details-control',
-                defaultContent: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo"><svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>Details</button>',
-                orderable: false
-              }
-            ],
-            columnDefs: [
-              {
-                targets: 5, // url column
-                width: '20%'
-              }
-            ],
+            console.log(results);
 
-            initComplete: function () {
-              this.api()
-                .columns()
-                .every(function () {
-                  var column = this;
-                  if (!column.nodes().to$().hasClass('details-control')) {
-                    var select = $('<select><option value=""></option></select>')
-                      .appendTo($(column.footer()).empty())
-                      .on('change', function () {
-                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
-      
-                        column.search(val ? '^' + val + '$' : '', true, false).draw();
-                      });
-      
-                    column
-                      .data()
-                      .unique()
-                      .sort()
-                      .each(function (d, j) {
-                        select.append('<option value="' + d + '">' + d + '</option>');
-                      });
-                  }
-                });
-            }
-          });
-      
-          $('#example tbody').on('click', 'button', function () {
-            var data = table.row($(this).parents('tr')).data();
-            // Navigate to another view
-            window.location.href = '/pages/MediaAnalysis/';
-          });
+            var table = jQuery('#example').DataTable({
+                data: results,
+                scrollX: false,
+                columns: [
+                    { data: 'id', title: '<b>ID</b>' },
+                    { data: 'type' },
+                    { data: 'results' },
+                    { data: 'member_id' },
+                    { data: 'location_address' },
+                    {
+                        data: 'url',
+                        render: function (data) {
+                            return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                        }
+                    },
+                    {
+                        data: null,
+                        className: 'details-control',
+                        defaultContent: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo"><svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>Details</button>',
+                        orderable: false
+                    }
+                ],
+                columnDefs: [
+                    {
+                        targets: 5, // url column
+                        width: '20%'
+                    }
+                ],
+
+                initComplete: function () {
+                    this.api()
+                        .columns()
+                        .every(function () {
+                            var column = this;
+                            if (!column.nodes().to$().hasClass('details-control')) {
+                                var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
+
+                                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                    });
+
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.append('<option value="' + d + '">' + d + '</option>');
+                                    });
+                            }
+                        });
+                }
+            });
+
+            $('#example tbody').on('click', 'button', function () {
+                var data = table.row($(this).parents('tr')).data();
+                // Navigate to another view
+                window.location.href = '/pages/MediaAnalysis/';
+            });
         }
-      });
-      
+    });
+
 
 
     //Chartist
 
     const handleChartData = (results) => {
-        var cat = ['hap','sad','neu','ang']
+        var cat = ['hap', 'sad', 'neu', 'ang']
         var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
-        
+
         var all = []
 
-        for (let i = 0 ; i < cat.length ; i++){
+        for (let i = 0; i < cat.length; i++) {
             var series = []
-            for (let j = 0 ; j < days.length ; j++)
-            {
-                series = [...series , results.data.filter(row =>((row.results)).includes(cat[i])).filter(row =>((row.created_at)).includes(days[j])).length]
+            for (let j = 0; j < days.length; j++) {
+                series = [...series, results.data.filter(row => ((row.results)).includes(cat[i])).filter(row => ((row.created_at)).includes(days[j])).length]
             }
-            all = [...all,series]
+            all = [...all, series]
         }
-       
-       return all
+
+        return all
 
     }
 
     var getMedia_dummy_Data = $.get('/data');
 
-    getMedia_dummy_Data.done(function(results){
-       
+    getMedia_dummy_Data.done(function (results) {
+
         var all = handleChartData(results)
         console.log(all)
 
         if (d.querySelector('.ct-chart-ranking')) {
-           
+
             //var series = results.data.filter(row =>((row.created_at)).includes('Fri')
 
             var chart = new Chartist.Bar('.ct-chart-ranking', {
@@ -294,7 +327,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     offset: 0
                 }
             });
-    
+
             chart.on('draw', function (data) {
                 if (data.type === 'line' || data.type === 'area') {
                     data.element.animate({
@@ -309,17 +342,17 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 }
             });
         }
-        if(d.querySelector('.ct-chart-sales-value')) {
+        if (d.querySelector('.ct-chart-sales-value')) {
             //Chart 5
-              new Chartist.Line('.ct-chart-sales-value', {
+            new Chartist.Line('.ct-chart-sales-value', {
                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 series: all
-              }, {
+            }, {
                 low: 0,
                 showArea: true,
                 fullWidth: true,
                 plugins: [
-                  Chartist.plugins.tooltip()
+                    Chartist.plugins.tooltip()
                 ],
                 axisX: {
                     // On the x-axis start means top and end means bottom
@@ -330,7 +363,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     // On the y-axis start means left and end means right
                     showGrid: false,
                     showLabel: false,
-                    labelInterpolationFnc: function(value) {
+                    labelInterpolationFnc: function (value) {
                         return '$' + (value / 1) + 'k';
                     }
                 }
@@ -338,7 +371,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
         }
 
     });
-    
+
 
     if (d.querySelector('.ct-chart-traffic-share')) {
         var data = {

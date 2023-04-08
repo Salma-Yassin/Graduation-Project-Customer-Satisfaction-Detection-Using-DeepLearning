@@ -23,19 +23,36 @@ class User(db.Model, UserMixin):
 
     # created_at = db.Column(db.DateTime(timezone=True),server_default=func.now())
     # User Data
+    
+@dataclass
 class UserLocations(db.Model):
+    id : int
+    name : str
+    user_id : int
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),
                         nullable=False)
 
 
+@dataclass
 class UserMembers(db.Model):
+    id : int
+    name : str
+    user_id : int
+    member_id : int
+    gender : str
+    location_id : int  
+
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),
                         nullable=False)
+    member_id = db.Column(db.Integer, nullable=False, unique=True)
+    gender = db.Column(db.String, nullable=False)
     location_id = db.Column(db.ForeignKey(UserLocations.id), nullable=False)
+
 
 
 @dataclass
