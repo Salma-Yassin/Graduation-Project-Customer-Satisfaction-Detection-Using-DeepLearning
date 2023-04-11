@@ -56,14 +56,22 @@ def pages_dashboard():
      media_type = request.form.get('media_type')
      emp_id = request.form.get('employee_id')
      location_add = request.form.get('location')
-     category = query(url) 
-     
+     if media_type == 'audio':
+      category = query(url)
+      # Convert dictionary to string
+      detailed_results = json.dumps(category)
+      results = (category)[0]['label']
+
+     elif media_type == 'video':
+       #category = query_face(url)
+       category = 'Unknown'
+      # call body model ---> 
+     else:
+       category = 'Unknown'
 
      user_id = current_user.id
-
-     controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id, results = category[0]['label'])
-     created_media = Media.query.filter_by(url=url).first()  
-
+     controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    # created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
      #show data 
      #return redirect(url_for('pages_history'))
@@ -82,12 +90,21 @@ def pages_history():
      media_type = request.form.get('media_type')
      emp_id = request.form.get('employee_id')
      location_add = request.form.get('location')
-     category = query(url) 
-     
+     if media_type == 'audio':
+      category = query(url)
+      # Convert dictionary to string
+      detailed_results = json.dumps(category)
+      results = (category)[0]['label']
+
+     elif media_type == 'video':
+       #category = query_face(url)
+       category = 'Unknown'
+      # call body model ---> 
+     else:
+       category = 'Unknown'
 
      user_id = current_user.id
-
-     controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id, results = category[0]['label'])
+     controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
      created_media = Media.query.filter_by(url=url).first() 
      return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
