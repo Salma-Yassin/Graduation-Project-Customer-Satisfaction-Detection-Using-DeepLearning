@@ -50,6 +50,7 @@ def pages_dashboard():
       category = query(url)
     elif media_type == 'video':
       category = query_face(url)
+      # call body model ---> 
     else:
       category = 'Unknown'
 

@@ -40,6 +40,9 @@ def predictEmotionFace(url_base):
     cap = cv2.VideoCapture(url)
     print(cap.isOpened()) # add this line after line 20  
 
+    #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    #output_file = cv2.VideoWriter("Results/intermediate_results.mp4", fourcc, 30.0, (int(cap.get(3)), int(cap.get(4))))
+
     while True:
         # Find haar cascade to draw bounding box around face
         ret, frame = cap.read()
@@ -72,12 +75,18 @@ def predictEmotionFace(url_base):
             maxindex = int(np.argmax(emotion_prediction))
             emotion_counts[maxindex] += 1
 
+            #cv2.putText(frame, emotion_dict[maxindex], (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+            #output_file.write(frame)
+
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
 
     dominant_emotion = max(emotion_counts, key=emotion_counts.get)
     print("Dominant emotion: ", emotion_dict[dominant_emotion])
     print(emotion_counts)
+    #cap.release()
+    #output_file.release()
+    #cv2.destroyAllWindows()
 
 
     # get the frame width and height
@@ -86,7 +95,7 @@ def predictEmotionFace(url_base):
 
     # create a VideoWriter object to save the output video
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    #output_video = cv2.VideoWriter('output_video_6.mp4', fourcc, 30, (frame_width, frame_height))
+    output_video = cv2.VideoWriter("Results/output_video_6.mp4", fourcc, 30, (frame_width, frame_height))
 
     cap = cv2.VideoCapture(url)
     print(cap.isOpened()) # add this line after line 20 
@@ -103,14 +112,12 @@ def predictEmotionFace(url_base):
         cv2.putText(frame, f"Detected: {emotion_dict[dominant_emotion]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
 
         # write the modified frame to the output video
-        #output_video.write(frame)
+        output_video.write(frame)
         print('1')
 
     # release the resources
     cap.release()
-    #output_video.release()
+    output_video.release()
     cv2.destroyAllWindows()
 
     return emotion_dict[dominant_emotion]
-
-# predictEmotionFace("https://drive.google.com/file/d/1wYtw4JCeZCBiE-UqUlHv93RF61P3kgPx/view")
