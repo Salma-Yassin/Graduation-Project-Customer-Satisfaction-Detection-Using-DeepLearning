@@ -7,79 +7,31 @@
 <a id="login" href="/accounts/sign-in/">Login</a>
 {% endif %}
 
-<div class="py-4">
+<!--<div class="py-4">
   <div>
-
     <div style="margin-top: 5px; position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
       <iframe style="position:absolute; top:0; left:0; width:100%; height:100%;"
         src="https://www.youtube.com/embed/tM32mO8z6yw" allowfullscreen></iframe>
     </div>
-
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Uploading</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+  </div>
+</div>-->
+<div class="py-4" style="text-align: center;">
+  <div class="col-12 col-xl-10 mb-4">
+      <div class="col-12 px-0 mb-4">
+          <div class="card border-0 shadow">
+              <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+                  <div class="d-block">
+                      <h2 class="h3 fw-extrabold">Video Play</h2>
+                  </div>
+              </div>
+              <div class="card-body p-2"style="text-align: center;">
+                <div style="margin-top: 5px; position:relative; padding-bottom:56.25%; height:0; overflow:hidden;">
+                  <iframe style="position:absolute; top:10%; left:10%; width:80%; height:80%;"
+                    src="https://drive.google.com/file/d/1nMjQaBwXFXCU3fKU7QJuca3hAxJFF8bX/preview" allowfullscreen></iframe>
+                </div>
+              </div>
           </div>
-          <div class="modal-body">
-            <form method="POST">
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">URL</label>
-                <input type="text" class="form-control" name="url">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Type</label>
-                <input type="text" class="form-control" name="media_type">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Employee ID</label>
-                <!-- assuming employee has a n id -->
-                <input type="text" class="form-control" id="recipient-name" name="employee_id">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Location</label>
-                <input type="text" class="form-control" id="recipient-name" name="location">
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </form>
-          </div>
-        </div>
       </div>
-    </div>
-    <!--<div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
-          </path>
-        </svg>
-        Add User
-      </a>
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z">
-          </path>
-          <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
-        </svg>
-        Upload Files
-      </a>
-      <div role="separator" class="dropdown-divider my-1"></div>
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd"
-            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-            clip-rule="evenodd"></path>
-        </svg>
-        Upgrade to Pro
-      </a>
-    </div>-->
   </div>
 </div>
 <div class="row">
@@ -93,7 +45,7 @@
           </div>
         </div>
         <div class="card-body p-2">
-          <div class="ct-chart ct-golden-section ct-series-a"></div>
+          <div class="ct-chart-body ct-golden-section ct-series-a"></div>
         </div>
       </div>
     </div>
@@ -190,7 +142,7 @@
           </div>
         </div>
         <div class="card-body p-2">
-          <div class="ct-chart2 ct-golden-section ct-series-a"></div>
+          <div class="ct-chart-face ct-golden-section ct-series-a"></div>
         </div>
       </div>
     </div>

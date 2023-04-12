@@ -215,7 +215,18 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 columns: [
                     { data: 'id', title: '<b>ID</b>' },
                     { data: 'type' },
-                    { data: 'results' },
+                    {
+                        data: 'results',
+                        render: function (data) {
+                            if (data === 'hap') {
+                                return '<span class="badge bg-success fs-6">' + data + '</span>';
+                            } else if (data === 'ang') {
+                                return '<span class="badge bg-danger fs-6">' + data + '</span>';
+                            } else {
+                                return '<span class="badge bg-warning fs-6">' + data + '</span>';
+                            }
+                        }
+                    }, 
                     { data: 'member_id' },
                     { data: 'location_address' },
                     {
@@ -282,12 +293,12 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     // Do something for videos
                     console.log('Video clicked');
                     // Navigate to another view
-                    // window.location.href = '/pages/MediaAnalysis/';
+                    window.location.href = '/pages/MediaAnalysis/';
                 } else if (data.type === 'audio') {
                     // Do something for audio
                     console.log('Audio clicked');
                     // Navigate to another view
-                    window.location.href = '/pages/MediaAnalysis/';
+                    window.location.href = '/pages/MediaAnalysisAudio/';
                 } else {
                     // Do something else
                     console.log('Unknown type clicked');
@@ -303,15 +314,77 @@ d.addEventListener("DOMContentLoaded", function (event) {
     console.log(detailed_data);
     //Donught Chart:
 
-    if (d.querySelector(".ct-chart")) {
+    if (d.querySelector(".ct-chart-body")) {
         //detailed_data_rec = localStorage.getItem("passing_data");
         console.log(typeof detailed_data);
         var scores = [];
         var labels = [];
         //detailed_data.forEach(({ score }) => scores.push(score));
         //detailed_data.forEach(({ label }) => labels.push(label));
-        var chart = new Chartist.Pie('.ct-chart', {
-            series: [20,50,30,10],
+        var chart = new Chartist.Pie('.ct-chart-body', {
+            series: [20, 50, 30, 10],
+            labels: ['20%', '50%', '3%', '1%']
+        }, {
+            donut: true,
+            donutWidth: 80,
+            startAngle: 0,
+            showLabel: true
+        });
+
+        chart.on('draw', function (data) {
+            if (data.type === 'slice') {
+                // Get the total path length in order to use for dash array animation
+                var pathLength = data.element._node.getTotalLength();
+
+                // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                data.element.attr({
+                    'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                });
+
+                // Create animation definition while also assigning an ID to the animation for later sync usage
+                var animationDefinition = {
+                    'stroke-dashoffset': {
+                        id: 'anim' + data.index,
+                        dur: 1000,
+                        from: -pathLength + 'px',
+                        to: '0px',
+                        easing: Chartist.Svg.Easing.easeOutQuint,
+                        // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                        fill: 'freeze'
+                    }
+                };
+
+                // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                if (data.index !== 0) {
+                    animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                }
+
+                // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
+                data.element.attr({
+                    'stroke-dashoffset': -pathLength + 'px'
+                });
+
+                // We can't use guided mode as the animations need to rely on setting begin manually
+                // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                data.element.animate(animationDefinition, false);
+            }
+        });
+
+        // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
+        chart.on('created', function () {
+            if (window.__anim21278907124) {
+                clearTimeout(window.__anim21278907124);
+                window.__anim21278907124 = null;
+            }
+            window.__anim21278907124 = setTimeout(chart.update.bind(chart), 10000);
+        });
+
+    }
+
+    if (d.querySelector(".ct-chart-face")) {
+        console.log('finded')
+        var chart = new Chartist.Pie('.ct-chart-face', {
+            series: [20, 10, 30, 40],
             labels: [1, 2, 3, 4]
         }, {
             donut: true,
@@ -370,11 +443,16 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     }
 
-    if (d.querySelector(".ct-chart2")) {
-        console.log('finded')
-        var chart = new Chartist.Pie('.ct-chart2', {
-            series: [20, 10, 30, 40],
-            labels: [1, 2, 3, 4]
+    if (d.querySelector(".ct-chart-audio")) {
+        //detailed_data_rec = localStorage.getItem("passing_data");
+        console.log(typeof detailed_data);
+        var scores = [];
+        var labels = [];
+        //detailed_data.forEach(({ score }) => scores.push(score));
+        //detailed_data.forEach(({ label }) => labels.push(label));
+        var chart = new Chartist.Pie('.ct-chart-audio', {
+            series: [20, 50, 30, 10],
+            labels: ['20%', '50%', '30%', '10%']
         }, {
             donut: true,
             donutWidth: 80,

@@ -47,35 +47,43 @@ def get_media_data():
 
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
-@app.route('/', methods=['GET', 'POST'])
-@login_required
-def pages_dashboard():
-  if request.method == 'POST':
-     # retrive fields from data base 
-     url = request.form.get('url')
-     media_type = request.form.get('media_type')
-     emp_id = request.form.get('employee_id')
-     location_add = request.form.get('location')
-     if media_type == 'audio':
-      category = query(url)
-      # Convert dictionary to string
-      detailed_results = json.dumps(category)
-      results = (category)[0]['label']
+def add_media_function(request):
+  # retrive fields from data base
+  url = request.form.get('url')
+  media_type = request.form.get('media_type')
+  emp_id = request.form.get('employee_id')
+  location_add = request.form.get('location')
+  if media_type == 'audio':
+    category = query(url)
+    # Convert dictionary to string
+    detailed_results = json.dumps(category)
+    results = (category)[0]['label']
 
-     elif media_type == 'video':
-       #category = query_face(url)
-       category = 'Unknown'
-      # call body model ---> 
-     else:
-       category = 'Unknown'
+  elif media_type == 'video':
+    category = query(url)
+    # Convert dictionary to string
+    detailed_results = json.dumps(category)
+    results = (category)[0]['label']
+    #category = query_face(url)
+    #category = 'Unknown'
+    # call body model ---> 
+  else:
+    category = 'Unknown'
 
-     user_id = current_user.id
-     controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+  user_id = current_user.id
+  controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
     # created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
      #show data 
      #return redirect(url_for('pages_history'))
-     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
+  
+
+@app.route('/', methods=['GET', 'POST'])
+@login_required
+def pages_dashboard():
+  if request.method == 'POST':
+     add_media_function(request)
+     return redirect(url_for('pages_history'))
   return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
@@ -85,28 +93,8 @@ def pages_dashboard():
 @login_required
 def pages_history():
   if request.method == 'POST':
-     # retrive fields from data base 
-     url = request.form.get('url')
-     media_type = request.form.get('media_type')
-     emp_id = request.form.get('employee_id')
-     location_add = request.form.get('location')
-     if media_type == 'audio':
-      category = query(url)
-      # Convert dictionary to string
-      detailed_results = json.dumps(category)
-      results = (category)[0]['label']
-
-     elif media_type == 'video':
-       #category = query_face(url)
-       category = 'Unknown'
-      # call body model ---> 
-     else:
-       category = 'Unknown'
-
-     user_id = current_user.id
-     controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-     created_media = Media.query.filter_by(url=url).first() 
-     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
+     add_media_function(request)
+     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
 @app.route('/pages/manage/', methods=['GET', 'POST'])
@@ -132,6 +120,12 @@ def pages_manage():
 @login_required
 def pages_analysis():
   return render_template('pages/dashboard/mediaAnalysis.html', segment='media', parent='pages',user=current_user)
+
+# Adding Media Analysis view 
+@app.route('/pages/MediaAnalysisAudio/')
+@login_required
+def pages_analysis_audio():
+  return render_template('pages/dashboard/mediaAnalysisAudio.html', segment='mediaAudio', parent='pages',user=current_user)
 
 # Adding Media Analysis view 
 @app.route('/pages/UploadAnalysis/')
