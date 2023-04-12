@@ -38,7 +38,7 @@
       <h2 class="accordion-header" id="flush-headingOne">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseTwo">
-          <h2 class="h5">General Location information</h2>
+          <h2 class="h5">Add Location</h2>
         </button>
       </h2>
       <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
@@ -79,7 +79,7 @@
       <h2 class="accordion-header" id="flush-headingTwo">
         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
           data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-          <h2 class="h5">General Team information</h2>
+          <h2 class="h5">Add Employee</h2>
         </button>
       </h2>
       <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
@@ -163,129 +163,139 @@
         <div class="col-12 col-6 mb-4">
           <div class="card border-0 shadow">
             <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-              <h2 class="fs-5 fw-bold mb-0">Team members</h2>
+              <h2 class="fs-5 fw-bold mb-0">Employees Statistics</h2>
               <a href="#" class="btn btn-sm btn-primary">See all</a>
             </div>
             <div class="card-body">
               <ul class="list-group list-group-flush list my--3">
                 <li class="list-group-item px-0">
                   <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-1.jpg' )}}">
-                      </a>
-                    </div>
                     <div class="col">
                       <h4 class="h6 mb-0">
                         <a href="#">Chris Wood</a>
-                        <div class="small fw-bold text-gray-500"><span>75 %</span></div>
+                        <div class="small fw-bold text-gray-500"><span>50 Satisfied Customers</span></div>
                       </h4>
                       <div class="progress mb-0">
                         <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
                           aria-valuemax="100" style="width: 75%;"></div>
                       </div>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-success dot rounded-circle me-1"></div>
-                        <small>Online</small>
-                      </div>
                     </div>
                   </div>
                 </li>
                 <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-2.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
+                  <div class="row align-items-center">  
+                    <div class="col">
                       <h4 class="h6 mb-0">
                         <a href="#">Jose Leos</a>
+                        <div class="small fw-bold text-gray-500"><span>20 Satisfied Customers</span></div>
                       </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-warning dot rounded-circle me-1"></div>
-                        <small>In a meeting</small>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 50%;"></div>
                       </div>
-                    </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
                     </div>
                   </div>
                 </li>
                 <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-3.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
+                  <div class="row align-items-center">  
+                    <div class="col">
                       <h4 class="h6 mb-0">
                         <a href="#">Bonnie Green</a>
+                        <div class="small fw-bold text-gray-500"><span>10 Satisfied Customers</span></div>
                       </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-danger dot rounded-circle me-1"></div>
-                        <small>Offline</small>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 25%;"></div>
                       </div>
                     </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
+                  </div>
+                </li>
+                <li class="list-group-item px-0">
+                  <div class="row align-items-center">  
+                    <div class="col">
+                      <h4 class="h6 mb-0">
+                        <a href="#">Neil Sims</a>
+                        <div class="small fw-bold text-gray-500"><span>45 Satisfied Customers</span></div>
+                      </h4>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 65%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-6 mb-4">
+          <div class="card border-0 shadow">
+            <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+              <h2 class="fs-5 fw-bold mb-0">Locations Statistics</h2>
+              <a href="#" class="btn btn-sm btn-primary">See all</a>
+            </div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush list my--3">
+                <li class="list-group-item px-0">
+                  <div class="row align-items-center">  
+                    <div class="col">
+                      <h4 class="h6 mb-0">
+                        <a href="#">Maadi</a>
+                        <div class="small fw-bold text-gray-500"><span>30 Satisfied Customers</span></div>
+                      </h4>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 60%;"></div>
+                      </div>
                     </div>
                   </div>
                 </li>
                 <li class="list-group-item px-0">
                   <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-4.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
+                    <div class="col">
                       <h4 class="h6 mb-0">
-                        <a href="#">Neil Sims</a>
+                        <a href="#">October 1</a>
+                        <div class="small fw-bold text-gray-500"><span>25 Satisfied Customers</span></div>
                       </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-danger dot rounded-circle me-1"></div>
-                        <small>Offline</small>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-warning" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 25%;"></div>
                       </div>
-                    </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
                     </div>
                   </div>
                 </li>
+                
+                <li class="list-group-item px-0">
+                  <div class="row align-items-center">  
+                    <div class="col">
+                      <h4 class="h6 mb-0">
+                        <a href="#">October 2</a>
+                        <div class="small fw-bold text-gray-500"><span>55 Satisfied Customers</span></div>
+                      </h4>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 55%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li class="list-group-item px-0">
+                  <div class="row align-items-center">  
+                    <div class="col">
+                      <h4 class="h6 mb-0">
+                        <a href="#">Cairo</a>
+                        <div class="small fw-bold text-gray-500"><span>10 Satisfied Customers</span></div>
+                      </h4>
+                      <div class="progress mb-0">
+                        <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                          aria-valuemax="100" style="width: 25%;"></div>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                
+                
               </ul>
             </div>
           </div>
