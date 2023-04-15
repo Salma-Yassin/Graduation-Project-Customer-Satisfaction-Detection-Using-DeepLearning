@@ -10,7 +10,7 @@ def query(file_url):
     cont = requests.get(file_url, verify= False)
     response = requests.post(API_URL, headers=headers, data=cont, verify= False).json()
     
-    return response[0]['label']
+    return response
 
 
 @app.route('/face_inference')

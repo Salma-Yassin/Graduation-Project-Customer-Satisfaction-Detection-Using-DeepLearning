@@ -279,8 +279,8 @@ d.addEventListener("DOMContentLoaded", function (event) {
             $('#example tbody').on('click', 'button', function () {
                 var data = table.row($(this).parents('tr')).data();
                 // detailed_data = data.detailed_results
-                detailed_data = $.parseJSON(data.detailed_results);
-                console.log(detailed_data);
+                //detailed_data = $.parseJSON(data.detailed_results);
+                //console.log(detailed_data);
 
                 //localStorage.setItem("passing_data", detailed_data);
                 // console.log(data.type);
