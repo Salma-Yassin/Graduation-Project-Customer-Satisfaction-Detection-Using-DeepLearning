@@ -20,6 +20,8 @@ def predictEmotionFace(url_base):
 
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
     emotion_counts = {0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0}
+    frame_dict = {}
+    c = 0
 
     # load json and create model
     json_file = open('apps/model/emotion_model.json', 'r')
@@ -37,6 +39,7 @@ def predictEmotionFace(url_base):
     print(url)
 
     # Open the video file using OpenCV
+    # url ="videoplayback_Trim.mp4"
     cap = cv2.VideoCapture(url)
     print(cap.isOpened()) # add this line after line 20  
 
@@ -54,6 +57,8 @@ def predictEmotionFace(url_base):
         # check if video frame dimensions are not zero
         if frame.shape[0] == 0 or frame.shape[1] == 0:
             continue
+        else:
+            c = c + 1
 
         # resize the video frame
         frame = cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_LINEAR)
@@ -66,7 +71,8 @@ def predictEmotionFace(url_base):
 
         # take each face available on the camera and Preprocess it
         for (x, y, w, h) in num_faces:
-            cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), (0, 255, 0), 4)
+            # cv2.rectangle(frame, (x, y-50), (x+w, y+h+10), (0, 255, 0), 4)
+           
             roi_gray_frame = gray_frame[y:y + h, x:x + w]
             cropped_img = np.expand_dims(np.expand_dims(cv2.resize(roi_gray_frame, (48, 48)), -1), 0)
 
@@ -77,17 +83,24 @@ def predictEmotionFace(url_base):
 
             #cv2.putText(frame, emotion_dict[maxindex], (x+5, y-20), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
             #output_file.write(frame)
+            frame_dict[c] = []
+            frame_dict[c].append(((x, y-50) , (x+w, y+h+10) , emotion_dict[maxindex],(x+5, y-20)))
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
+    
 
     dominant_emotion = max(emotion_counts, key=emotion_counts.get)
     print("Dominant emotion: ", emotion_dict[dominant_emotion])
     print(emotion_counts)
-    #cap.release()
+    cap.release()
+    #print(frame_dict)
     #output_file.release()
     #cv2.destroyAllWindows()
 
+    cap = cv2.VideoCapture(url)
+    print(cap.isOpened()) # add this line after line 20 
+    c = 0
 
     # get the frame width and height
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
@@ -97,9 +110,6 @@ def predictEmotionFace(url_base):
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     output_video = cv2.VideoWriter("Results/output_video_6.mp4", fourcc, 30, (frame_width, frame_height))
 
-    cap = cv2.VideoCapture(url)
-    print(cap.isOpened()) # add this line after line 20 
-
     # loop through the frames of the video
     while True:
         ret, frame = cap.read()
@@ -107,11 +117,30 @@ def predictEmotionFace(url_base):
             print('finished')
             break
 
+        # check if video frame dimensions are not zero
+        if frame.shape[0] == 0 or frame.shape[1] == 0:
+            continue
+        else:
+            c = c + 1
+
         # write the variable on top of the frame
 
-        cv2.putText(frame, f"Detected: {emotion_dict[dominant_emotion]}", (50, 50), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2)
+        cv2.putText(frame, f"Detected: {emotion_dict[dominant_emotion]}", (25, 25), cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+
+         # resize the video frame
+        frame = cv2.resize(frame, (1280, 720), interpolation=cv2.INTER_LINEAR)
+
+        try:
+            for i in range(len(frame_dict[c])):
+                cv2.rectangle(frame, frame_dict[c][i][0], frame_dict[c][i][1], (0, 255, 0), 4)
+                cv2.putText(frame, frame_dict[c][i][2],  frame_dict[c][i][3], cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
+
+        except:
+            print(c)
+
 
         # write the modified frame to the output video
+        frame = cv2.resize(frame, (frame_width , frame_height), interpolation=cv2.INTER_LINEAR)
         output_video.write(frame)
         print('1')
 
@@ -121,3 +150,7 @@ def predictEmotionFace(url_base):
     cv2.destroyAllWindows()
 
     return emotion_dict[dominant_emotion]
+
+
+#url_base = "https://drive.google.com/file/d/1WYaqDPMIM426y3ZU5y_HH6f4aUVV_XA1/view"
+#predictEmotionFace(url_base)
