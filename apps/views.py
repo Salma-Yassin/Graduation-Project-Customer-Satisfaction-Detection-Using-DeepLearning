@@ -12,7 +12,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
 from random import sample 
-from .inference import query
+from .inference import query, query_face
 import sys
 from .controller import controller
 
@@ -71,10 +71,10 @@ def add_media_function(request):
           results = (category)[0]['label']
 
       elif media_type == 'Video':
-          category = query(url)
+          category = query_face(url)
           # Convert dictionary to string
-          detailed_results = json.dumps(category)
-          results = (category)[0]['label']
+          detailed_results = category
+          results = category
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
