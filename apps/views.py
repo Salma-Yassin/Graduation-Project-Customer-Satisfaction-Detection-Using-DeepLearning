@@ -25,6 +25,22 @@ def get_chart_data():
    f = open("apps\Media_data.json")
    return json.load(f)
 
+
+@app.route('/update_chart_raw', methods=['GET', 'POST'])
+def update_chart_raw():
+
+  if request.method == 'GET':
+    with open("apps/updateChartRaw.json") as f:
+       data = json.load(f)
+    return data
+  
+  elif request.method == 'POST':
+    data = request.get_json()
+    with open("apps/updateChartRaw.json", "w") as f:
+      json.dump(data, f)
+    return jsonify({'status': 'success'})
+   
+
 @app.route('/location_data')
 def get_location_data():
    locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
