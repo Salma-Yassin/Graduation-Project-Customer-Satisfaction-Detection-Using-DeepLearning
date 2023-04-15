@@ -58,6 +58,7 @@ class UserMembers(db.Model):
 @dataclass
 class Media(db.Model):
     id : int 
+    media_name : str
     url : str
     location_address : str
     member_id : int
@@ -68,6 +69,7 @@ class Media(db.Model):
     created_at : datetime.datetime
     
     id = db.Column(db.Integer, primary_key=True)
+    media_name = db.Column(db.String(150),unique= True, nullable=False)
     url = db.Column(db.String(150), unique=True, nullable=False)
     #location_id = db.Column(db.ForeignKey(UserLocations.id))
     location_address = db.Column(db.String(150), nullable=False)

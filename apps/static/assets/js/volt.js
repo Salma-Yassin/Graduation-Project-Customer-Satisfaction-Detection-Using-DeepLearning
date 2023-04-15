@@ -229,12 +229,13 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     }, 
                     { data: 'member_id' },
                     { data: 'location_address' },
-                    {
+                    /*{
                         data: 'url',
                         render: function (data) {
                             return '<a href="' + data + '" target="_blank">' + data + '</a>';
                         }
-                    },
+                    },*/
+                    { data: 'media_name' },
                     {
                         data: null,
                         className: 'details-control',
@@ -289,12 +290,12 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 //console.log(scores)
                 //detailed_data.forEach(({label}) => console.log(label));
 
-                if (data.type === 'video') {
+                if (data.type === 'Video') {
                     // Do something for videos
                     console.log('Video clicked');
                     // Navigate to another view
                     window.location.href = '/pages/MediaAnalysis/';
-                } else if (data.type === 'audio') {
+                } else if (data.type === 'Audio') {
                     // Do something for audio
                     console.log('Audio clicked');
                     // Navigate to another view
@@ -444,12 +445,6 @@ d.addEventListener("DOMContentLoaded", function (event) {
     }
 
     if (d.querySelector(".ct-chart-audio")) {
-        //detailed_data_rec = localStorage.getItem("passing_data");
-        console.log(typeof detailed_data);
-        var scores = [];
-        var labels = [];
-        //detailed_data.forEach(({ score }) => scores.push(score));
-        //detailed_data.forEach(({ label }) => labels.push(label));
         var chart = new Chartist.Pie('.ct-chart-audio', {
             series: [20, 50, 30, 10],
             labels: ['20%', '50%', '30%', '10%']

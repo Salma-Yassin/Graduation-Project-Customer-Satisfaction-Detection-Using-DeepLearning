@@ -49,33 +49,41 @@ def get_media_data():
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
   # retrive fields from data base
+  media_name = request.form.get('media_name')
   url = request.form.get('url')
-  media_type = request.form.get('media_type')
+  url_check = Media.query.filter_by(url=url).first()
+
+  media_type = request.form.get('media_type_form')
+  media_name_check = Media.query.filter_by(media_name = media_name).first()
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
-  if media_type == 'audio':
-    category = query(url)
-    # Convert dictionary to string
-    detailed_results = json.dumps(category)
-    results = (category)[0]['label']
 
-  elif media_type == 'video':
-    category = query(url)
-    # Convert dictionary to string
-    detailed_results = json.dumps(category)
-    results = (category)[0]['label']
-    #category = query_face(url)
-    #category = 'Unknown'
-    # call body model ---> 
-  else:
-    category = 'Unknown'
+  if media_name_check:
+     flash('Media Name used, enter another one', category='error')
+  else: 
+    if url_check:
+        flash('Url used, enter another one', category='error')
+    else:
+      if media_type == 'Audio':
+          category = query(url)
+          # Convert dictionary to string
+          detailed_results = json.dumps(category)
+          results = (category)[0]['label']
 
-  user_id = current_user.id
-  controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-    # created_media = Media.query.filter_by(url=url).first()
-     #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
-     #show data 
-     #return redirect(url_for('pages_history'))
+      elif media_type == 'Video':
+          category = query(url)
+          # Convert dictionary to string
+          detailed_results = json.dumps(category)
+          results = (category)[0]['label']
+      #category = query_face(url)
+      #category = 'Unknown'
+      # call body model ---> 
+      else:
+        category = 'Unknown'
+
+      user_id = current_user.id
+      controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+      flash('Media added successfuly!', category='success')
   
 
 @app.route('/', methods=['GET', 'POST'])
@@ -128,7 +136,7 @@ def pages_analysis_audio():
   return render_template('pages/dashboard/mediaAnalysisAudio.html', segment='mediaAudio', parent='pages',user=current_user)
 
 # Adding Media Analysis view 
-@app.route('/pages/UploadAnalysis/')
+@app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
   return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
