@@ -218,9 +218,9 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     {
                         data: 'results',
                         render: function (data) {
-                            if (data === 'hap') {
+                            if (data === 'Satisfied') {
                                 return '<span class="badge bg-success fs-6">' + data + '</span>';
-                            } else if (data === 'ang') {
+                            } else if (data === 'Unsatisfied') {
                                 return '<span class="badge bg-danger fs-6">' + data + '</span>';
                             } else {
                                 return '<span class="badge bg-warning fs-6">' + data + '</span>';
@@ -328,8 +328,6 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     // Do something else
                     console.log('Unknown type clicked');
                 }
-
-
             });
         }
         console.log(checkvar);
@@ -341,9 +339,10 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
     var getchartRaw = $.get('/update_chart_raw');
     getchartRaw.done(function (results) {
+        results = $.parseJSON(results);
 
         if (d.querySelector(".ct-chart-audio")) {
-            results = $.parseJSON(results);
+            //results = $.parseJSON(results);
             console.log(results)
 
             var scores = [];
@@ -491,9 +490,13 @@ d.addEventListener("DOMContentLoaded", function (event) {
             results.forEach(({ score }) => scores.push(score));
             results.forEach(({ label }) => labels.push(label));
             console.log(scores)*/
+            var value_chart_old = Object.values(results)
+            var value_chart = []
+            value_chart_old.forEach((item) => value_chart.push((item*100).toFixed(2)));
+            //value_chart=(value_chart*100).toFixed(2)
             var chart = new Chartist.Pie('.ct-chart-face', {
-                series: [10,70,50,20],
-                labels: ['10%','70%','50%','20%']
+                series: value_chart,
+                labels: value_chart
             }, {
                 donut: true,
                 donutWidth: 80,
@@ -559,12 +562,9 @@ d.addEventListener("DOMContentLoaded", function (event) {
     //Chartist
 
     const handleChartData = (results) => {
-        var cat = ['hap', 'sad', 'neu']
+        var cat = ['Satisfied', 'Unsatisfied', 'Neutral']
         var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
-
         var all = []
-
         for (let i = 0; i < cat.length; i++) {
             var series = []
             for (let j = 0; j < days.length; j++) {
@@ -572,9 +572,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             }
             all = [...all, series]
         }
-
         return all
-
     }
 
     var getMedia_dummy_Data = $.get('/data');
@@ -582,6 +580,22 @@ d.addEventListener("DOMContentLoaded", function (event) {
     getMedia_dummy_Data.done(function (results) {
 
         var all = handleChartData(results)
+        
+        var all_satisfied =all[0];
+        var all_unsatisfied =all[1];
+        var all_neutral =all[2];
+
+        const sum_satisfied = all_satisfied.reduce((total, current) => total + current, 0);
+        const sum_unsatisifed = all_unsatisfied.reduce((total, current) => total + current, 0);
+        const sum_neutral = all_neutral.reduce((total, current) => total + current, 0);
+        const all_customers = sum_satisfied + sum_unsatisifed + sum_neutral
+
+        console.log(all_customers); // output: 15
+        
+        const textCustomers = d.getElementById("text-value-total-customers");
+        textCustomers.textContent = all_customers;
+
+        
         console.log(all)
 
         if (d.querySelector('.ct-chart-ranking')) {

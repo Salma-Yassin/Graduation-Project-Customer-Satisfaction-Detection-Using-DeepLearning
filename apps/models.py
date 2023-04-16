@@ -70,7 +70,7 @@ class Media(db.Model):
     
     id = db.Column(db.Integer, primary_key=True)
     media_name = db.Column(db.String(150),unique= True, nullable=False)
-    url = db.Column(db.String(150), unique=True, nullable=False)
+    url = db.Column(db.String(150), nullable=False)
     #location_id = db.Column(db.ForeignKey(UserLocations.id))
     location_address = db.Column(db.String(150), nullable=False)
     #member_id = db.Column(db.ForeignKey(UserMembers.id))

@@ -154,10 +154,11 @@ def predictEmotionFace(url_base):
         emotionOutputDict[emotion_dict[key]] = emotion_counts[key]
 
     # print(emotionOutputDict)
-    return emotionOutputDict
+    sorted_dict = dict(sorted(emotionOutputDict.items(), key=lambda x: x[1], reverse=True))
+    return sorted_dict
 
     # return emotion_dict[dominant_emotion]
 
 
-url_base = "https://drive.google.com/file/d/1WYaqDPMIM426y3ZU5y_HH6f4aUVV_XA1/view"
-predictEmotionFace(url_base)
+#url_base = "https://drive.google.com/file/d/1WYaqDPMIM426y3ZU5y_HH6f4aUVV_XA1/view"
+#predictEmotionFace(url_base)
