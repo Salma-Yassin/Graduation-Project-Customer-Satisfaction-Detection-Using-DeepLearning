@@ -11,6 +11,14 @@ def query(file_url):
     
     return response.json()
 
+@app.route('/tone_inferenceLocal')
+def queryLocal(file):
+    with open(file, "rb") as f:
+        data = f.read()
+    response = requests.post(API_URL, headers = headers, data = data)
+    return response.json()
+
+
 #@app.route('/tone_inference')
 #def query(file_url):
 #    cont = requests.get(file_url, verify= False)

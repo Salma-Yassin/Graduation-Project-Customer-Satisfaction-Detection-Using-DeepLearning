@@ -20,7 +20,10 @@ from flask_login import LoginManager
 app = Flask(__name__)
 
 # load Configuration
-app.config.from_object( Config ) 
+app.config.from_object( Config )
+app.config['UPLOAD_FOLDER']='static/filat'
+app.config['SECRET_KEY'] = 'supersecretkey'  #yara
+
 
 # Import routing to render the pages
 from apps import views

@@ -4,21 +4,27 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, flash, redirect, url_for, jsonify
+from flask   import Flask, render_template, request, flash, redirect, url_for, jsonify
 import json
 from jinja2  import TemplateNotFound
 from .models import *
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField
+from werkzeug.utils import secure_filename
+import os
+from wtforms.validators import InputRequired
 from .models import db 
 from random import sample 
-from .inference import query
+from .inference import query,queryLocal
 import sys
 from .controller import controller
 
 # App modules
 from apps import app
-
+# 
+#
 @app.route('/data') # this is a dummy api that should be removed 
 def get_chart_data():
    # generating random data for testing 
@@ -49,12 +55,27 @@ def get_media_data():
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
   # retrive fields from data base
-  url = request.form.get('url')
+  urlink = request.form.get('url')
   media_type = request.form.get('media_type')
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
+  media_name=request.form.get('media_name')
+  user_id = current_user.id
+  #file=request.files['file']
+
   if media_type == 'audio':
-    category = query(url)
+    file=request.files['file']
+    if file: 
+      filename = secure_filename(file.filename)
+      file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
+      file.save(file_path)
+      url=file_path
+      category=queryLocal(url)
+      flash('File has been uploaded.')
+      
+    if urlink:
+      url=urlink
+      category = query(urlink)
     # Convert dictionary to string
     detailed_results = json.dumps(category)
     results = (category)[0]['label']
@@ -70,12 +91,13 @@ def add_media_function(request):
   else:
     category = 'Unknown'
 
-  user_id = current_user.id
-  controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-    # created_media = Media.query.filter_by(url=url).first()
+  
+  controller.addMedia(media_name=media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+  #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
      #show data 
      #return redirect(url_for('pages_history'))
+
   
 
 @app.route('/', methods=['GET', 'POST'])
