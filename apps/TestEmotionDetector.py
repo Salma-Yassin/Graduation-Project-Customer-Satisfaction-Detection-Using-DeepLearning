@@ -148,8 +148,16 @@ def predictEmotionFace(url_base):
     cap.release()
     output_video.release()
     cv2.destroyAllWindows()
+    
+    emotionOutputDict = {} 
+    for key in emotion_dict.keys():
+        emotionOutputDict[emotion_dict[key]] = emotion_counts[key]
 
-    return emotion_dict[dominant_emotion]
+    # print(emotionOutputDict)
+    sorted_dict = dict(sorted(emotionOutputDict.items(), key=lambda x: x[1], reverse=True))
+    return sorted_dict
+
+    # return emotion_dict[dominant_emotion]
 
 
 #url_base = "https://drive.google.com/file/d/1WYaqDPMIM426y3ZU5y_HH6f4aUVV_XA1/view"

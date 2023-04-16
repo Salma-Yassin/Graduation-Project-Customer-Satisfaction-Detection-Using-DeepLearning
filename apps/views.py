@@ -15,6 +15,7 @@ from random import sample
 from .inferenceflask import query, query_face,query_body
 import sys
 from .controller import controller
+from .helpers import unify_audio, unify_video, normalize_dict
 
 # App modules
 from apps import app
@@ -24,6 +25,22 @@ def get_chart_data():
    # generating random data for testing 
    f = open("apps\Media_data.json")
    return json.load(f)
+
+
+@app.route('/update_chart_raw', methods=['GET', 'POST'])
+def update_chart_raw():
+
+  if request.method == 'GET':
+    with open("apps/updateChartRaw.json") as f:
+       data = json.load(f)
+    return data
+  
+  elif request.method == 'POST':
+    data = request.get_json()
+    with open("apps/updateChartRaw.json", "w") as f:
+      json.dump(data, f)
+    return jsonify({'status': 'success'})
+   
 
 @app.route('/location_data')
 def get_location_data():
@@ -61,20 +78,22 @@ def add_media_function(request):
   if media_name_check:
      flash('Media Name used, enter another one', category='error')
   else: 
-    if url_check:
-        flash('Url used, enter another one', category='error')
-    else:
       if media_type == 'Audio':
           category = query(url)
           # Convert dictionary to string
           detailed_results = json.dumps(category)
           results = (category)[0]['label']
+          results = unify_audio(results)
+
 
       elif media_type == 'Video':
           category = query_face(url)
           # Convert dictionary to string
-          detailed_results = category
-          results = category
+          detailed_results = json.dumps(normalize_dict(category))
+          #results = list(category.keys())[0]
+          results = next(iter(category))
+          results = unify_video(results)
+          #results = category[0]
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
