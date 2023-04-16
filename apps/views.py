@@ -12,7 +12,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
 from random import sample 
-from .inference import query, query_face
+from .inferenceflask import query, query_face
 import sys
 from .controller import controller
 
@@ -50,7 +50,6 @@ def pages_dashboard():
       category = query(url)
     elif media_type == 'video':
       category = query_face(url)
-      # call body model ---> 
     else:
       category = 'Unknown'
 
@@ -88,18 +87,6 @@ def pages_history():
 @login_required
 def pages_manage():
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
-
-# Adding Media Analysis view 
-@app.route('/pages/MediaAnalysis/')
-@login_required
-def pages_analysis():
-  return render_template('pages/dashboard/mediaAnalysis.html', segment='media', parent='pages',user=current_user)
-
-# Adding Media Analysis view 
-@app.route('/pages/UploadAnalysis/')
-@login_required
-def pages_uploadMedia():
-  return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
 
 @app.route('/pages/settings/')
 @login_required
