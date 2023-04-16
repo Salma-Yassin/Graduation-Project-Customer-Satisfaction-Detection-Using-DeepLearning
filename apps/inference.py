@@ -201,3 +201,4 @@ def inference_emotic(images_list, model_path, result_path, context_norm, body_no
     with open(result_file, 'a') as f:
       f.writelines(write_line)
       f.writelines('\n')
+

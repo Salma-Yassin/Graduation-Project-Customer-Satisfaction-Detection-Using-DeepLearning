@@ -25,6 +25,16 @@ def get_chart_data():
    f = open("apps\Media_data.json")
    return json.load(f)
 
+@app.route('/location_data')
+def get_location_data():
+   locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
+   return jsonify(locations_table)
+
+@app.route('/empolyee_data')
+def get_empolyee_data():
+   empolyee_table = UserMembers.query.filter_by(user_id= current_user.id).all()
+   return jsonify(empolyee_table)
+
 @app.route('/media_data')
 def get_media_data():
    # generating random data for testing 
@@ -35,31 +45,53 @@ def get_media_data():
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
 
+# Pages -- Dashboard
+# @app.route('/', defaults={'path': 'dashboard.html'})
+def add_media_function(request):
+  # retrive fields from data base
+  media_name = request.form.get('media_name')
+  url = request.form.get('url')
+  url_check = Media.query.filter_by(url=url).first()
+
+  media_type = request.form.get('media_type_form')
+  media_name_check = Media.query.filter_by(media_name = media_name).first()
+  emp_id = request.form.get('employee_id')
+  location_add = request.form.get('location')
+
+  if media_name_check:
+     flash('Media Name used, enter another one', category='error')
+  else: 
+    if url_check:
+        flash('Url used, enter another one', category='error')
+    else:
+      if media_type == 'Audio':
+          category = query(url)
+          # Convert dictionary to string
+          detailed_results = json.dumps(category)
+          results = (category)[0]['label']
+
+      elif media_type == 'Video':
+          category = query_face(url)
+          # Convert dictionary to string
+          detailed_results = category
+          results = category
+      #category = query_face(url)
+      #category = 'Unknown'
+      # call body model ---> 
+      else:
+        category = 'Unknown'
+
+      user_id = current_user.id
+      controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+      flash('Media added successfuly!', category='success')
+  
+
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
-
   if request.method == 'POST':
-    # retrieve fields from database 
-    url = request.form.get('url')
-    media_type = request.form.get('media_type')
-    emp_id = request.form.get('employee_id')
-    location_add = request.form.get('location')
-    
-    if media_type == 'audio':
-      category = query(url)
-    elif media_type == 'video':
-      category = query_body(url)
-      #category2=query_face(url)
-    else:
-      category = 'Unknown'
-
-    user_id = current_user.id
-    controller.addMedia(url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = category)
-    # created_media = Media.query.filter_by(url=url).first()  
-
-    return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto=user_id)
-
+     add_media_function(request)
+     return redirect(url_for('pages_history'))
   return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
@@ -69,25 +101,45 @@ def pages_dashboard():
 @login_required
 def pages_history():
   if request.method == 'POST':
-     # retrive fields from data base 
-     url = request.form.get('url')
-     media_type = request.form.get('media_type')
-     emp_id = request.form.get('employee_id')
-     location_add = request.form.get('location')
-     category = query(url) 
-     
-
-     user_id = current_user.id
-
-     controller.addMedia(url=url, type=media_type, user_id=user_id, location_address=location_add, member_id=emp_id, results = category[0]['label'])
-     created_media = Media.query.filter_by(url=url).first() 
-     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user, resulto= user_id)
+     add_media_function(request)
+     return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
 
-@app.route('/pages/manage/')
+@app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
+  if request.method == 'POST':
+     user_id = current_user.id
+     if request.form.get('Location_form'):       
+        location = request.form.get('location')
+        controller.addUserLocation(name=location, user_id=user_id)
+
+     elif request.form.get('Employee_form'):
+        empo_name = request.form.get('name')
+        empo_gender = request.form.get('gender')
+        empo_id = request.form.get('id')
+        empo_location = request.form.get('location')
+        controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+        
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
+
+# Adding Media Analysis view 
+@app.route('/pages/MediaAnalysis/')
+@login_required
+def pages_analysis():
+  return render_template('pages/dashboard/mediaAnalysis.html', segment='media', parent='pages',user=current_user)
+
+# Adding Media Analysis view 
+@app.route('/pages/MediaAnalysisAudio/')
+@login_required
+def pages_analysis_audio():
+  return render_template('pages/dashboard/mediaAnalysisAudio.html', segment='mediaAudio', parent='pages',user=current_user)
+
+# Adding Media Analysis view 
+@app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
+@login_required
+def pages_uploadMedia():
+  return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
 
 @app.route('/pages/settings/')
 @login_required
