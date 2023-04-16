@@ -43,17 +43,25 @@
                 const radio2 = document.getElementById("exampleRadios2");
                 const fileInput = document.getElementById("formFile");
                 const urlInput = document.getElementsByName("url")[0];
+                  // Enable the radio button and its input field by default
+                radio1.disabled = false;
+                radio2.disabled = false;
+                fileInput.disabled = true;
+                urlInput.disabled = true;
+
                 
                 radio1.addEventListener("click", () => {
                   radio2.disabled = false;
                   urlInput.disabled = true;
                   fileInput.disabled = false;
+                  
                 });
                 
                 radio2.addEventListener("click", () => {
                   radio1.disabled = false;
                   fileInput.disabled = true;
                   urlInput.disabled = false;
+                 
                 });
               </script>
               
