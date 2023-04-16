@@ -7,8 +7,8 @@ import torch
 from torchvision import transforms
 import re
 from emotic import Emotic 
-from inference import infer
-from yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
+from .inference import infer
+from .yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=int, default=0, help='gpu id')

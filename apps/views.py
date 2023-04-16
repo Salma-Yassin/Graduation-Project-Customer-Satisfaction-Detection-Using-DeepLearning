@@ -12,7 +12,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
 from random import sample 
-from .inferenceflask import query, query_face
+from .inferenceflask import query, query_face,query_body
 import sys
 from .controller import controller
 
@@ -49,7 +49,8 @@ def pages_dashboard():
     if media_type == 'audio':
       category = query(url)
     elif media_type == 'video':
-      category = query_face(url)
+      category = query_body(url)
+      #category2=query_face(url)
     else:
       category = 'Unknown'
 
