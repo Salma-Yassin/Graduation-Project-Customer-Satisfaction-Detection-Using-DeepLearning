@@ -64,7 +64,7 @@ def add_media_function(request):
   #file=request.files['file']
 
   if media_type == 'audio':
-    file=request.files['file']
+    file=request.files.get('file')
     if file: 
       filename = secure_filename(file.filename)
       file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
@@ -72,13 +72,16 @@ def add_media_function(request):
       url=file_path
       category=queryLocal(url)
       flash('File has been uploaded.')
+      detailed_results = json.dumps(category)
+      results = (category)[0]['label']
       
-    if urlink:
+      
+    elif urlink:
       url=urlink
       category = query(urlink)
     # Convert dictionary to string
-    detailed_results = json.dumps(category)
-    results = (category)[0]['label']
+      detailed_results = json.dumps(category)
+      results = (category)[0]['label']
 
   elif media_type == 'video':
     category = query(url)
@@ -89,7 +92,7 @@ def add_media_function(request):
     #category = 'Unknown'
     # call body model ---> 
   else:
-    category = 'Unknown'
+   category = 'Unknown'
 
   
   controller.addMedia(media_name=media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
