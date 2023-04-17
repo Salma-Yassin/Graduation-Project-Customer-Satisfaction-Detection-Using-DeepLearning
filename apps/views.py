@@ -97,8 +97,11 @@ def add_media_function(request):
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
+
       elif media_type == 'Video':
          category = query_body(url)
+         results = category
+         detailed_results=results
       else:
         category = 'Unknown'
 

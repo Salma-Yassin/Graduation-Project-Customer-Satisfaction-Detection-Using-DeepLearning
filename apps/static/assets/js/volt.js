@@ -337,23 +337,6 @@ d.addEventListener("DOMContentLoaded", function (event) {
     console.log(detailed_data);
     //Donught Chart:
 
-    if (d.querySelector(".ct-chart-body")) {
-        //detailed_data_rec = localStorage.getItem("passing_data");
-        console.log(typeof detailed_data);
-        var scores = [];
-        var labels = [];
-        //detailed_data.forEach(({ score }) => scores.push(score));
-        //detailed_data.forEach(({ label }) => labels.push(label));
-        var chart = new Chartist.Pie('.ct-chart-body', {
-            series: [20, 50, 30, 10],
-            labels: ['20%', '50%', '3%', '1%']
-            //todo static data
-        }, {
-            donut: true,
-            donutWidth: 80,
-            startAngle: 0,
-            showLabel: true
-        });
     var getchartRaw = $.get('/update_chart_raw');
     getchartRaw.done(function (results) {
         results = $.parseJSON(results);
