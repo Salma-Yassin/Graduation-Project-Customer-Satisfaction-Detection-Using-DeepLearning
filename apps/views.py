@@ -86,7 +86,7 @@ def add_media_function(request):
           results = unify_audio(results)
 
 
-      elif media_type == 'Video':
+      elif media_type == 'video':
           category = query_face(url)
           # Convert dictionary to string
           detailed_results = json.dumps(normalize_dict(category))
@@ -97,6 +97,8 @@ def add_media_function(request):
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
+      elif media_type == 'Video':
+         category = query_body(url)
       else:
         category = 'Unknown'
 
