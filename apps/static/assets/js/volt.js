@@ -322,6 +322,18 @@ d.addEventListener("DOMContentLoaded", function (event) {
                             console.log(error);
                         }
                     });
+                    $.ajax({
+                        type: 'POST',
+                        url: '/play_media',
+                        data: JSON.stringify(data.url),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
                     // Navigate to another view
                     window.location.href = '/pages/MediaAnalysisAudio/';
                 } else {
@@ -334,9 +346,17 @@ d.addEventListener("DOMContentLoaded", function (event) {
     });
 
 
-    console.log(detailed_data);
+    var getplayMedia = $.get('/play_media');
+    getplayMedia.done(function (results) {
+        console.log(results)
+        const audioPlay = d.getElementById("play-audio");
+        audioPlay.src = results;
+
+    })
+
     //Donught Chart:
 
+    console.log(detailed_data);
     var getchartRaw = $.get('/update_chart_raw');
     getchartRaw.done(function (results) {
         results = $.parseJSON(results);
@@ -347,7 +367,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
             var scores = [];
             var labels = [];
-            results.forEach(({ score }) => scores.push((score*100).toFixed(2)));
+            results.forEach(({ score }) => scores.push((score * 100).toFixed(2)));
             results.forEach(({ label }) => labels.push(label));
             console.log(scores)
 
@@ -422,8 +442,8 @@ d.addEventListener("DOMContentLoaded", function (event) {
             results.forEach(({ label }) => labels.push(label));
             console.log(scores)*/
             var chart = new Chartist.Pie('.ct-chart-body', {
-                series: [10,70,50,20],
-                labels: ['10%','70%','50%','20%']
+                series: [10, 70, 50, 20],
+                labels: ['10%', '70%', '50%', '20%']
             }, {
                 donut: true,
                 donutWidth: 80,
@@ -492,7 +512,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             console.log(scores)*/
             var value_chart_old = Object.values(results)
             var value_chart = []
-            value_chart_old.forEach((item) => value_chart.push((item*100).toFixed(2)));
+            value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
             //value_chart=(value_chart*100).toFixed(2)
             var chart = new Chartist.Pie('.ct-chart-face', {
                 series: value_chart,
@@ -562,7 +582,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
     //Chartist
 
     const handleChartData = (results) => {
-        var cat = ['Satisfied', 'Unsatisfied', 'Neutral']
+        var cat = ['Unsatisfied', 'Neutral','Satisfied']
         var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
         var all = []
         for (let i = 0; i < cat.length; i++) {
@@ -580,22 +600,40 @@ d.addEventListener("DOMContentLoaded", function (event) {
     getMedia_dummy_Data.done(function (results) {
 
         var all = handleChartData(results)
-        
-        var all_satisfied =all[0];
-        var all_unsatisfied =all[1];
-        var all_neutral =all[2];
+
+        var all_satisfied = all[2];
+        var all_unsatisfied = all[0];
+        var all_neutral = all[1];
 
         const sum_satisfied = all_satisfied.reduce((total, current) => total + current, 0);
         const sum_unsatisifed = all_unsatisfied.reduce((total, current) => total + current, 0);
         const sum_neutral = all_neutral.reduce((total, current) => total + current, 0);
         const all_customers = sum_satisfied + sum_unsatisifed + sum_neutral
-
-        console.log(all_customers); // output: 15
+        var satisfied_per;
+        if (all_customers==0) {
+            satisfied_per = sum_satisfied*100/1;
+        } else {
+            satisfied_per = sum_satisfied*100/all_customers;
+        }
         
+        console.log(all_customers); // output: 15
+
         const textCustomers = d.getElementById("text-value-total-customers");
         textCustomers.textContent = all_customers;
 
-        
+        const textSatisifed = d.getElementById("text-value-total-satisfied");
+        textSatisifed.textContent = sum_satisfied;
+
+        const textUnSatisifed = d.getElementById("text-value-total-unsatisfied");
+        textUnSatisifed.textContent = sum_unsatisifed;
+
+        const textNeutral = d.getElementById("text-value-total-neutral");
+        textNeutral.textContent = sum_neutral;
+
+        const textSatisfiedPerc = d.getElementById("text-value-total-sat-percentage");
+        textSatisfiedPerc.textContent = satisfied_per;
+
+
         console.log(all)
 
         if (d.querySelector('.ct-chart-ranking')) {

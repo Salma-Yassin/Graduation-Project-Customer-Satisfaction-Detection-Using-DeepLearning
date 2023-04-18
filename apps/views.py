@@ -26,6 +26,20 @@ def get_chart_data():
    f = open("apps\Media_data.json")
    return json.load(f)
 
+@app.route('/play_media', methods=['GET', 'POST'])
+def play_media():
+
+  if request.method == 'GET':
+    with open("apps/updatePlayMedia.json") as f:
+       data = json.load(f)
+    return data
+  
+  elif request.method == 'POST':
+    data = request.get_json()
+    with open("apps/updatePlayMedia.json", "w") as f:
+      json.dump(data, f)
+    return jsonify({'status': 'success'})
+
 
 @app.route('/update_chart_raw', methods=['GET', 'POST'])
 def update_chart_raw():
