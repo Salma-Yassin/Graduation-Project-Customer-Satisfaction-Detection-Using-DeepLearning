@@ -588,14 +588,14 @@ d.addEventListener("DOMContentLoaded", function (event) {
         for (let i = 0; i < cat.length; i++) {
             var series = []
             for (let j = 0; j < days.length; j++) {
-                series = [...series, results.data.filter(row => ((row.results)).includes(cat[i])).filter(row => ((row.created_at)).includes(days[j])).length]
+                series = [...series, results.filter(row => ((row.results)).includes(cat[i])).filter(row => ((row.created_at)).includes(days[j])).length]
             }
             all = [...all, series]
         }
         return all
     }
 
-    var getMedia_dummy_Data = $.get('/data');
+    var getMedia_dummy_Data = $.get('/media_data');
 
     getMedia_dummy_Data.done(function (results) {
 
@@ -631,7 +631,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
         textNeutral.textContent = sum_neutral;
 
         const textSatisfiedPerc = d.getElementById("text-value-total-sat-percentage");
-        textSatisfiedPerc.textContent = satisfied_per;
+        textSatisfiedPerc.textContent = satisfied_per.toFixed(2);
 
 
         console.log(all)

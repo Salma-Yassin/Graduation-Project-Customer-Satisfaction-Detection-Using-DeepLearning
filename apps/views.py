@@ -19,6 +19,67 @@ from .helpers import unify_audio, unify_video, normalize_dict
 
 # App modules
 from apps import app
+import random
+from datetime import datetime, timedelta
+
+def create_user():
+     new_user = User(email="help@gg", password= generate_password_hash("123456789", method='sha256')) 
+     db.session.add(new_user)
+     db.session.commit()
+     #login_user(new_user, remember=True)
+     return new_user
+
+def create_locations(user):
+    locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami']
+    user_locations = []
+    for location in locations:
+        user_location = UserLocations(name=location, user_id=user.id)
+        db.session.add(user_location)
+        db.session.commit()
+        user_locations.append(user_location)
+    return user_locations
+
+
+def create_members(user, user_locations):
+    members = []
+    for i in range(10):
+        member_id = random.randint(100000, 999999)
+        gender = random.choice(['male', 'female'])
+        location = random.choice(user_locations)
+        member = UserMembers(name=f'Member{i}', user_id=user.id, member_id=member_id,
+                             gender=gender, location_id=location.id)
+        db.session.add(member)
+        db.session.commit()
+        members.append(member)
+    return members
+
+
+def create_media(user, user_locations, members):
+    media_types = ['Audio', 'Video']
+    results = ['Satisfied', 'Unsatisfied', 'Neutral']
+    medias = []
+    for i in range(100):
+        member = random.choice(members)
+        location = random.choice(user_locations)
+        media_type = random.choice(media_types)
+        result = random.choice(results)
+        detailed_results = "[{\"score\": 0.7873730659484863, \"label\": \"hap\"}, {\"score\": 0.20546337962150574, \"label\": \"ang\"}, {\"score\": 0.0037874202243983746, \"label\": \"sad\"}, {\"score\": 0.0033761027734726667, \"label\": \"neu\"}]"
+        start_date = datetime(2023, 1, 1)
+        end_date = datetime(2023, 12, 31)
+        created_at = start_date + timedelta(seconds=random.randint(0, int((end_date - start_date).total_seconds())))
+        media = Media(media_name=f'Media {i}', url=f'https://media{i}.com',
+                      location_address=location.name, member_id=member.member_id,
+                      type=media_type, user_id=user.id,created_at = created_at, results=result,
+                      detailed_results = detailed_results)
+        db.session.add(media)
+        db.session.commit()
+        medias.append(media)
+        # Create analysis results for the media
+        #analysis_results = AnalysisResults(media_id=media.id, results='Analysis Results')
+        #db.session.add(analysis_results)
+        #db.session.commit()
+    return medias
+
 
 @app.route('/data') # this is a dummy api that should be removed 
 def get_chart_data():
@@ -204,6 +265,16 @@ def pages_examples_500():
 
 @app.route('/accounts/sign-in/', methods=['GET', 'POST'])
 def accounts_sign_in():
+  user = User.query.filter_by(email='help@gg').first()
+  if user:
+      print(f"User with email '{user.email}' already exists")
+  else:
+      # Create a new user object and add it to the database session
+      user = create_user()
+      user_locations = create_locations(user)
+      members = create_members(user, user_locations)
+      medias = create_media(user, user_locations, members)
+
   if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
