@@ -4,15 +4,20 @@ Copyright (c) 2019 - present AppSeed.us
 """
 
 # Flask modules
-from flask   import render_template, request, flash, redirect, url_for, jsonify
+from flask   import Flask, render_template, request, flash, redirect, url_for, jsonify
 import json
 from jinja2  import TemplateNotFound
 from .models import *
 from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_wtf import FlaskForm
+from wtforms import FileField, SubmitField
+from werkzeug.utils import secure_filename
+import os
+from wtforms.validators import InputRequired
 from .models import db 
 from random import sample 
-from .inference import query, query_face
+from .inference import query, query_face, queryLocal
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict
@@ -141,43 +146,61 @@ def get_media_data():
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
   # retrive fields from data base
-  media_name = request.form.get('media_name')
-  url = request.form.get('url')
-  url_check = Media.query.filter_by(url=url).first()
-
-  media_type = request.form.get('media_type_form')
-  media_name_check = Media.query.filter_by(media_name = media_name).first()
+  urlink = request.form.get('url')
+  media_type = request.form.get('media_type')
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
+  media_name=request.form.get('media_name')
+  user_id = current_user.id
+  media_name_check = Media.query.filter_by(media_name = media_name).first()
+  #file=request.files['file']
 
   if media_name_check:
      flash('Media Name used, enter another one', category='error')
   else: 
-      if media_type == 'Audio':
-          category = query(url)
-          # Convert dictionary to string
-          detailed_results = json.dumps(category)
-          results = (category)[0]['label']
-          results = unify_audio(results)
-
-
-      elif media_type == 'Video':
-          category = query_face(url)
-          # Convert dictionary to string
-          detailed_results = json.dumps(normalize_dict(category))
-          #results = list(category.keys())[0]
-          results = next(iter(category))
-          results = unify_video(results)
-          #results = category[0]
+    if media_type == 'Audio':
+      file=request.files.get('file')
+      if file: 
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        url=file_path
+        category=queryLocal(url)
+        flash('File has been uploaded.')
+        detailed_results = json.dumps(category)
+        results = (category)[0]['label']
+        
+        
+      elif urlink:
+        
+        url=urlink
+        category = query(url)
+        # Convert dictionary to string
+        detailed_results = json.dumps(category)
+        results = (category)[0]['label']
+        results = unify_audio(results)
+      
+    elif media_type == 'Video':
+      category = query_face(url)
+      # Convert dictionary to string
+      detailed_results = json.dumps(normalize_dict(category))
+      #results = list(category.keys())[0]
+      results = next(iter(category))
+      results = unify_video(results)
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
-      else:
-        category = 'Unknown'
+    else:
+      category = 'Unknown'
 
-      user_id = current_user.id
-      controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-      flash('Media added successfuly!', category='success')
+  
+    controller.addMedia(media_name=media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    flash('Media added successfuly!', category='success')
+    #created_media = Media.query.filter_by(url=url).first()
+     #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
+     #show data 
+     #return redirect(url_for('pages_history'))
+
   
 
 @app.route('/', methods=['GET', 'POST'])
