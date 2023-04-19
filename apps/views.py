@@ -146,14 +146,14 @@ def get_media_data():
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
   # retrive fields from data base
+  media_name = request.form.get('media_name')
   urlink = request.form.get('url')
-  media_type = request.form.get('media_type')
+  #url_check = Media.query.filter_by(url=url).first()
+
+  media_type = request.form.get('media_type_form')
+  media_name_check = Media.query.filter_by(media_name = media_name).first()
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
-  media_name=request.form.get('media_name')
-  user_id = current_user.id
-  media_name_check = Media.query.filter_by(media_name = media_name).first()
-  #file=request.files['file']
 
   if media_name_check:
      flash('Media Name used, enter another one', category='error')
@@ -169,6 +169,7 @@ def add_media_function(request):
         flash('File has been uploaded.')
         detailed_results = json.dumps(category)
         results = (category)[0]['label']
+        results = unify_audio(results)
         
         
       elif urlink:
@@ -194,7 +195,8 @@ def add_media_function(request):
       category = 'Unknown'
 
   
-    controller.addMedia(media_name=media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    user_id = current_user.id
+    controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
     flash('Media added successfuly!', category='success')
     #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
