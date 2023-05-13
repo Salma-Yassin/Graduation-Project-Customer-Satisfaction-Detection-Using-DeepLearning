@@ -16,11 +16,15 @@ from .inferenceflask import query, query_face,query_body
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict
-
+from werkzeug.utils import secure_filename
+import os
+import imghdr
+import magic
 # App modules
 from apps import app
 
 @app.route('/data') # this is a dummy api that should be removed 
+@login_required
 def get_chart_data():
    # generating random data for testing 
    f = open("apps\Media_data.json")
@@ -43,16 +47,20 @@ def update_chart_raw():
    
 
 @app.route('/location_data')
+@login_required
 def get_location_data():
    locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
+   print(locations_table[0].name)
    return jsonify(locations_table)
 
 @app.route('/empolyee_data')
+@login_required
 def get_empolyee_data():
    empolyee_table = UserMembers.query.filter_by(user_id= current_user.id).all()
    return jsonify(empolyee_table)
 
 @app.route('/media_data')
+@login_required
 def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
@@ -128,7 +136,10 @@ def pages_history():
      add_media_function(request)
      return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
   return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
-
+@app.route('/displayr/<filename>')
+def display_videor(filename):
+	#print('display_video filename: ' + filename)
+	return redirect(url_for('debug_exp', filename='results/' + filename), code=301)
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
@@ -153,6 +164,33 @@ def pages_manage():
 def pages_analysis():
   return render_template('pages/dashboard/mediaAnalysis.html', segment='media', parent='pages',user=current_user)
 
+############################################################
+@app.route('/pages/upload/')
+def upload_form():
+	return render_template('/pages/upload.html')
+
+@app.route('/pages/upload/', methods=['POST'])
+@login_required
+def upload_video():
+	if 'file' not in request.files:
+		flash('No file part')
+		return redirect(request.url)
+	file = request.files['file']
+	if file.filename == '':
+		flash('No image selected for uploading')
+		return redirect(request.url)
+	else:
+		filename = secure_filename(file.filename)
+		file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+		#print('upload_video filename: ' + filename)
+		flash('Video successfully uploaded and displayed below')
+		return render_template('/pages/dashboard/uploadMedia.html', filename=filename, segment='upload', parent='pages',user=current_user)
+
+@app.route('/display/<filename>')
+def display_video(filename):
+	#print('display_video filename: ' + filename)
+	return redirect(url_for('static', filename='uploads/' + filename), code=301)
+#############################################################################
 # Adding Media Analysis view 
 @app.route('/pages/MediaAnalysisAudio/')
 @login_required
@@ -163,7 +201,59 @@ def pages_analysis_audio():
 @app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
-  return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
+    if request.method == 'POST':
+        emp_id = request.form['employee_id']
+        location_add = request.form['location']
+        # Check which upload method was selected
+        upload_method = request.form['upload-method']
+        if upload_method == 'url':
+            # Handle URL upload
+            url = request.form['url']
+            media_name = request.form['media_name']
+            media_type = request.form['media_type']
+            # employee_id = request.form['employee_id']
+            # location = request.form['location']
+            # Do something with the form data...
+            category = query_face(url)
+            detailed_results = json.dumps(category)
+            results = (category)[0]['label']
+            results = unify_audio(results)
+            controller.addMedia(media_name = media_name, url =url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+        elif upload_method == 'file':
+            # Handle file upload
+            file = request.files['file']
+            mime_type = magic.from_buffer(file.read(1024), mime=True)
+            file.seek(0)
+            if mime_type.startswith('image'):
+                # Handle image upload
+                image_type = imghdr.what(file)
+                if image_type:
+                   
+                    # The file is an image
+                    # Do something with the image...
+                   category = query_body(file)
+                   results = category
+                   detailed_results=results 
+                   controller.addMedia(media_name = media_name, url ='' , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+                else:
+                   raise TypeError
+                    # The file is not a valid image
+                    # Show an error message
+            elif mime_type.startswith('video'):
+               category = query_body(file)
+               results = category
+               detailed_results=results
+               user_id = current_user.id
+               controller.addMedia(media_name = media_name, url ='' , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+                # Handle video upload
+                # Do something with the video...
+            else:
+               raise TypeError
+                # The file is not an image or a video
+                # Show an error message
+        # Redirect to a success page or show an error message
+    return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages', user=current_user)
+
 
 @app.route('/pages/settings/')
 @login_required

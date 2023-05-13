@@ -20,45 +20,106 @@
           </div>
         </div>
         <div class="card-body">
-          <form method="POST">
+          <p>
+            {% with messages = get_flashed_messages() %}
+            {% endwith %}
+          </p>
+          <!-- {% if filename %}
+            <div style="margin: 10px auto;">
+              <video autoplay="autoplay" controls="controls" preload="preload">
+                <source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
+              </video>
+            </div>
+          {% endif %} -->
+          <form method="POST" action="/pages/upload/" enctype="multipart/form-data">
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">URL</label>
-              <input type="text" class="form-control" name="url">
-            </div>
-
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="recipient-name" class="col-form-label">Media Name</label>
-                <input type="text" class="form-control" name="media_name">
+              <label for="upload-method" class="col-form-label">Select upload method:</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="upload-method" id="upload-method-url" value="url" checked>
+                <label class="form-check-label" for="upload-method-url">
+                  Upload using URL
+                </label>
               </div>
-
-              <div class="col-md-6 mb-3">
-                <label for="recipient-name" class="col-form-label">Type</label>
-                <input type="text" class="form-control" name="media_type" id ="media_type_try">
-                <script>
-                  console.log("geeks for geeks");
-                  //console.log(document.getElementById("media_type").value);
-                </script>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="upload-method" id="upload-method-file" value="file">
+                <label class="form-check-label" for="upload-method-file">
+                  Upload local file
+                </label>
               </div>
             </div>
-            <div class="row">
-              <div class="col-md-6 mb-3">
-                <label for="recipient-name" class="col-form-label">Employee ID</label>
-                <select class="form-select mb-0" name="employee_id" id="empolyee_id_data"
-                  aria-label="Location select example">
-                </select>
+          
+            <div id="upload-url-section">
+              <div class="mb-3">
+                <label for="url" class="col-form-label">URL</label>
+                <input type="text" class="form-control" name="url">
               </div>
-              <div class="col-md-6 mb-3">
-                <label for="recipient-name" class="col-form-label">Location</label>
-                <select class="form-select mb-0" name="location" id="empolyee_location"
-                  aria-label="Location select example">
-                </select>
+          
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="media-name" class="col-form-label">Media Name</label>
+                  <input type="text" class="form-control" name="media_name">
+                </div>
+          
+                <div class="col-md-6 mb-3">
+                  <label for="media-type" class="col-form-label">Type</label>
+                  <input type="text" class="form-control" name="media_type" id="media_type_try">
+                </div>
+              </div>
+          
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="employee-id" class="col-form-label">Employee ID</label>
+                  <select class="form-select mb-0" name="employee_id" id="empolyee_id_data" aria-label="Location select example"></select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="location" class="col-form-label">Location</label>
+                  <select class="form-select mb-0" name="location" id="empolyee_location" aria-label="Location select example"></select>
+                </div>
+              </div>
+              
+              <div class="mb-3" style="margin-top: 50px">
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
               </div>
             </div>
-            <div class="mb-3" style="margin-top: 50px">
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+          
+            <div id="upload-file-section" style="display: none;">
+              <div class="mb-3">
+                <label for="file" class="col-form-label">Select file:</label>
+                <input type="file" name="file" autocomplete="off" required>
+              </div>
+              <div class="mb-3">
+                <label for="location" class="col-form-label">Location address:</label>
+                <input type="text" name="location" class="form-control" autocomplete="off" required>
+              </div>
+              <div class="mb-3">
+                <label for="employee_id" class="col-form-label">Employee ID:</label>
+                <input type="text" name="employee_id" class="form-control" autocomplete="off" required>
+              </div>
+              <div class="mb-3" style="margin-top: 50px">
+                <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+              </div>
             </div>
+            
           </form>
+          
+          <script>
+            const uploadMethodUrlInput = document.getElementById("upload-method-url");
+            const uploadMethodFileInput = document.getElementById("upload-method-file");
+            const uploadUrlSection = document.getElementById("upload-url-section");
+            const uploadFileSection = document.getElementById("upload-file-section");
+          
+            uploadMethodUrlInput.addEventListener("click", function() {
+              uploadUrlSection.style.display = "block";
+              uploadFileSection.style.display = "none";
+});
+
+uploadMethodFileInput.addEventListener("click", function() {
+uploadFileSection.style.display = "block";
+uploadUrlSection.style.display = "none";
+});
+
+// Your code for populating the employee ID and location selects goes here
+</script>
         </div>
       </div>
     </div>

@@ -171,9 +171,9 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
   models = [model_context, model_body, emotic_model]
 
 
-  id = extractIDfromURL(video_file)
-  # start the webcam feed
-  url = "https://drive.google.com/uc?id=" + id
+  # id = extractIDfromURL(video_file)
+  # # start the webcam feed
+  # url = "https://drive.google.com/uc?id=" + id
   # print(url)
 
   # # Open the video file using OpenCV
@@ -181,7 +181,7 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
   #  # add this line after line 20
 
 
-  video_stream = cv2.VideoCapture(url)
+  video_stream = cv2.VideoCapture(video_file)
   print(video_stream.isOpened())
   writer = None
   result_file = os.path.join(result_path, 'inference_list.txt')
@@ -236,12 +236,13 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
         c=c+1
     except Exception:
       c=c+1
-      pass
+      continue
     if writer is None:
-      fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-      writer = cv2.VideoWriter(os.path.join(result_path, 'result_vid.avi'), fourcc, 30, (image_context.shape[1], image_context.shape[0]), True)  
+      fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+      writer = cv2.VideoWriter(os.path.join(result_path, 'result_vid.mp4'), fourcc, 30, (image_context.shape[1], image_context.shape[0]), True)  
+    print("testttt")
     writer.write(cv2.cvtColor(image_context, cv2.COLOR_RGB2BGR))
-
+  print("testttt2222")
   writer.release()
   video_stream.release() 
   print ('Completed video')
@@ -297,13 +298,13 @@ body_norm = [body_mean, body_std]
 
 def functionpaths_video(url_path):
   modelpath = r"C:\Users\Dell\Desktop\emotic\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\emotic\debug_exp\results"
+  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\static\uploads"
   emotion=yolo_video(url_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
 def functionpaths_image(images_path):
   modelpath=r"C:\Users\Dell\Desktop\emotic\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\emotic\debug_exp\results"
+  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\static\uploads"
   emotion=yolo_infer(images_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
