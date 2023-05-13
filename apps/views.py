@@ -20,7 +20,7 @@ from random import sample
 from .inference import query, query_face, queryLocal
 import sys
 from .controller import controller
-from .helpers import unify_audio, unify_video, normalize_dict
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio
 
 # App modules
 from apps import app
@@ -167,7 +167,7 @@ def add_media_function(request):
         url=file_path
         category=queryLocal(url)
         flash('File has been uploaded.')
-        detailed_results = json.dumps(category)
+        detailed_results = json.dumps(sorting_audio(category))
         results = (category)[0]['label']
         results = unify_audio(results)
         
@@ -177,7 +177,7 @@ def add_media_function(request):
         url=urlink
         category = query(url)
         # Convert dictionary to string
-        detailed_results = json.dumps(category)
+        detailed_results = json.dumps(sorting_audio(category))
         results = (category)[0]['label']
         results = unify_audio(results)
       

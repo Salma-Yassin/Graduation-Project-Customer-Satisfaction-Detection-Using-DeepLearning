@@ -365,15 +365,19 @@ d.addEventListener("DOMContentLoaded", function (event) {
             //results = $.parseJSON(results);
             console.log(results)
 
-            var scores = [];
+            /*var scores = [];
             var labels = [];
             results.forEach(({ score }) => scores.push((score * 100).toFixed(2)));
             results.forEach(({ label }) => labels.push(label));
             console.log(scores)
+            console.log(labels)*/
+            var value_chart_old = Object.values(results)
+            var value_chart = []
+            value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
 
             var chart = new Chartist.Pie('.ct-chart-audio', {
-                series: scores,
-                labels: scores
+                series: value_chart,
+                labels: value_chart
             }, {
                 donut: true,
                 donutWidth: 80,
