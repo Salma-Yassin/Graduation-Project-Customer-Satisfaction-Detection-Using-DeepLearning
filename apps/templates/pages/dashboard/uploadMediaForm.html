@@ -23,50 +23,53 @@
               <input type="text" class="form-control" name="media_name">
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" >
+              <input class="form-check-input" type="radio" name="exampleRadios1" id="exampleRadios1" value="option1"
+                checked>
               <label class="form-check-label" for="exampleRadios1">
                 Upload Media File
               </label>
               <input class="form-control" type="file" name="file" id="formFile">
             </div>
             <div class="form-check mb-3">
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" >
+              <input class="form-check-input" type="radio" name="exampleRadios2" id="exampleRadios2" value="option2">
               <label class="form-check-label" for="exampleRadios2">
-                Media URL 
+                Media URL
               </label>
-              <input type="text" class="form-control" name="url">     
+              <input type="text" class="form-control" name="url" disabled>
             </div>
             <script>
               const radio1 = document.getElementById("exampleRadios1");
               const radio2 = document.getElementById("exampleRadios2");
               const fileInput = document.getElementById("formFile");
               const urlInput = document.getElementsByName("url")[0];
-              
+
               radio1.addEventListener("click", () => {
                 radio2.disabled = false;
                 urlInput.disabled = true;
                 fileInput.disabled = false;
               });
-              
+
               radio2.addEventListener("click", () => {
                 radio1.disabled = false;
                 fileInput.disabled = true;
                 urlInput.disabled = false;
               });
             </script>
-            
+
             <div class="mb-3">
-              <label for="recipient-name" class="col-form-label">Type</label>   
-              <select class="form-select mb-0" name="media_type_form" id="media_type_form" aria-label="Media select example">
+              <label for="recipient-name" class="col-form-label">Type</label>
+              <select class="form-select mb-0" name="media_type_form" id="media_type_form"
+                aria-label="Media select example">
                 <option value="Audio">Audio</option>
                 <option value="Video">Video</option>
               </select>
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Employee Name</label>
-              <select class="form-select mb-0" name="employee_id" id="empolyee_id_data" aria-label="Location select example"> 
+              <select class="form-select mb-0" name="employee_id" id="empolyee_id_data"
+                aria-label="Location select example">
                 {% for data in emp %}
-                        <option value="{{ data.id }}">{{ data.name }}</option>
+                <option value="{{ data.id }}">{{ data.name }}</option>
                 {% endfor %}
               </select>
               <!-- assuming employee has a n id -->
@@ -74,9 +77,10 @@
             </div>
             <div class="mb-3">
               <label for="recipient-name" class="col-form-label">Location</label>
-              <select class="form-select mb-0" name="location" id="empolyee_location" aria-label="Location select example">  
+              <select class="form-select mb-0" name="location" id="empolyee_location"
+                aria-label="Location select example">
                 {% for location in emp_loc %}
-                        <option value="{{ location.id }}">{{ location.name }}</option>
+                <option value="{{ location.id }}">{{ location.name }}</option>
                 {% endfor %}
               </select>
             </div>
