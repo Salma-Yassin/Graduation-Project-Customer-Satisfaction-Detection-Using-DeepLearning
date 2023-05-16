@@ -1,86 +1,94 @@
-
-
 <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-      data-bs-whatever="@mdo">
-      <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-      </svg>
-      Upload a Media file
-    </button>
-    </button>
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
+    data-bs-whatever="@mdo">
+    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+      xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+    </svg>
+    Upload a Media file
+  </button>
+  </button>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Uploading</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST" enctype="multipart/form-data"> <!--I added enctype here-->
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Media Name</label>
-                <input type="text" class="form-control" name="media_name">
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1" >
-                <label class="form-check-label" for="exampleRadios1">
-                  Upload Media File
-                </label>
-                <input class="form-control" type="file" name="file" id="formFile">
-              </div>
-              <div class="form-check mb-3">
-                <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2" >
-                <label class="form-check-label" for="exampleRadios2">
-                  Media URL 
-                </label>
-                <input type="text" class="form-control" name="url">     
-              </div>
-              <script>
-                const radio1 = document.getElementById("exampleRadios1");
-                const radio2 = document.getElementById("exampleRadios2");
-                const fileInput = document.getElementById("formFile");
-                const urlInput = document.getElementsByName("url")[0];
-                
-                radio1.addEventListener("click", () => {
-                  radio2.disabled = false;
-                  urlInput.disabled = true;
-                  fileInput.disabled = false;
-                });
-                
-                radio2.addEventListener("click", () => {
-                  radio1.disabled = false;
-                  fileInput.disabled = true;
-                  urlInput.disabled = false;
-                });
-              </script>
-              
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Type</label>   
-                <select class="form-select mb-0" name="media_type_form" id="media_type_form" aria-label="Media select example">
-                  <option value="Audio">Audio</option>
-                  <option value="Video">Video</option>
-                </select>
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Employee ID</label>
-                <select class="form-select mb-0" name="employee_id" id="empolyee_id_data" aria-label="Location select example">  
-                </select>
-                <!-- assuming employee has a n id -->
-                <!--<input type="text" class="form-control" id="recipient-name" name="employee_id">-->
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Location</label>
-                <select class="form-select mb-0" name="location" id="empolyee_location" aria-label="Location select example">  
-                </select>
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </form>
-          </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Uploading</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" enctype="multipart/form-data"> <!--I added enctype here-->
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Media Name</label>
+              <input type="text" class="form-control" name="media_name">
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="exampleRadios1" id="exampleRadios1" value="option1"
+                checked>
+              <label class="form-check-label" for="exampleRadios1">
+                Upload Media File
+              </label>
+              <input class="form-control" type="file" name="file" id="formFile">
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="exampleRadios2" id="exampleRadios2" value="option2">
+              <label class="form-check-label" for="exampleRadios2">
+                Media URL
+              </label>
+              <input type="text" class="form-control" name="url" disabled>
+            </div>
+            <script>
+              const radio1 = document.getElementById("exampleRadios1");
+              const radio2 = document.getElementById("exampleRadios2");
+              const fileInput = document.getElementById("formFile");
+              const urlInput = document.getElementsByName("url")[0];
+
+              radio1.addEventListener("click", () => {
+                radio2.disabled = false;
+                urlInput.disabled = true;
+                fileInput.disabled = false;
+              });
+
+              radio2.addEventListener("click", () => {
+                radio1.disabled = false;
+                fileInput.disabled = true;
+                urlInput.disabled = false;
+              });
+            </script>
+
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Type</label>
+              <select class="form-select mb-0" name="media_type_form" id="media_type_form"
+                aria-label="Media select example">
+                <option value="Audio">Audio</option>
+                <option value="Video">Video</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Employee Name</label>
+              <select class="form-select mb-0" name="employee_id" id="empolyee_id_data"
+                aria-label="Location select example">
+                {% for data in emp %}
+                <option value="{{ data.id }}">{{ data.name }}</option>
+                {% endfor %}
+              </select>
+              <!-- assuming employee has a n id -->
+              <!--<input type="text" class="form-control" id="recipient-name" name="employee_id">-->
+            </div>
+            <div class="mb-3">
+              <label for="recipient-name" class="col-form-label">Location</label>
+              <select class="form-select mb-0" name="location" id="empolyee_location"
+                aria-label="Location select example">
+                {% for location in emp_loc %}
+                <option value="{{ location.id }}">{{ location.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </form>
         </div>
       </div>
     </div>
   </div>
+</div>

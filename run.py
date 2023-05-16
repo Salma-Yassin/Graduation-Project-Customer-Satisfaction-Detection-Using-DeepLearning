@@ -7,7 +7,7 @@ Copyright (c) 2019 - present AppSeed.us
 from flask_minify  import Minify
 
 from apps import app
-
+from emotic import Emotic
 DEBUG = app.config['DEBUG'] 
 
 if not DEBUG:
