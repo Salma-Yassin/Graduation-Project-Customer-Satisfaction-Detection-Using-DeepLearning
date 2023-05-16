@@ -12,7 +12,7 @@ from flask_login import login_user, login_required, current_user, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from .models import db 
 from random import sample 
-from .inferenceflask import query, query_face,query_body
+from .inferenceflask import query, query_face,query_body,queryLocal
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict
@@ -23,13 +23,13 @@ import magic
 # App modules
 from apps import app
 
-@app.route('/data') # this is a dummy api that should be removed 
+@app.route('/data')
 @login_required
 def get_chart_data():
-   # generating random data for testing 
-   f = open("apps\Media_data.json")
-   return json.load(f)
-
+    file_path = os.path.join("apps", "Media_data.json")
+    with open(file_path) as f:
+        data = json.load(f)
+    return jsonify(data)
 
 @app.route('/update_chart_raw', methods=['GET', 'POST'])
 def update_chart_raw():
@@ -37,7 +37,7 @@ def update_chart_raw():
   if request.method == 'GET':
     with open("apps/updateChartRaw.json") as f:
        data = json.load(f)
-    return data
+    return jsonify(data)
   
   elif request.method == 'POST':
     data = request.get_json()
@@ -50,7 +50,6 @@ def update_chart_raw():
 @login_required
 def get_location_data():
    locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
-   print(locations_table[0].name)
    return jsonify(locations_table)
 
 @app.route('/empolyee_data')
@@ -75,8 +74,8 @@ def get_media_data():
 def add_media_function(request):
   # retrive fields from data base
   media_name = request.form.get('media_name')
-  url = request.form.get('url')
-  url_check = Media.query.filter_by(url=url).first()
+  urlink = request.form.get('url')
+  #url_check = Media.query.filter_by(url=url).first()
 
   media_type = request.form.get('media_type_form')
   media_name_check = Media.query.filter_by(media_name = media_name).first()
@@ -86,45 +85,60 @@ def add_media_function(request):
   if media_name_check:
      flash('Media Name used, enter another one', category='error')
   else: 
-      if media_type == 'Audio':
-          category = query(url)
-          # Convert dictionary to string
-          detailed_results = json.dumps(category)
-          results = (category)[0]['label']
-          results = unify_audio(results)
-
-
-      elif media_type == 'video':
-          category = query_face(url)
-          # Convert dictionary to string
-          detailed_results = json.dumps(normalize_dict(category))
-          #results = list(category.keys())[0]
-          results = next(iter(category))
-          results = unify_video(results)
-          #results = category[0]
+    if media_type == 'Audio':
+      file=request.files.get('file')
+      if file: 
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(os.path.abspath(os.path.dirname(_file_)), app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        url=file_path
+        category=queryLocal(url)
+        flash('File has been uploaded.')
+        detailed_results = json.dumps(category)
+        results = (category)[0]['label']
+        results = unify_audio(results)
+        
+        
+      elif urlink:
+        
+        url=urlink
+        category = query(url)
+        # Convert dictionary to string
+        detailed_results = json.dumps(category)
+        results = (category)[0]['label']
+        results = unify_audio(results)
+      
+    elif media_type == 'Video':
+      category = query_body(url)
+      # Convert dictionary to string
+      detailed_results = category
+      #results = list(category.keys())[0]
+      results = detailed_results
       #category = query_face(url)
       #category = 'Unknown'
       # call body model ---> 
+    else:
+      category = 'Unknown'
 
-      elif media_type == 'Video':
-         category = query_body(url)
-         results = category
-         detailed_results=results
-      else:
-        category = 'Unknown'
-
-      user_id = current_user.id
-      controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-      flash('Media added successfuly!', category='success')
+  
+    user_id = current_user.id
+    controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    flash('Media added successfuly!', category='success')
+    #created_media = Media.query.filter_by(url=url).first()
+     #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
+     #show data 
+     #return redirect(url_for('pages_history'))
   
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
+  emp_loc=UserLocations.query.filter_by(user_id=current_user.id).all()
+  emp=UserMembers.query.filter_by(user_id=current_user.id).all()
   if request.method == 'POST':
      add_media_function(request)
      return redirect(url_for('pages_history'))
-  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+  return render_template('pages/dashboard/dashboard.html', emp=emp,emp_loc=emp_loc,segment='dashboard', parent='pages', user=current_user)
 
 
 # Pages
@@ -143,6 +157,7 @@ def display_videor(filename):
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
+  emp_locations=UserLocations.query.filter_by(user_id= current_user.id).all()
   if request.method == 'POST':
      user_id = current_user.id
      if request.form.get('Location_form'):       
@@ -156,7 +171,7 @@ def pages_manage():
         empo_location = request.form.get('location')
         controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
         
-  return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
+  return render_template('pages/dashboard/manage.html',emp_locations=emp_locations, segment='manage', parent='pages',user=current_user)
 
 # Adding Media Analysis view 
 @app.route('/pages/MediaAnalysis/')
@@ -201,58 +216,8 @@ def pages_analysis_audio():
 @app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
-    if request.method == 'POST':
-        emp_id = request.form['employee_id']
-        location_add = request.form['location']
-        # Check which upload method was selected
-        upload_method = request.form['upload-method']
-        if upload_method == 'url':
-            # Handle URL upload
-            url = request.form['url']
-            media_name = request.form['media_name']
-            media_type = request.form['media_type']
-            # employee_id = request.form['employee_id']
-            # location = request.form['location']
-            # Do something with the form data...
-            category = query_face(url)
-            detailed_results = json.dumps(category)
-            results = (category)[0]['label']
-            results = unify_audio(results)
-            controller.addMedia(media_name = media_name, url =url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-        elif upload_method == 'file':
-            # Handle file upload
-            file = request.files['file']
-            mime_type = magic.from_buffer(file.read(1024), mime=True)
-            file.seek(0)
-            if mime_type.startswith('image'):
-                # Handle image upload
-                image_type = imghdr.what(file)
-                if image_type:
-                   
-                    # The file is an image
-                    # Do something with the image...
-                   category = query_body(file)
-                   results = category
-                   detailed_results=results 
-                   controller.addMedia(media_name = media_name, url ='' , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-                else:
-                   raise TypeError
-                    # The file is not a valid image
-                    # Show an error message
-            elif mime_type.startswith('video'):
-               category = query_body(file)
-               results = category
-               detailed_results=results
-               user_id = current_user.id
-               controller.addMedia(media_name = media_name, url ='' , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-                # Handle video upload
-                # Do something with the video...
-            else:
-               raise TypeError
-                # The file is not an image or a video
-                # Show an error message
-        # Redirect to a success page or show an error message
-    return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages', user=current_user)
+    
+  return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
 
 
 @app.route('/pages/settings/')
