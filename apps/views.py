@@ -21,6 +21,7 @@ from .inference_flask import query, query_face, queryLocal,query_body_video,quer
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict
+from sqlalchemy import distinct
 
 # App modules
 from apps import app
@@ -245,20 +246,24 @@ def pages_history():
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
-  if request.method == 'POST':
-     user_id = current_user.id
-     if request.form.get('Location_form'):       
-        location = request.form.get('location')
-        controller.addUserLocation(name=location, user_id=user_id)
+    emp_locations = UserLocations.query.filter_by(user_id=current_user.id).distinct(UserLocations.name).all()
+    print(emp_locations)
+    if request.method == 'POST':
+        user_id = current_user.id
+        if request.form.get('Location_form'):
+            # Check on Uniqueness of Location
+            location = request.form.get('location')
+            controller.addUserLocation(name=location, user_id=user_id)
 
-     elif request.form.get('Employee_form'):
-        empo_name = request.form.get('name')
-        empo_gender = request.form.get('gender')
-        empo_id = request.form.get('id')
-        empo_location = request.form.get('location')
-        controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
-        
-  return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
+        elif request.form.get('Employee_form'):
+            empo_name = request.form.get('name')
+            empo_gender = request.form.get('gender')
+            empo_id = request.form.get('id')
+            empo_location = request.form.get('location')
+            controller.addUserMember(name=empo_name, user_id=user_id, member_id=empo_id,
+                                     member_gender=empo_gender, location_id=empo_location)
+
+    return render_template('pages/dashboard/manage.html', emp_locations=emp_locations, segment='manage', parent='pages', user=current_user)
 
 # Adding Media Analysis view 
 @app.route('/pages/MediaAnalysis/')
