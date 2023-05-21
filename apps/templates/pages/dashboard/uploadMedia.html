@@ -24,13 +24,7 @@
             {% with messages = get_flashed_messages() %}
             {% endwith %}
           </p>
-          <!-- {% if filename %}
-            <div style="margin: 10px auto;">
-              <video autoplay="autoplay" controls="controls" preload="preload">
-                <source src="{{ url_for('display_video', filename=filename) }}" type="video/mp4"></source>
-              </video>
-            </div>
-          {% endif %} -->
+
           <form method="POST" action="/pages/upload/" enctype="multipart/form-data">
             <div class="mb-3">
               <label for="upload-method" class="col-form-label">Select upload method:</label>

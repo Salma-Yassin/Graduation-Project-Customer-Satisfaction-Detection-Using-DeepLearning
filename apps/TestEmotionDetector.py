@@ -35,12 +35,12 @@ def predictEmotionFace(url_base):
 
     id = extractIDfromURL(url_base)
     # start the webcam feed
-    url = "https://drive.google.com/uc?id=" + id
-    print(url)
+    # url = "https://drive.google.com/uc?id=" + id
+    # print(url)
 
     # Open the video file using OpenCV
     # url ="videoplayback_Trim.mp4"
-    cap = cv2.VideoCapture(url)
+    cap = cv2.VideoCapture(url_base)
     print(cap.isOpened()) # add this line after line 20  
 
     #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -98,7 +98,7 @@ def predictEmotionFace(url_base):
     #output_file.release()
     #cv2.destroyAllWindows()
 
-    cap = cv2.VideoCapture(url)
+    cap = cv2.VideoCapture(url_base)
     print(cap.isOpened()) # add this line after line 20 
     c = 0
 

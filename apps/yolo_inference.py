@@ -9,10 +9,13 @@ import re
 from emotic import Emotic 
 from .inference import infer
 from .yolo_utils import prepare_yolo, rescale_boxes, non_max_suppression
+from moviepy.editor import VideoFileClip
+from apps import app
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu', type=int, default=0, help='gpu id')
-    parser.add_argument('--experiment_path', type=str, default=r"C:\Users\Dell\Desktop\emotic\debug_exp", help='Path of experiment files (results, models, logs)')
+    parser.add_argument('--experiment_path', type=str, default=r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp", help='Path of experiment files (results, models, logs)')
     parser.add_argument('--model_dir', type=str, default='models', help='Folder to access the models')
     parser.add_argument('--result_dir', type=str, default='results', help='Path to save the results')
     parser.add_argument('--inference_file', type=str, help='Text file containing image context paths and bounding box')
@@ -143,7 +146,7 @@ def extractIDfromURL(url):
     return 0
 
 
-def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind2cat, ind2vad):
+def yolo_video(video_file, filename, result_path, model_path, output_path, context_norm, body_norm, ind2cat, ind2vad):
   ''' Perform inference on a video. First yolo model is used to obtain bounding boxes of persons in every frame.
   After that the emotic model is used to obtain categoraical and continuous emotion predictions. 
   :param video_file: Path of video file. 
@@ -244,6 +247,9 @@ def yolo_video(video_file, result_path, model_path, context_norm, body_norm, ind
 
   writer.release()
   video_stream.release() 
+  video = VideoFileClip(os.path.join(result_path, 'result_vid.avi'))
+  video.write_videofile(os.path.join(output_path, filename + '.mp4'), codec='libx264')
+  video.close()
   print ('Completed video')
   return dominant_emotion
 
@@ -295,15 +301,16 @@ body_std = [0.24784276, 0.23621225, 0.2323653]
 context_norm = [context_mean, context_std]
 body_norm = [body_mean, body_std]
 
-def functionpaths_video(url_path):
-  modelpath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
-  emotion=yolo_video(url_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
+def functionpaths_video(url_path,filename='result_vid'):
+  modelpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
+  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
+  outputpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\static\filat"
+  emotion=yolo_video(url_path, filename, resultspath, modelpath, outputpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
 def functionpaths_image(images_path):
-  modelpath=r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
+  modelpath=r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
+  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
   emotion=yolo_infer(images_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 

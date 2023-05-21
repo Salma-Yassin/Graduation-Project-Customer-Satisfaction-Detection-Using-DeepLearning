@@ -18,12 +18,12 @@ from flask_login import LoginManager
 
 # Inject Flask magic
 app = Flask(__name__)
-UPLOAD_FOLDER = './apps/static/uploads/'  # Decide one uploaaaaad
+UPLOAD_FOLDER = './static/filat'  # Decide one uploaaaaad
 # # load Configuration
 app.config.from_object(Config)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
-# app.config['SECRET_KEY'] = 'supersecretkey'  # yara
+app.secret_key = 'supersecretkey'  # yara
 # Import routing to render the pages
 from apps import views
 
