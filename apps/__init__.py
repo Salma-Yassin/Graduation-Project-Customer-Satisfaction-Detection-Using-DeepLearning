@@ -34,6 +34,7 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
+    #return AdminUser.query.get(int(id)) or User.query.get(int(id)) 
     return User.query.get(int(id))
 
 DB_NAME = "database.db"

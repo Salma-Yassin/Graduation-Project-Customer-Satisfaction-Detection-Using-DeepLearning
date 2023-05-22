@@ -21,14 +21,38 @@ from .inference import query, query_face, queryLocal
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio
+from .helpers import unify_audio, unify_video, normalize_dict
+from functools import wraps
 
 # App modules
 from apps import app
 import random
 from datetime import datetime, timedelta
 
+# Implement role-based access control
+class Role:
+    ADMIN = 'admin'
+    REGULAR = 'regular'
+
+
+# Define custom decorators for restricting access based on role
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print("")
+        if not current_user.is_authenticated or current_user.role != Role.ADMIN:
+            return render_template('pages/examples/404.html'), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+def createAdmins():
+  new_user = AdminUser(email="Admin@gmail.com", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
+  db.session.add(new_user)
+  db.session.commit()
+  return new_user
+   
 def create_user():
-     new_user = User(email="help@gg", password= generate_password_hash("123456789", method='sha256')) 
+     new_user = RegularUser(email="help@gg", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
      db.session.add(new_user)
      db.session.commit()
      #login_user(new_user, remember=True)
@@ -38,7 +62,7 @@ def create_locations(user):
     locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami']
     user_locations = []
     for location in locations:
-        user_location = UserLocations(name=location, user_id=user.id)
+        user_location = UserLocations(name=location, companyName = user.companyName)
         db.session.add(user_location)
         db.session.commit()
         user_locations.append(user_location)
@@ -51,7 +75,7 @@ def create_members(user, user_locations):
         member_id = random.randint(100000, 999999)
         gender = random.choice(['male', 'female'])
         location = random.choice(user_locations)
-        member = UserMembers(name=f'Member{i}', user_id=user.id, member_id=member_id,
+        member = UserMembers(name=f'Member{i}', companyName = user.companyName , member_id=member_id,
                              gender=gender, location_id=location.id)
         db.session.add(member)
         db.session.commit()
@@ -74,7 +98,7 @@ def create_media(user, user_locations, members):
         created_at = start_date + timedelta(seconds=random.randint(0, int((end_date - start_date).total_seconds())))
         media = Media(media_name=f'Media {i}', url=f'https://media{i}.com',
                       location_address=location.name, member_id=member.member_id,
-                      type=media_type, user_id=user.id,created_at = created_at, results=result,
+                      type=media_type, companyName = user.companyName ,created_at = created_at, results=result,
                       detailed_results = detailed_results)
         db.session.add(media)
         db.session.commit()
@@ -124,12 +148,12 @@ def update_chart_raw():
 
 @app.route('/location_data')
 def get_location_data():
-   locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
+   locations_table = UserLocations.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(locations_table)
 
 @app.route('/empolyee_data')
 def get_empolyee_data():
-   empolyee_table = UserMembers.query.filter_by(user_id= current_user.id).all()
+   empolyee_table = UserMembers.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(empolyee_table)
 
 @app.route('/media_data')
@@ -137,7 +161,7 @@ def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
    #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-   history_table = Media.query.filter_by(user_id= current_user.id).all()
+   history_table = Media.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(history_table)
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
@@ -195,8 +219,8 @@ def add_media_function(request):
       category = 'Unknown'
 
   
-    user_id = current_user.id
-    controller.addMedia(media_name = media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    companyName = current_user.companyName
+    controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
     flash('Media added successfuly!', category='success')
     #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
@@ -208,6 +232,17 @@ def add_media_function(request):
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
+
+  user = AdminUser.query.filter_by(email="Admin@gmail.com").first()
+  if user:
+      print(f"User with email '{user.email}' already exists")
+  else:
+      # Create a new user object and add it to the database session
+      user = createAdmins()
+      user_locations = create_locations(user)
+      members = create_members(user, user_locations)
+      create_media(user, user_locations, members)
+
   if request.method == 'POST':
      add_media_function(request)
      return redirect(url_for('pages_history'))
@@ -226,19 +261,20 @@ def pages_history():
 
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def pages_manage():
   if request.method == 'POST':
-     user_id = current_user.id
+     companyName = current_user.companyName
      if request.form.get('Location_form'):       
         location = request.form.get('location')
-        controller.addUserLocation(name=location, user_id=user_id)
+        controller.addUserLocation(name=location, companyName = companyName)
 
      elif request.form.get('Employee_form'):
         empo_name = request.form.get('name')
         empo_gender = request.form.get('gender')
         empo_id = request.form.get('id')
         empo_location = request.form.get('location')
-        controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+        controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
@@ -290,16 +326,6 @@ def pages_examples_500():
 
 @app.route('/accounts/sign-in/', methods=['GET', 'POST'])
 def accounts_sign_in():
-  user = User.query.filter_by(email='help@gg').first()
-  if user:
-      print(f"User with email '{user.email}' already exists")
-  else:
-      # Create a new user object and add it to the database session
-      user = create_user()
-      user_locations = create_locations(user)
-      members = create_members(user, user_locations)
-      medias = create_media(user, user_locations, members)
-
   if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -320,6 +346,7 @@ def accounts_sign_in():
 def accounts_sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
+        companyName = request.form.get('companyName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
@@ -338,7 +365,7 @@ def accounts_sign_up():
             flash('Password must be at least 7 characters.', category='error')
             #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
         else:
-            new_user = User(email=email, password= generate_password_hash(password1, method='sha256')) 
+            new_user = RegularUser(email = email, companyName = companyName , password = generate_password_hash(password1, method='sha256')) 
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
