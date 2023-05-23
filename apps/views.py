@@ -140,6 +140,125 @@ def pages_manage():
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
+##ِAdding About Us Page###
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
+##########FEEDBACK & ContactUs PAGE ADDED NEWLY ####################
+
+# ...
+
+        # Save feedback to JSON file
+'''        try:
+            with open('apps/feedbacks.json', 'a') as f:
+                data = {
+                    'name': name,
+                    'email': email,
+                    'message': message
+                }
+                json.dump(data, f)
+                f.write('\n')
+        except Exception as e:
+            flash(f'Error occurred while saving feedback: {str(e)}', category='error')'''
+    
+
+@app.route('/feedback_form', methods=['GET', 'POST'])
+def feedback_form():
+    if request.method == 'POST':
+        
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        controller.AddFeedback(name=name, email=email, message=message)
+        flash('Feedback Received!', category='success')
+
+    return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+
+
+          #########
+@app.route('/contact_form', methods=['GET', 'POST'])
+def contact_form():
+    if request.method == 'POST':
+       
+        email = request.form.get('email')
+        message = request.form.get('message')
+        controller.AddContact(email=email , message=message)
+        flash('We will get back to you soon!', category='success')
+  
+    return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+
+####################END OF FEEDBACK & ContactUs ADDED NEWLY##################3
+
+################Start of Statistics################
+#Adding the top locations with satisfied results
+@app.route('/satisfied_locations')
+def satisfied_locations():
+    satisfied_results = (
+        Media.query
+        .filter_by(results='hap')
+        .group_by(Media.location_address)
+        .with_entities(Media.location_address, func.count().label('count'))
+        .order_by(func.count().desc())
+        #.limit(5)to get top 5 locations
+        .all()
+    )
+
+    # Separate the location addresses and counts into separate lists
+    top_locations = [result.location_address for result in satisfied_results]
+    counts = [result.count for result in satisfied_results]
+
+    data = {'top_locations': top_locations, 'counts': counts}
+    return json.dumps(data)
+
+
+
+@app.route('/satisfied_employees')
+def satisfied_employees():
+    satisfied_results = (
+        db.session.query(UserMembers.name, func.count())
+        .join(Media, Media.member_id == UserMembers.member_id)
+        .filter(Media.results == 'hap')
+        .group_by(UserMembers.name)
+        .order_by(func.count().desc())
+        .all()
+    )
+
+    # Separate the member names and counts into separate lists
+    top_members = [result[0] for result in satisfied_results]
+    counts = [result[1] for result in satisfied_results]
+    data = {'top_members': top_members, 'counts': counts}
+    return json.dumps(data)
+  
+##Report## 
+
+
+@app.route('/employee_report')
+def employee_report():
+    # Retrieve the required data
+    employees = UserMembers.query.all()
+
+    # Format the data into a report
+    report_data = []
+    for employee in employees:
+        media = Media.query.filter_by(member_id=employee.id).first()
+        if media:
+            employee_data = {
+                'Name': employee.name,
+                'ID': employee.id,
+                'Location': media.location_address,
+                'Results': AnalysisResults.query.filter_by(media_id=media.id).first().results
+            }
+            report_data.append(employee_data)
+
+    # Return the report data as JSON response
+    return json.dumps(report_data)
+
+
+####################End of Statistics####################
+
+
+
 # Adding Media Analysis view 
 @app.route('/pages/MediaAnalysis/')
 @login_required
@@ -183,6 +302,14 @@ def pages_examples_404():
 @app.route('/pages/examples/500/')
 def pages_examples_500():
   return render_template('pages/examples/500.html', segment='500', parent='pages')
+
+
+
+
+
+
+
+
 
 # Accounts
 

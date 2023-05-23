@@ -104,3 +104,37 @@ class controller:
         analysisResult = AnalysisResults.query.filter_by(id=id).first()
         db.session.delete(analysisResult)
         db.session.commit()
+
+        
+# Add Feedback
+    def AddFeedback(name, email, message):
+        existing_feedback = Feedback.query.filter_by(message=message).first() #email=email
+        if existing_feedback:
+            # A feedback with the same email already exists, you can choose to update it or skip adding a new record
+            # Update the existing record
+            existing_feedback.name = name
+            existing_feedback.email = email
+            #existing_feedback.message = message
+            db.session.commit()
+        else:
+            # No existing feedback with the same email, create a new record
+            feedback = Feedback(name=name, email=email, message=message)
+            db.session.add(feedback)
+            db.session.commit()
+
+        
+        
+    #Add Contact
+    def AddContact(email, message):
+        existing_contact = Contact.query.filter_by(message=message).first()  #email=email
+        if existing_contact:
+            # A contact with the same email already exists, you can choose to update it or skip adding a new record
+            # Update the existing record
+            #existing_contact.message = message
+            existing_contact.email = email
+            db.session.commit()
+        else:
+            # No existing contact with the same email, create a new record
+            contact = Contact(email=email, message=message)
+            db.session.add(contact)
+            db.session.commit()

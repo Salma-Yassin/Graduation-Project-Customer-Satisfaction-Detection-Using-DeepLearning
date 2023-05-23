@@ -93,3 +93,23 @@ class AnalysisResults(db.Model):
                          nullable=False)
     results = db.Column(db.String)
     # Other Analysis Data
+    
+    
+    
+####ADDED NEWLY FOR FEEDBACK
+
+@dataclass
+class Feedback(db.Model):
+ 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150),nullable=False)
+    email = db.Column(db.String(150),unique=True, nullable=False)
+    message = db.Column(db.Text)
+    
+
+@dataclass
+class Contact(db.Model): 
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    message = db.Column(db.Text)    
+
