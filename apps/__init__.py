@@ -34,11 +34,13 @@ login_manager.init_app(app)
 
 @login_manager.user_loader
 def load_user(id):
+    #return AdminUser.query.get(int(id)) or User.query.get(int(id)) 
     return User.query.get(int(id))
 
 DB_NAME = "database.db"
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{DB_NAME}'
 db.init_app(app)
+
 
 def create_database(app):
     if not path.exists('apps/' + DB_NAME):

@@ -17,28 +17,143 @@ import os
 from wtforms.validators import InputRequired
 from .models import db 
 from random import sample 
-from .inference import query,queryLocal
+from .inference import query, query_face, queryLocal
 import sys
 from .controller import controller
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio
+from .helpers import unify_audio, unify_video, normalize_dict
+from functools import wraps
 
 # App modules
 from apps import app
-# 
-#
+import random
+from datetime import datetime, timedelta
+
+# Implement role-based access control
+class Role:
+    ADMIN = 'admin'
+    REGULAR = 'regular'
+
+
+# Define custom decorators for restricting access based on role
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print("")
+        if not current_user.is_authenticated or current_user.role != Role.ADMIN:
+            return render_template('pages/examples/404.html'), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+def createAdmins():
+  new_user = AdminUser(email="Admin@gmail.com", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
+  db.session.add(new_user)
+  db.session.commit()
+  return new_user
+   
+def create_user():
+     new_user = RegularUser(email="help@gg", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
+     db.session.add(new_user)
+     db.session.commit()
+     #login_user(new_user, remember=True)
+     return new_user
+
+def create_locations(user):
+    locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami']
+    user_locations = []
+    for location in locations:
+        user_location = UserLocations(name=location, companyName = user.companyName)
+        db.session.add(user_location)
+        db.session.commit()
+        user_locations.append(user_location)
+    return user_locations
+
+
+def create_members(user, user_locations):
+    members = []
+    for i in range(10):
+        member_id = random.randint(100000, 999999)
+        gender = random.choice(['male', 'female'])
+        location = random.choice(user_locations)
+        member = UserMembers(name=f'Member{i}', companyName = user.companyName , member_id=member_id,
+                             gender=gender, location_id=location.id)
+        db.session.add(member)
+        db.session.commit()
+        members.append(member)
+    return members
+
+
+def create_media(user, user_locations, members):
+    media_types = ['Audio', 'Video']
+    results = ['Satisfied', 'Unsatisfied', 'Neutral']
+    medias = []
+    for i in range(100):
+        member = random.choice(members)
+        location = random.choice(user_locations)
+        media_type = random.choice(media_types)
+        result = random.choice(results)
+        detailed_results = "[{\"score\": 0.7873730659484863, \"label\": \"hap\"}, {\"score\": 0.20546337962150574, \"label\": \"ang\"}, {\"score\": 0.0037874202243983746, \"label\": \"sad\"}, {\"score\": 0.0033761027734726667, \"label\": \"neu\"}]"
+        start_date = datetime(2023, 1, 1)
+        end_date = datetime(2023, 12, 31)
+        created_at = start_date + timedelta(seconds=random.randint(0, int((end_date - start_date).total_seconds())))
+        media = Media(media_name=f'Media {i}', url=f'https://media{i}.com',
+                      location_address=location.name, member_id=member.member_id,
+                      type=media_type, companyName = user.companyName ,created_at = created_at, results=result,
+                      detailed_results = detailed_results)
+        db.session.add(media)
+        db.session.commit()
+        medias.append(media)
+        # Create analysis results for the media
+        #analysis_results = AnalysisResults(media_id=media.id, results='Analysis Results')
+        #db.session.add(analysis_results)
+        #db.session.commit()
+    return medias
+
+
 @app.route('/data') # this is a dummy api that should be removed 
 def get_chart_data():
    # generating random data for testing 
    f = open("apps\Media_data.json")
    return json.load(f)
 
+@app.route('/play_media', methods=['GET', 'POST'])
+def play_media():
+
+  if request.method == 'GET':
+    with open("apps/updatePlayMedia.json") as f:
+       data = json.load(f)
+    return data
+  
+  elif request.method == 'POST':
+    data = request.get_json()
+    with open("apps/updatePlayMedia.json", "w") as f:
+      json.dump(data, f)
+    return jsonify({'status': 'success'})
+
+
+@app.route('/update_chart_raw', methods=['GET', 'POST'])
+def update_chart_raw():
+
+  if request.method == 'GET':
+    with open("apps/updateChartRaw.json") as f:
+       data = json.load(f)
+    return data
+  
+  elif request.method == 'POST':
+    data = request.get_json()
+    with open("apps/updateChartRaw.json", "w") as f:
+      json.dump(data, f)
+    return jsonify({'status': 'success'})
+   
+
 @app.route('/location_data')
 def get_location_data():
-   locations_table = UserLocations.query.filter_by(user_id= current_user.id).all()
+   locations_table = UserLocations.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(locations_table)
 
 @app.route('/empolyee_data')
 def get_empolyee_data():
-   empolyee_table = UserMembers.query.filter_by(user_id= current_user.id).all()
+   empolyee_table = UserMembers.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(empolyee_table)
 
 @app.route('/media_data')
@@ -46,7 +161,7 @@ def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
    #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-   history_table = Media.query.filter_by(user_id= current_user.id).all()
+   history_table = Media.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(history_table)
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
@@ -55,48 +170,59 @@ def get_media_data():
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
   # retrive fields from data base
+  media_name = request.form.get('media_name')
   urlink = request.form.get('url')
-  media_type = request.form.get('media_type')
+  #url_check = Media.query.filter_by(url=url).first()
+
+  media_type = request.form.get('media_type_form')
+  media_name_check = Media.query.filter_by(media_name = media_name).first()
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
-  media_name=request.form.get('media_name')
-  user_id = current_user.id
-  #file=request.files['file']
 
-  if media_type == 'audio':
-    file=request.files.get('file')
-    if file: 
-      filename = secure_filename(file.filename)
-      file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
-      file.save(file_path)
-      url=file_path
-      category=queryLocal(url)
-      flash('File has been uploaded.')
-      detailed_results = json.dumps(category)
-      results = (category)[0]['label']
+  if media_name_check:
+     flash('Media Name used, enter another one', category='error')
+  else: 
+    if media_type == 'Audio':
+      file=request.files.get('file')
+      if file: 
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        url=file_path
+        category=queryLocal(url)
+        flash('File has been uploaded.')
+        detailed_results = json.dumps(sorting_audio(category))
+        results = (category)[0]['label']
+        results = unify_audio(results)
+        
+        
+      elif urlink:
+        
+        url=urlink
+        category = query(url)
+        # Convert dictionary to string
+        detailed_results = json.dumps(sorting_audio(category))
+        results = (category)[0]['label']
+        results = unify_audio(results)
       
-      
-    elif urlink:
-      url=urlink
-      category = query(urlink)
-    # Convert dictionary to string
-      detailed_results = json.dumps(category)
-      results = (category)[0]['label']
-
-  elif media_type == 'video':
-    category = query(url)
-    # Convert dictionary to string
-    detailed_results = json.dumps(category)
-    results = (category)[0]['label']
-    #category = query_face(url)
-    #category = 'Unknown'
-    # call body model ---> 
-  else:
-   category = 'Unknown'
+    elif media_type == 'Video':
+      category = query_face(url)
+      # Convert dictionary to string
+      detailed_results = json.dumps(normalize_dict(category))
+      #results = list(category.keys())[0]
+      results = next(iter(category))
+      results = unify_video(results)
+      #category = query_face(url)
+      #category = 'Unknown'
+      # call body model ---> 
+    else:
+      category = 'Unknown'
 
   
-  controller.addMedia(media_name=media_name, url = url , type = media_type, user_id = user_id, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
-  #created_media = Media.query.filter_by(url=url).first()
+    companyName = current_user.companyName
+    controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    flash('Media added successfuly!', category='success')
+    #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
      #show data 
      #return redirect(url_for('pages_history'))
@@ -106,6 +232,17 @@ def add_media_function(request):
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
+
+  user = AdminUser.query.filter_by(email="Admin@gmail.com").first()
+  if user:
+      print(f"User with email '{user.email}' already exists")
+  else:
+      # Create a new user object and add it to the database session
+      user = createAdmins()
+      user_locations = create_locations(user)
+      members = create_members(user, user_locations)
+      create_media(user, user_locations, members)
+
   if request.method == 'POST':
      add_media_function(request)
      return redirect(url_for('pages_history'))
@@ -124,19 +261,20 @@ def pages_history():
 
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def pages_manage():
   if request.method == 'POST':
-     user_id = current_user.id
+     companyName = current_user.companyName
      if request.form.get('Location_form'):       
         location = request.form.get('location')
-        controller.addUserLocation(name=location, user_id=user_id)
+        controller.addUserLocation(name=location, companyName = companyName , user=current_user)
 
      elif request.form.get('Employee_form'):
         empo_name = request.form.get('name')
         empo_gender = request.form.get('gender')
         empo_id = request.form.get('id')
         empo_location = request.form.get('location')
-        controller.addUserMember(name=empo_name, user_id=user_id , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+        controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
@@ -272,7 +410,7 @@ def pages_analysis_audio():
   return render_template('pages/dashboard/mediaAnalysisAudio.html', segment='mediaAudio', parent='pages',user=current_user)
 
 # Adding Media Analysis view 
-@app.route('/pages/UploadAnalysis/')
+@app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
   return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
@@ -335,6 +473,7 @@ def accounts_sign_in():
 def accounts_sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
+        companyName = request.form.get('companyName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
@@ -353,7 +492,7 @@ def accounts_sign_up():
             flash('Password must be at least 7 characters.', category='error')
             #return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
         else:
-            new_user = User(email=email, password= generate_password_hash(password1, method='sha256')) 
+            new_user = RegularUser(email = email, companyName = companyName , password = generate_password_hash(password1, method='sha256')) 
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
