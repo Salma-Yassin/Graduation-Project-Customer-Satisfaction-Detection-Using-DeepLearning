@@ -267,7 +267,7 @@ def pages_manage():
      companyName = current_user.companyName
      if request.form.get('Location_form'):       
         location = request.form.get('location')
-        controller.addUserLocation(name=location, companyName = companyName)
+        controller.addUserLocation(name=location, companyName = companyName , user=current_user)
 
      elif request.form.get('Employee_form'):
         empo_name = request.form.get('name')
