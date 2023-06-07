@@ -15,7 +15,7 @@ def extractIDfromURL(url):
         print("No id found in URL")
         return 0
 
-def predictEmotionFace(url_base):
+def predictEmotionFace(url_base, flag):
      
 
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
@@ -33,14 +33,18 @@ def predictEmotionFace(url_base):
     emotion_model.load_weights("apps/model/emotion_model.h5")
     print("Loaded model from disk")
 
-    id = extractIDfromURL(url_base)
-    # start the webcam feed
-    url = "https://drive.google.com/uc?id=" + id
-    print(url)
+    if (flag == 'url'):
+        id = extractIDfromURL(url_base)
+        # start the webcam feed
+        url = "https://drive.google.com/uc?id=" + id
+        print(url)
+        file =url
+    elif(flag == 'local'):
+        file = url_base
 
     # Open the video file using OpenCV
     # url ="videoplayback_Trim.mp4"
-    cap = cv2.VideoCapture(url)
+    cap = cv2.VideoCapture(file)
     print(cap.isOpened()) # add this line after line 20  
 
     #fourcc = cv2.VideoWriter_fourcc(*'mp4v')
@@ -98,7 +102,7 @@ def predictEmotionFace(url_base):
     #output_file.release()
     #cv2.destroyAllWindows()
 
-    cap = cv2.VideoCapture(url)
+    cap = cv2.VideoCapture(file)
     print(cap.isOpened()) # add this line after line 20 
     c = 0
 
