@@ -158,285 +158,285 @@
 </div>
 <div >
   <!--Adding Feedback button goes here-->
-  <style>
-    /* Style the "Rate Our Service" section */
-    .feedback-form .rate-our-service {
-      margin-bottom: 10px;
-    }
-    
-    .feedback-form .rate-our-service label {
-      font-weight: bold;
-      margin-right: 5px;
-    }
-  
-    /* Position the button on the right side */
-    .feedback-button {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 9999;
-      background-color: #007bff;
-      color: #fff;
-      padding: 0px 0px;
-      border-radius: 45px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    /* Style the feedback icon */
-    .feedback-button:after {
-      content: "\2605";  /* 1F4C4 */
-      margin-right: 2px;
-      font-size: 25px;
-    }
-    
-    /* Show button name on hover */
-    .feedback-button:hover::before {
-      content: "Feedback";
-      display: inline-block;
-      margin-left: 5px;
-    }      
-    
-    /* Style the feedback form */
-    .feedback-form {
-      display: none;
-      position: fixed;
-      right: 15px;
-      bottom: 15px;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px #aaa;
-      border-radius: 20px;
-      z-index: 9998;
-    }
-  
-    /* Style the input fields */
-    .feedback-form input[type="text"],
-    .feedback-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-  
-    .feedback-form input[type="submit"] {
-      background-color: #007bff;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  
-    /* Position the close button */
-    .feedback-close-btn {
-      position: absolute;
-      top: 5px;
-      right: 5px;
-      background-color: transparent;
-      border: none;
-      font-size: 2em;
-      cursor: pointer;
-    }
-  
-    /* Style the close button icon */
-    .feedback-close-btn:before {
-      content: '×';
-    }
-  
-    /* Style the feedback button name */
-    .feedback-button-name {
-      display: none;
-      margin-left: 5px;
-      font-size: 16px;
-    }
-  
-    /* Show feedback button name on hover */
-    .feedback-button:hover .feedback-button-name {
-      display: block;
-    }
-  
-  </style>
-  
-  <button class="feedback-button"><i class="far fa-thumbs-up"></i></button>
-  
-  <div class="feedback-form">
-    <h3>We Value Your Feedback!</h3>
-    <form method="POST" action="{{ url_for('feedback_form') }}">
+        <style>
+          /* Style the "Rate Our Service" section */
+          .feedback-form .rate-our-service {
+            margin-bottom: 10px;
+          }
+          
+          .feedback-form .rate-our-service label {
+            font-weight: bold;
+            margin-right: 5px;
+          }
+        
+          /* Position the button on the right side */
+          .feedback-button {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 9999;
+            background-color: #007bff;
+            color: #fff;
+            padding: 0px 0px;
+            border-radius: 45px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        
+          /* Style the feedback icon */
+          .feedback-button:after {
+            content: "\2605";  /* 1F4C4 */
+            margin-right: 2px;
+            font-size: 25px;
+          }
+          
+          /* Show button name on hover */
+          .feedback-button:hover::before {
+            content: "Feedback";
+            display: inline-block;
+            margin-left: 5px;
+          }      
+          
+          /* Style the feedback form */
+          .feedback-form {
+            display: none;
+            position: fixed;
+            right: 15px;
+            bottom: 15px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #aaa;
+            border-radius: 20px;
+            z-index: 9998;
+          }
+        
+          /* Style the input fields */
+          .feedback-form input[type="text"],
+          .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        
+          .feedback-form input[type="submit"] {
+            background-color: #031b35;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        
+          /* Position the close button */
+          .feedback-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+          }
+        
+          /* Style the close button icon */
+          .feedback-close-btn:before {
+            content: '×';
+          }
+        
+          /* Style the feedback button name */
+          .feedback-button-name {
+            display: none;
+            margin-left: 5px;
+            font-size: 16px;
+          }
+        
+          /* Show feedback button name on hover */
+          .feedback-button:hover .feedback-button-name {
+            display: block;
+          }
+        
+        </style>
+        
+        <button class="feedback-button"><i class="far fa-thumbs-up"></i></button>
+        
+        <div class="feedback-form">
+          <h3>We Value Your Feedback!</h3>
+          <form method="POST" action="{{ url_for('feedback_form') }}">
 
-  
-      <label for="name">Name:</label>
-      <input type="text" id="name" name="name" required>
-  
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-  
-      <label for="message">Your Feedback:</label>
-      <textarea id="message" name="message" required></textarea>
-  
-      <input type="submit" value="Submit">
-      <button class="feedback-close-btn"></button>
-    </form>
-  </div>
-  
-  <script src="https://kit.fontawesome.com/1234567890.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
-  
-  <script>
-    // Show/hide feedback form on button click
-    const feedbackButton = document.querySelector('.feedback-button');
-    const feedbackForm = document.querySelector('.feedback-form');
-    const feedbackCloseButton = document.querySelector('.feedback-close-btn');
-  
-    feedbackButton.addEventListener('click', function() {
-      feedbackForm.style.display = 'block';
-  
-      // Initialize RateYo plugin
-      $("#rating-stars").rateYo({
-        fullStar: true,
-        onSet: function(rating) {
-          document.getElementById("rating").value = rating;
-        }
-      });
-    });
-  
-    feedbackCloseButton.addEventListener('click', function() {
-      feedbackForm.style.display = 'none';
-    });
-  
-    feedbackForm.addEventListener('submit', function() {
-      alert('Thank you for your feedback!');
-      feedbackForm.style.display = 'none';
-    });
-  </script>
-  
-  <!--Adding Feedback button ends here-->
+        
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        
+            <label for="message">Your Feedback:</label>
+            <textarea id="message" name="message" required></textarea>
+        
+            <input type="submit" value="Submit">
+            <button class="feedback-close-btn"></button>
+          </form>
+        </div>
+        
+        <script src="https://kit.fontawesome.com/1234567890.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+        
+        <script>
+          // Show/hide feedback form on button click
+          const feedbackButton = document.querySelector('.feedback-button');
+          const feedbackForm = document.querySelector('.feedback-form');
+          const feedbackCloseButton = document.querySelector('.feedback-close-btn');
+        
+          feedbackButton.addEventListener('click', function() {
+            feedbackForm.style.display = 'block';
+        
+            // Initialize RateYo plugin
+            $("#rating-stars").rateYo({
+              fullStar: true,
+              onSet: function(rating) {
+                document.getElementById("rating").value = rating;
+              }
+            });
+          });
+        
+          feedbackCloseButton.addEventListener('click', function() {
+            feedbackForm.style.display = 'none';
+          });
+        
+          feedbackForm.addEventListener('submit', function() { 
+            alert('Thank you for your feedback!');
+            feedbackForm.style.display = 'none';
+          });
+        </script>
+        
+        <!--Adding Feedback button ends here-->
+     
+        <!--Adding Contact Us button Starts here-->
+        <style>
+          /* Position the button on the right side */
+          .contact-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 60px;
+            z-index: 8888;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 1px 1px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+          }
+        
+          /* Style the telephone icon */
+          .contact-btn::after {
+            content: "\260E";
+            margin-right: 2px;
+          }
+        
+          /* Show button name on hover */
+          .contact-btn:hover::before {
+            content: "Contact Us";
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 16px;
+          }
+        
+          /* Style the contact form */
+          .contact-form {
+            display: none;
+            position: fixed;
+            right: 35px;
+            bottom: 35px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #aaa;
+            border-radius: 20px;
+            z-index: 9998;
+          }
+        
+          /* Style the input fields */
+          .contact-form input[type="text"],
+          .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        
+          .contact-form input[type="submit"] {
+            background-color: #031b35;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        
+          /* Position the close button */
+          .close-cbtn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background-color: transparent;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+          }
+        
+          /* Style the close button icon */
+          .close-cbtn:before {
+            content: '×';
+          }
+        </style>
+        
+        <button class="contact-btn"></button>
 
-  <!--Adding Contact Us button Starts here-->
-  <style>
-    /* Position the button on the right side */
-    .contact-btn {
-      position: fixed;
-      right: 20px;
-      bottom: 60px;
-      z-index: 8888;
-      background-color: #4CAF50;
-      color: #fff;
-      padding: 1px 1px;
-      border-radius: 20px;
-      border: none;
-      cursor: pointer;
-      font-size: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.2s ease-in-out;
-    }
-  
-    /* Style the telephone icon */
-    .contact-btn::after {
-      content: "\260E";
-      margin-right: 2px;
-    }
-  
-    /* Show button name on hover */
-    .contact-btn:hover::before {
-      content: "Contact Us";
-      display: inline-block;
-      margin-left: 5px;
-      font-size: 16px;
-    }
-  
-    /* Style the contact form */
-    .contact-form {
-      display: none;
-      position: fixed;
-      right: 35px;
-      bottom: 35px;
-      padding: 20px;
-      background-color: #fff;
-      box-shadow: 0px 0px 10px #aaa;
-      border-radius: 20px;
-      z-index: 9998;
-    }
-  
-    /* Style the input fields */
-    .contact-form input[type="text"],
-    .contact-form textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-  
-    .contact-form input[type="submit"] {
-      background-color: #007bff;
-      color: #fff;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  
-    /* Position the close button */
-    .close-cbtn {
-      position: absolute;
-      top: 25px;
-      right: 25px;
-      background-color: transparent;
-      border: none;
-      font-size: 2em;
-      cursor: pointer;
-    }
-  
-    /* Style the close button icon */
-    .close-cbtn:before {
-      content: '×';
-    }
-  </style>
-  
-  <button class="contact-btn"></button>
-
-  <div class="contact-form">
-    <h3>Reach Out to Us</h3>
-    <form method="POST" action="{{ url_for('contact_form') }}">
-  
-      <label for="email">Email:</label>
-      <input type="email" id="email" name="email" required>
-  
-      <label for="message">Message:</label>
-      <textarea id="message" name="message" required></textarea>
-  
-      <input type="submit" value="Submit">
-      <button class="close-cbtn"></button>
-    </form>
-  </div>
-
-<script>
-  // Show/hide contact form on button click
-  const contactBtn = document.querySelector('.contact-btn');
-  const contactForm = document.querySelector('.contact-form');
-  const closeBtn = document.querySelector('.close-cbtn');
-  
-  contactBtn.addEventListener('click', function() {
-    contactForm.style.display = 'block';
-  });
-  
-  closeBtn.addEventListener('click', function() {
-    contactForm.style.display = 'none';
-  });
-  
-  contactForm.addEventListener('submit', function() {
-    alert('Thank you for contacting us!');
-    contactForm.style.display = 'none';
-  });
-</script>
-  <!--Adding Contact Us button Ends here-->
+        <div class="contact-form">
+          <h3>Reach Out to Us</h3>
+          <form method="POST" action="{{ url_for('contact_form') }}">
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+        
+            <input type="submit" value="Submit">
+            <button class="close-cbtn"></button>
+          </form>
+        </div>
+      
+      <script>
+        // Show/hide contact form on button click
+        const contactBtn = document.querySelector('.contact-btn');
+        const contactForm = document.querySelector('.contact-form');
+        const closeBtn = document.querySelector('.close-cbtn');
+        
+        contactBtn.addEventListener('click', function() {
+          contactForm.style.display = 'block';
+        });
+        
+        closeBtn.addEventListener('click', function() {
+          contactForm.style.display = 'none';
+        });
+        
+        contactForm.addEventListener('submit', function() {
+          alert('Thank you for contacting us!');
+          contactForm.style.display = 'none';
+        });
+      </script>
+        <!--Adding Contact Us button Ends here-->
 </div>
 
 

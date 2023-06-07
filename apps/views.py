@@ -279,10 +279,15 @@ def pages_manage():
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
+@app.route('/pages/support')
+@login_required
+def support_page():
+  return render_template('pages/dashboard/support.html', segment='support', parent='pages',user=current_user)
+
 ##ِAdding About Us Page###
 @app.route('/about')
 def about():
-    return render_template('about.html')
+    return render_template('pages/dashboard/about.html')
 
 ##########FEEDBACK & ContactUs PAGE ADDED NEWLY ####################
 
