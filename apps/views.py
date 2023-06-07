@@ -206,6 +206,7 @@ def add_media_function(request):
         results = unify_audio(results)
       
     elif media_type == 'Video':
+      url=urlink
       category = query_face(url)
       # Convert dictionary to string
       detailed_results = json.dumps(normalize_dict(category))
