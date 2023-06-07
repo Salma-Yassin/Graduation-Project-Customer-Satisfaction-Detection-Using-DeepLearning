@@ -179,24 +179,24 @@ def add_media_function(request):
   media_name_check = Media.query.filter_by(media_name = media_name).first()
   emp_id = request.form.get('employee_id')
   location_add = request.form.get('location')
+  file=request.files.get('file')
 
   if media_name_check:
      flash('Media Name used, enter another one', category='error')
   else: 
     if media_type == 'Audio':
-      file=request.files.get('file')
       if file: 
         filename = secure_filename(file.filename)
         file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
         file.save(file_path)
+        print(file_path)
         url=file_path
         category=queryLocal(url)
         flash('File has been uploaded.')
         detailed_results = json.dumps(sorting_audio(category))
         results = (category)[0]['label']
         results = unify_audio(results)
-        
-        
+
       elif urlink:
         
         url=urlink
@@ -207,15 +207,30 @@ def add_media_function(request):
         results = unify_audio(results)
       
     elif media_type == 'Video':
-      category = query_face(url)
-      # Convert dictionary to string
-      detailed_results = json.dumps(normalize_dict(category))
-      #results = list(category.keys())[0]
-      results = next(iter(category))
-      results = unify_video(results)
-      #category = query_face(url)
-      #category = 'Unknown'
-      # call body model ---> 
+      if file: 
+        filename = secure_filename(file.filename)
+        file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
+        file.save(file_path)
+        print(file_path)
+        flag = 'local'
+        url=file_path
+        category = query_face(url,flag)
+        detailed_results = json.dumps(normalize_dict(category))
+        results = next(iter(category))
+        results = unify_video(results)
+
+      elif urlink:
+        url=urlink
+        flag = 'url'
+        category = query_face(url,flag)
+        # Convert dictionary to string
+        detailed_results = json.dumps(normalize_dict(category))
+        #results = list(category.keys())[0]
+        results = next(iter(category))
+        results = unify_video(results)
+        #category = query_face(url)
+        #category = 'Unknown'
+        # call body model ---> 
     else:
       category = 'Unknown'
 

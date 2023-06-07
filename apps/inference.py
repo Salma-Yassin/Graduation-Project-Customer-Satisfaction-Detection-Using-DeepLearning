@@ -14,9 +14,9 @@ def query(file_url):
 
 
 @app.route('/face_inference')
-def query_face(file_url):
+def query_face(file_url,flag):
     # cont = requests.get(file_url, verify= False)
-    response = predictEmotionFace(file_url)
+    response = predictEmotionFace(file_url,flag)
     return response
 
 @app.route('/tone_inferenceLocal')
