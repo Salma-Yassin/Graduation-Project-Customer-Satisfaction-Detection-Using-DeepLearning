@@ -28,6 +28,7 @@ from functools import wraps
 from apps import app
 import random
 from datetime import datetime, timedelta
+from sqlalchemy import case, Float
 
 # Implement role-based access control
 class Role:
@@ -334,11 +335,13 @@ def contact_form():
 def satisfied_locations():
     satisfied_results = (
         Media.query
-        .filter_by(results='hap')
+        .with_entities(
+            Media.location_address,
+            func.count(case((Media.results == 'Satisfied', 1))).label('count')
+        )
         .group_by(Media.location_address)
-        .with_entities(Media.location_address, func.count().label('count'))
         .order_by(func.count().desc())
-        #.limit(5)to get top 5 locations
+        # .limit(5)  # to get top 5 locations
         .all()
     )
 
@@ -356,7 +359,7 @@ def satisfied_employees():
     satisfied_results = (
         db.session.query(UserMembers.name, func.count())
         .join(Media, Media.member_id == UserMembers.member_id)
-        .filter(Media.results == 'hap')
+        .filter(Media.results == 'Satisfied')
         .group_by(UserMembers.name)
         .order_by(func.count().desc())
         .all()
