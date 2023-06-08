@@ -20,8 +20,7 @@ from random import sample
 from .inference import query, query_face, queryLocal
 import sys
 from .controller import controller
-from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio
-from .helpers import unify_audio, unify_video, normalize_dict
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face
 from functools import wraps
 
 # App modules
@@ -214,8 +213,10 @@ def add_media_function(request):
         print(file_path)
         flag = 'local'
         url=file_path
-        category = query_face(url,flag)
-        detailed_results = json.dumps(normalize_dict(category))
+        # category = query_face(url,flag)
+        category = {'Happy': 1/7, 'Sad': 1/7, 'Fearful': 1/7, 'Neutral': 1/7, 'Angry': 1/7, 'Disgusted': 1/7,'Surprised': 1/7}
+        # detailed_results = json.dumps(normalize_dict(category))
+        detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
         results = next(iter(category))
         results = unify_video(results)
 
@@ -224,7 +225,8 @@ def add_media_function(request):
         flag = 'url'
         category = query_face(url,flag)
         # Convert dictionary to string
-        detailed_results = json.dumps(normalize_dict(category))
+        # detailed_results = json.dumps(normalize_dict(category))
+        detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
         #results = list(category.keys())[0]
         results = next(iter(category))
         results = unify_video(results)
@@ -283,7 +285,7 @@ def pages_manage():
      companyName = current_user.companyName
      if request.form.get('Location_form'):       
         location = request.form.get('location')
-        controller.addUserLocation(name=location, companyName = companyName , user=current_user)
+        controller.addUserLocation(name=location, companyName = companyName)
 
      elif request.form.get('Employee_form'):
         empo_name = request.form.get('name')
