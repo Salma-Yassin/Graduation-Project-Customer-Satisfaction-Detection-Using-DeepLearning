@@ -191,14 +191,14 @@ def add_media_function(request):
                 print(file_path)
                 file.save(file_path)
                 url = file_path
-                category = query_body_video(url,media_name)
+                # category = query_body_video(url,media_name)
             # Convert dictionary to string
-                detailed_results = category
+                # detailed_results = category
             # results = list(category.keys())[0]
-                results = category
-                print('Body Model Results:',results)
+                # results = category
+                # print('Body Model Results:',results)
                 total_results = dict()
-                total_results['body'] = results
+                # total_results['body'] = results
                 category = query_face(url)
             # Convert dictionary to string
                 detailed_results = json.dumps(normalize_dict(category))
@@ -263,6 +263,8 @@ def pages_history():
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
 def pages_manage():
+    locations_table = UserLocations.query.filter_by(
+        user_id=current_user.id).all()
     if request.method == 'POST':
         user_id = current_user.id
         if request.form.get('Location_form'):
@@ -277,7 +279,7 @@ def pages_manage():
             controller.addUserMember(name=empo_name, user_id=user_id, member_id=empo_id,
                                      member_gender=empo_gender, location_id=empo_location)
 
-    return render_template('pages/dashboard/manage.html', segment='manage', parent='pages', user=current_user)
+    return render_template('pages/dashboard/manage.html', emp_locations=locations_table, segment='manage', parent='pages', user=current_user)
 
 # Adding Media Analysis view
 
@@ -285,6 +287,7 @@ def pages_manage():
 @app.route('/pages/MediaAnalysis/<video>')
 @login_required
 def pages_analysis(video):
+    video = "output"
     filename = secure_filename(video + ".mp4")
     return render_template('pages/dashboard/mediaAnalysis.html', filename=filename, segment='media', parent='pages', user=current_user)
 

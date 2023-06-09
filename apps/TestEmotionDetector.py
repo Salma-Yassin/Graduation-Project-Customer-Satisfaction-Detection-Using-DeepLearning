@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from keras.models import model_from_json
 import re
+from moviepy.editor import VideoFileClip
 
 def extractIDfromURL(url):
     
@@ -148,7 +149,9 @@ def predictEmotionFace(url_base):
     cap.release()
     output_video.release()
     cv2.destroyAllWindows()
-    
+    video = VideoFileClip("Results/output_video_6.mp4")
+    video.write_videofile("apps/static/filat/output.mp4", codec='libx264')
+    video.close()
     emotionOutputDict = {} 
     for key in emotion_dict.keys():
         emotionOutputDict[emotion_dict[key]] = emotion_counts[key]
