@@ -440,22 +440,6 @@ def pages_analysis_audio():
 def pages_uploadMedia():
   return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages',user=current_user)
 
-@app.route('/pages/settings/')
-@login_required
-def pages_settings():
-  return render_template('pages/settings.html', segment='settings', parent='pages',user=current_user)
-
-@app.route('/pages/upgrade-to-pro/')
-def pages_upgrade_to_pro():
-  return render_template('pages/upgrade-to-pro.html', segment='upgrade_to_pro', parent='pages')
-
-# Pages -- Tables
-
-@app.route('/pages/tables/bootstrap-tables/')
-@login_required
-def pages_tables_bootstrap_tables():
-  return render_template('pages/tables/bootstrap-tables.html', segment='bootstrap_tables', parent='tables', user=current_user)
-
 # Pages -- Pages examples
 
 @app.route('/pages/examples/404/')
@@ -529,18 +513,6 @@ def accounts_sign_up():
     return render_template('accounts/sign-up.html', segment='sign_up', parent='accounts')
 
 
-@app.route('/accounts/forgot-password/')
-def accounts_forgot_password():
-  return render_template('accounts/forgot-password.html', segment='forgot_password', parent='accounts')
-
-@app.route('/accounts/reset-password/')
-def accounts_reset_password():
-  return render_template('accounts/reset-password.html', segment='reset_password', parent='accounts')
-
-@app.route('/accounts/lock/')
-def accounts_lock():
-  return render_template('accounts/lock.html', segment='lock', parent='accounts')
-
 @app.route('/accounts/password-change/')
 def accounts_password_change():
   return render_template('accounts/password-change.html', segment='password-change', parent='accounts')
@@ -550,25 +522,3 @@ def accounts_password_change():
 def logout():
     logout_user()
     return redirect(url_for('accounts_sign_in'))
-
-# Pages Components
-
-@app.route('/pages/components/buttons/')
-def pages_components_buttons():
-  return render_template('pages/components/buttons.html', segment='buttons', parent='components')
-
-@app.route('/pages/components/notifications/')
-def pages_components_notifications():
-  return render_template('pages/components/notifications.html', segment='notifications', parent='components')
-
-@app.route('/pages/components/forms/')
-def pages_components_forms():
-  return render_template('pages/components/forms.html', segment='forms', parent='components')
-
-@app.route('/pages/components/modals/')
-def pages_components_modals():
-  return render_template('pages/components/modals.html', segment='modals', parent='components')
-
-@app.route('/pages/components/typography/')
-def pages_components_typography():
-  return render_template('pages/components/typography.html', segment='typography', parent='components')
