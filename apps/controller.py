@@ -62,9 +62,9 @@ class controller:
         db.session.delete(userMember)
         db.session.commit()
 
-    def addMedia(media_name,url, type,user_id, location_address, member_id, results, detailed_results):
+    def addMedia(media_name,url, type,user_id, location_address, member_id, results, face_results="", body_results="", audio_results=""):
         newMedia = Media(media_name=media_name,url=url, type=type,user_id=user_id,
-                         location_address=location_address, member_id=member_id, results =results, detailed_results=detailed_results) 
+                         location_address=location_address, member_id=member_id, results =results, face_results=face_results, body_results=body_results, audio_results=audio_results) 
         db.session.add(newMedia)
         db.session.commit()
 

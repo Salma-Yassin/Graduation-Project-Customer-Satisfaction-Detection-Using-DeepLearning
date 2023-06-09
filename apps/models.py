@@ -65,7 +65,10 @@ class Media(db.Model):
     type : str
     user_id : int
     results : str
-    detailed_results : str
+    face_results : str
+    body_results : str
+    audio_results : str
+    # detailed_results : str
     created_at : datetime.datetime
     
     id = db.Column(db.Integer, primary_key=True)
@@ -78,18 +81,24 @@ class Media(db.Model):
     type = db.Column(db.String(), nullable=False)
     user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),server_default=func.now())
-    results = db.Column(db.String(150), nullable=False)
-    detailed_results = db.Column(db.String(150), nullable=False)
+    results = db.Column(db.String, nullable=False)
+    face_results = db.Column(db.String(150))
+    body_results = db.Column(db.String(150))
+    audio_results = db.Column(db.String(150))
+    # detailed_results = db.Column(db.String(150), nullable=False)
     #results = relationship("AnalysisResults", backref="Media", passive_deletes=True)
 
-@dataclass
-class AnalysisResults(db.Model):
-    id : int
-    media_id : int
-    results : str
-    
-    id = db.Column(db.Integer, primary_key=True)
-    media_id = db.Column(db.ForeignKey(Media.id, ondelete='CASCADE'),
-                         nullable=False)
-    results = db.Column(db.String)
+# @dataclass
+# class AnalysisResults(db.Model):
+#     id : int
+#     media_id : int
+#     face_results : str
+#     body_results : str
+#     audio_results : str
+
+#     id = db.Column(db.Integer, primary_key=True)
+#     media_id = db.Column(db.ForeignKey(Media.id, ondelete='CASCADE'),
+#                          nullable=False)
+
+
     # Other Analysis Data

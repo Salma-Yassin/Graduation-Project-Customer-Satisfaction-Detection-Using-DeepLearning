@@ -21,6 +21,7 @@ from .inference_flask import query, query_face, queryLocal, query_body_video, qu
 import sys
 from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict
+from moviepy.editor import *
 
 # App modules
 from apps import app
@@ -79,8 +80,7 @@ def create_media(user, user_locations, members):
                 0, int((end_date - start_date).total_seconds())))
         media = Media(media_name=f'Media {i}', url=f'https://media{i}.com',
                       location_address=location.name, member_id=member.member_id,
-                      type=media_type, user_id=user.id, created_at=created_at, results=result,
-                      detailed_results=detailed_results)
+                      type=media_type, user_id=user.id, created_at=created_at, results=result)
         db.session.add(media)
         db.session.commit()
         medias.append(media)
@@ -178,7 +178,7 @@ def add_media_function(request):
                 url = file_path
                 category = queryLocal(url)
                 flash('File has been uploaded.')
-                detailed_results = json.dumps(category)
+                audio_results = json.dumps(category)
                 results = (category)[0]['label']
                 results = unify_audio(results)
 
@@ -191,22 +191,38 @@ def add_media_function(request):
                 print(file_path)
                 file.save(file_path)
                 url = file_path
+                ## Bodyyyyyy
                 # category = query_body_video(url,media_name)
             # Convert dictionary to string
                 # detailed_results = category
             # results = list(category.keys())[0]
                 # results = category
                 # print('Body Model Results:',results)
-                total_results = dict()
+                # total_results = dict()
                 # total_results['body'] = results
-                category = query_face(url)
+                ## FAAAACCCEEE
+                # category = query_face(url)
             # Convert dictionary to string
-                detailed_results = json.dumps(normalize_dict(category))
+                # detailed_results = json.dumps(normalize_dict(category))
             # results = list(category.keys())[0]
-                results = next(iter(category))
-                results = unify_video(results)
-                print('Face Model Results:',results)
-                total_results['face'] = results
+                # results = next(iter(category))
+                # results = unify_video(results)
+                # print('Face Model Results:',results)
+                # total_results['face'] = results
+                ## ADUIOIIOOO
+                video = VideoFileClip(url)
+                audio = video.audio
+                if (audio):
+                    output_audio = os.path.join(os.path.abspath(os.path.dirname(
+                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                    audio.write_audiofile(output_audio, codec='pcm_s16le')
+                    category = queryLocal(output_audio)
+                    flash('Audio has been uploaded.')
+                    audio_results = json.dumps(category)
+                    results = (category)[0]['label']
+                    results = unify_audio(results)
+                else:
+                    print('No audio exists!')
 
         elif urlink:
             if media_type == 'Audio':
@@ -232,7 +248,7 @@ def add_media_function(request):
 
         user_id = current_user.id
         controller.addMedia(media_name=media_name, url=url, type=media_type, user_id=user_id,
-                            location_address=location_add, member_id=emp_id, results=results, detailed_results=detailed_results)
+                            location_address=location_add, member_id=emp_id, results=results)
         flash('Media added successfuly!', category='success')
         # created_media = Media.query.filter_by(url=url).first()
         # controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])
