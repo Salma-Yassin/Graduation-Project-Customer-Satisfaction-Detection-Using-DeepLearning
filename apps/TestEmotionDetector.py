@@ -16,7 +16,7 @@ def extractIDfromURL(url):
         print("No id found in URL")
         return 0
 
-def predictEmotionFace(url_base, flag):
+def predictEmotionFace(url_base, flag, media_name):
      
 
     emotion_dict = {0: "Angry", 1: "Disgusted", 2: "Fearful", 3: "Happy", 4: "Neutral", 5: "Sad", 6: "Surprised"}
@@ -154,7 +154,7 @@ def predictEmotionFace(url_base, flag):
     output_video.release()
     cv2.destroyAllWindows()
     video = VideoFileClip("Results/output_video_6.mp4")
-    video.write_videofile("apps/static/filat/output.mp4", codec='libx264')
+    video.write_videofile("apps/static/filat/"+media_name+".mp4", codec='libx264')
     video.close()
     emotionOutputDict = {} 
     for key in emotion_dict.keys():

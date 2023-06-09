@@ -10,7 +10,7 @@ headers = {"Authorization": "Bearer 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"}
 
 
 @app.route('/tone_inference')
-def query(file_url):
+def query(file_url, media_name):
     cont = requests.get(file_url, verify=False)
     response = requests.post(API_URL, headers=headers,
                              data=cont, verify=False).json()
@@ -19,9 +19,9 @@ def query(file_url):
 
 
 @app.route('/face_inference')
-def query_face(file_url):
+def query_face(file_url,flag, media_name):
     # cont = requests.get(file_url, verify= False)
-    response = predictEmotionFace(file_url)
+    response = predictEmotionFace(file_url,flag, media_name)
     return response
 
 
@@ -44,7 +44,7 @@ def query_body_image(image_txt_path):
 
 
 @app.route('/tone_inferenceLocal')
-def queryLocal(file):
+def queryLocal(file,media_name):
     with open(file, "rb") as f:
         data = f.read()
     response = requests.post(API_URL, headers=headers, data=data).json()

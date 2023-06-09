@@ -93,7 +93,7 @@ def create_media(user, user_locations, members):
         location = random.choice(user_locations)
         media_type = random.choice(media_types)
         result = random.choice(results)
-        detailed_results = "[{\"score\": 0.7873730659484863, \"label\": \"hap\"}, {\"score\": 0.20546337962150574, \"label\": \"ang\"}, {\"score\": 0.0037874202243983746, \"label\": \"sad\"}, {\"score\": 0.0033761027734726667, \"label\": \"neu\"}]"
+        audio_results = "[{\"score\": 0.7873730659484863, \"label\": \"hap\"}, {\"score\": 0.20546337962150574, \"label\": \"ang\"}, {\"score\": 0.0037874202243983746, \"label\": \"sad\"}, {\"score\": 0.0033761027734726667, \"label\": \"neu\"}]"
         start_date = datetime(2023, 1, 1)
         end_date = datetime(2023, 12, 31)
         created_at = start_date + \
@@ -101,7 +101,8 @@ def create_media(user, user_locations, members):
                 0, int((end_date - start_date).total_seconds())))
         media = Media(media_name=f'Media {i}', url=f'https://media{i}.com',
                       location_address=location.name, member_id=member.member_id,
-                      type=media_type, user_id=user.id, created_at=created_at, results=result)
+                      type=media_type, companyName = user.companyName ,created_at = created_at, results=result,
+                      audio_results = audio_results)
         db.session.add(media)
         db.session.commit()
         medias.append(media)
@@ -134,19 +135,45 @@ def play_media():
         return jsonify({'status': 'success'})
 
 
-@app.route('/update_chart_raw', methods=['GET', 'POST'])
-def update_chart_raw():
+@app.route('/update_chart_audio', methods=['GET', 'POST'])
+def update_chart_audio():
     if request.method == 'GET':
-        with open("apps/updateChartRaw.json") as f:
+        with open("apps/updateChartAudio.json") as f:
             data = json.load(f)
         return data
 
     elif request.method == 'POST':
         data = request.get_json()
-        with open("apps/updateChartRaw.json", "w") as f:
+        with open("apps/updateChartAudio.json", "w") as f:
             json.dump(data, f)
         return jsonify({'status': 'success'})
 
+@app.route('/update_chart_face', methods=['GET', 'POST'])
+def update_chart_face():
+    if request.method == 'GET':
+        with open("apps/updateChartFace.json") as f:
+            data = json.load(f)
+        return data
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        with open("apps/updateChartFace.json", "w") as f:
+            json.dump(data, f)
+        return jsonify({'status': 'success'})
+
+
+@app.route('/update_chart_body', methods=['GET', 'POST'])
+def update_chart_body():
+    if request.method == 'GET':
+        with open("apps/updateChartBody.json") as f:
+            data = json.load(f)
+        return data
+
+    elif request.method == 'POST':
+        data = request.get_json()
+        with open("apps/updateChartBody.json", "w") as f:
+            json.dump(data, f)
+        return jsonify({'status': 'success'})
 
 @app.route('/location_data')
 @login_required
@@ -166,8 +193,7 @@ def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
    #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-   print(current_user.company_name)
-   history_table = Media.query.filter_by(companyName = 'blue').all()
+   history_table = Media.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(history_table)
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
@@ -179,13 +205,16 @@ def add_media_function(request):
     media_name = request.form.get('media_name')
     urlink = request.form.get('url')
     # url_check = Media.query.filter_by(url=url).first()
-    url = ""
+    # url = ""
     media_type = request.form.get('media_type_form')
     media_name_check = Media.query.filter_by(media_name=media_name).first()
     emp_id = request.form.get('employee_id')
     location_add = request.form.get('location')
 
     file=request.files.get('file')
+    face_results=''
+    body_results='' 
+    audio_results=''
 
     if media_name_check:
         flash('Media Name used, enter another one', category='error')
@@ -197,7 +226,7 @@ def add_media_function(request):
                 file.save(file_path)
                 print(file_path)
                 url=file_path
-                category=queryLocal(url)
+                category=queryLocal(url,media_name)
                 flash('File has been uploaded.')
                 audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
@@ -205,9 +234,9 @@ def add_media_function(request):
 
             elif urlink: 
                 url=urlink
-                category = query(url)
+                category = query(url,media_name)
                 # Convert dictionary to string
-                detailed_results = json.dumps(sorting_audio(category))
+                audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
                 results = unify_audio(results)
         
@@ -219,10 +248,10 @@ def add_media_function(request):
                 print(file_path)
                 flag = 'local'
                 url=file_path
-                # category = query_face(url,flag)
-                category = {'Happy': 1/7, 'Sad': 1/7, 'Fearful': 1/7, 'Neutral': 1/7, 'Angry': 1/7, 'Disgusted': 1/7,'Surprised': 1/7}
+                category = query_face(url,flag,media_name)
+                # category = {'Happy': 1/7, 'Sad': 1/7, 'Fearful': 1/7, 'Neutral': 1/7, 'Angry': 1/7, 'Disgusted': 1/7,'Surprised': 1/7}
                 # detailed_results = json.dumps(normalize_dict(category))
-                detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
+                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
                 results = next(iter(category))
                 results = unify_video(results)
                                 ## Bodyyyyyy
@@ -262,10 +291,10 @@ def add_media_function(request):
             elif urlink:
                 url=urlink
                 flag = 'url'
-                category = query_face(url,flag)
+                category = query_face(url,flag,media_name)
                 # Convert dictionary to string
                 # detailed_results = json.dumps(normalize_dict(category))
-                detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
+                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
                 #results = list(category.keys())[0]
                 results = next(iter(category))
                 results = unify_video(results)
@@ -277,7 +306,8 @@ def add_media_function(request):
 
   
     companyName = current_user.companyName
-    controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, 
+                        results = results, face_results=face_results, body_results=body_results, audio_results=audio_results)
     flash('Media added successfuly!', category='success')
     #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
@@ -465,8 +495,8 @@ def employee_report():
 @app.route('/pages/MediaAnalysis/<video>')
 @login_required
 def pages_analysis(video):
-    video = "output"
     filename = secure_filename(video + ".mp4")
+    print(filename)
     return render_template('pages/dashboard/mediaAnalysis.html', filename=filename, segment='media', parent='pages', user=current_user)
 
 # Adding Media Analysis view
