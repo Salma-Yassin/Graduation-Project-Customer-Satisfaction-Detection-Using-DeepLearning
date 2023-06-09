@@ -2,7 +2,7 @@ flask/
 *.pyc
 dev
 node_modules
-apps/instance/database.db
+instance/
 app/build
 yarn.lock
 yarn-error.log
@@ -13,5 +13,5 @@ env__/
 apps/db.sqlite3
 apps/debug_exp
 *.db
-apps/Results/
-apps/static/assets/filat/
+apps/static/filat/
+Results/
