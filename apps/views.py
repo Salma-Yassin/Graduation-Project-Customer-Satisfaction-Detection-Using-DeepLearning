@@ -149,21 +149,25 @@ def update_chart_raw():
 
 
 @app.route('/location_data')
+@login_required
 def get_location_data():
    locations_table = UserLocations.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(locations_table)
 
 @app.route('/empolyee_data')
+@login_required
 def get_empolyee_data():
    empolyee_table = UserMembers.query.filter_by(companyName = current_user.companyName).all()
    return jsonify(empolyee_table)
 
 @app.route('/media_data')
+@login_required
 def get_media_data():
    # generating random data for testing 
    #cursor= db.cursor()
    #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-   history_table = Media.query.filter_by(companyName = current_user.companyName).all()
+   print(current_user.company_name)
+   history_table = Media.query.filter_by(companyName = 'blue').all()
    return jsonify(history_table)
    #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
@@ -433,25 +437,25 @@ def satisfied_employees():
 
 @app.route('/employee_report')
 def employee_report():
-    # Retrieve the required data
-    employees = UserMembers.query.all()
+    # # Retrieve the required data
+    # employees = UserMembers.query.all()
 
-    # Format the data into a report
-    report_data = []
-    for employee in employees:
-        media = Media.query.filter_by(member_id=employee.id).first()
-        if media:
-            employee_data = {
-                'Name': employee.name,
-                'ID': employee.id,
-                'Location': media.location_address,
-                'Results': AnalysisResults.query.filter_by(media_id=media.id).first().results
-            }
-            report_data.append(employee_data)
+    # # Format the data into a report
+    # report_data = []
+    # for employee in employees:
+    #     media = Media.query.filter_by(member_id=employee.id).first()
+    #     if media:
+    #         employee_data = {
+    #             'Name': employee.name,
+    #             'ID': employee.id,
+    #             'Location': media.location_address,
+    #             # 'Results': AnalysisResults.query.filter_by(media_id=media.id).first().results
+    #         }
+    #         report_data.append(employee_data)
 
-    # Return the report data as JSON response
-    return json.dumps(report_data)
-
+    # # Return the report data as JSON response
+    # return json.dumps(report_data)
+    return {}
 
 ####################End of Statistics####################
 

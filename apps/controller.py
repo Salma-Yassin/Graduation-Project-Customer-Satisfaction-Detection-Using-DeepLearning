@@ -87,23 +87,23 @@ class controller:
         db.session.delete(media)
         db.session.commit()
 
-    def addAnalysisResult(media_id, result=''):
-        newAnalysisResult = AnalysisResults(media_id=media_id, result=result)
-        db.session.add(newAnalysisResult)
-        db.session.commit()
+    # def addAnalysisResult(media_id, result=''):
+    #     newAnalysisResult = AnalysisResults(media_id=media_id, result=result)
+    #     db.session.add(newAnalysisResult)
+    #     db.session.commit()
 
-    def editAnalysisResult(id, media_id=0, result=''):
-        analysisResult = AnalysisResults.query.filter_by(id=id).first()
-        if media_id != 0:
-            analysisResult.media_id = media_id
-        if result != '':
-            analysisResult.result = result
-        db.session.commit()
+    # def editAnalysisResult(id, media_id=0, result=''):
+    #     analysisResult = AnalysisResults.query.filter_by(id=id).first()
+    #     if media_id != 0:
+    #         analysisResult.media_id = media_id
+    #     if result != '':
+    #         analysisResult.result = result
+    #     db.session.commit()
 
-    def deleteAnalysisResult(id):
-        analysisResult = AnalysisResults.query.filter_by(id=id).first()
-        db.session.delete(analysisResult)
-        db.session.commit()
+    # def deleteAnalysisResult(id):
+    #     analysisResult = AnalysisResults.query.filter_by(id=id).first()
+    #     db.session.delete(analysisResult)
+    #     db.session.commit()
 
         
 # Add Feedback
