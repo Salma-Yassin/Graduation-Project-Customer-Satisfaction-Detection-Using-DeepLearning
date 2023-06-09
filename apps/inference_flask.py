@@ -18,10 +18,12 @@ def query(file_url):
     return response
 
 
+
+
 @app.route('/face_inference')
-def query_face(file_url):
+def query_face(file_url,flag):
     # cont = requests.get(file_url, verify= False)
-    response = predictEmotionFace(file_url)
+    response = predictEmotionFace(file_url,flag)
     return response
 
 
@@ -49,7 +51,6 @@ def queryLocal(file):
         data = f.read()
     response = requests.post(API_URL, headers=headers, data=data).json()
     return response
-
 
 # @app.route('/tone_inference')
 # def query(file_url):

@@ -144,7 +144,6 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
 
 
 
-
   if to_print == True:
     print ('\n Image predictions')
     print ('Continuous Dimnesions Predictions') 
