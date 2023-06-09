@@ -20,29 +20,50 @@ from random import sample
 from .inference_flask import query, query_face, queryLocal, query_body_video, query_body_image
 import sys
 from .controller import controller
-from .helpers import unify_audio, unify_video, normalize_dict
 from moviepy.editor import *
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face
+from functools import wraps
 
 # App modules
 from apps import app
 import random
 from datetime import datetime, timedelta
+from sqlalchemy import case, Float
+
+# Implement role-based access control
+class Role:
+    ADMIN = 'admin'
+    REGULAR = 'regular'
 
 
+# Define custom decorators for restricting access based on role
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        print("")
+        if not current_user.is_authenticated or current_user.role != Role.ADMIN:
+            return render_template('pages/examples/404.html'), 403
+        return f(*args, **kwargs)
+    return decorated_function
+
+def createAdmins():
+  new_user = AdminUser(email="Admin@gmail.com", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
+  db.session.add(new_user)
+  db.session.commit()
+  return new_user
+   
 def create_user():
-    new_user = User(
-        email="help@gg", password=generate_password_hash("123456789", method='sha256'))
-    db.session.add(new_user)
-    db.session.commit()
-    # login_user(new_user, remember=True)
-    return new_user
-
+     new_user = RegularUser(email="help@gg", companyName = 'blue', password= generate_password_hash("123456789", method='sha256')) 
+     db.session.add(new_user)
+     db.session.commit()
+     #login_user(new_user, remember=True)
+     return new_user
 
 def create_locations(user):
     locations = ['New York', 'Los Angeles', 'Chicago', 'Houston', 'Miami']
     user_locations = []
     for location in locations:
-        user_location = UserLocations(name=location, user_id=user.id)
+        user_location = UserLocations(name=location, companyName = user.companyName)
         db.session.add(user_location)
         db.session.commit()
         user_locations.append(user_location)
@@ -55,7 +76,7 @@ def create_members(user, user_locations):
         member_id = random.randint(100000, 999999)
         gender = random.choice(['male', 'female'])
         location = random.choice(user_locations)
-        member = UserMembers(name=f'Member{i}', user_id=user.id, member_id=member_id,
+        member = UserMembers(name=f'Member{i}', companyName = user.companyName , member_id=member_id,
                              gender=gender, location_id=location.id)
         db.session.add(member)
         db.session.commit()
@@ -129,25 +150,22 @@ def update_chart_raw():
 
 @app.route('/location_data')
 def get_location_data():
-    locations_table = UserLocations.query.filter_by(
-        user_id=current_user.id).all()
-    return jsonify(locations_table)
-
+   locations_table = UserLocations.query.filter_by(companyName = current_user.companyName).all()
+   return jsonify(locations_table)
 
 @app.route('/empolyee_data')
 def get_empolyee_data():
-    empolyee_table = UserMembers.query.filter_by(user_id=current_user.id).all()
-    return jsonify(empolyee_table)
-
+   empolyee_table = UserMembers.query.filter_by(companyName = current_user.companyName).all()
+   return jsonify(empolyee_table)
 
 @app.route('/media_data')
 def get_media_data():
-    # generating random data for testing
-    # cursor= db.cursor()
-    # history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
-    history_table = Media.query.filter_by(user_id=current_user.id).all()
-    return jsonify(history_table)
-    # return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
+   # generating random data for testing 
+   #cursor= db.cursor()
+   #history_table = cursor.execute("SELECT * FROM Media WHERE user_id=?;", [current_user.id])
+   history_table = Media.query.filter_by(companyName = current_user.companyName).all()
+   return jsonify(history_table)
+   #return jsonify({'data':[{'URL':'https://www.youtube.com/watch?v=poZt1f43gBc','Type':'vedio','Location':'Maady','EmployeeID' : '20147501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'},{'URL':'https://www.youtube.com/watch?v=qDc484XBFjI','Type':'vedio','Location':'October','EmployeeID' : '201871501'}]})
 
 
 # Pages -- Dashboard
@@ -163,35 +181,47 @@ def add_media_function(request):
     emp_id = request.form.get('employee_id')
     location_add = request.form.get('location')
 
+    file=request.files.get('file')
+
     if media_name_check:
         flash('Media Name used, enter another one', category='error')
-    else:
-        file = request.files.get('file')
-        if file:
-            if media_type == 'Audio':
-
+    else: 
+        if media_type == 'Audio':
+            if file: 
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'], filename)
-                print(file_path)
+                file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-                url = file_path
-                category = queryLocal(url)
+                print(file_path)
+                url=file_path
+                category=queryLocal(url)
                 flash('File has been uploaded.')
-                audio_results = json.dumps(category)
+                audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
                 results = unify_audio(results)
 
-            elif media_type == 'Video':
+            elif urlink: 
+                url=urlink
+                category = query(url)
+                # Convert dictionary to string
+                detailed_results = json.dumps(sorting_audio(category))
+                results = (category)[0]['label']
+                results = unify_audio(results)
+        
+        elif media_type == 'Video':
+            if file: 
                 filename = secure_filename(file.filename)
-                file_path = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'], filename)
-                # 'C:\\Users\\Dell\\Desktop\\website gradproject\\GP_Trial_Repo\\apps\\./apps/static/uploads/Friends___S1E6___Chandler___2.mp4'
-                # 'C:\\Users\\Dell\\Desktop\\website gradproject\\GP_Trial_Repo\\apps\\./apps/static/uploads/Friends___S1E6___Chandler___2.mp4'
-                print(file_path)
+                file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
                 file.save(file_path)
-                url = file_path
-                ## Bodyyyyyy
+                print(file_path)
+                flag = 'local'
+                url=file_path
+                # category = query_face(url,flag)
+                category = {'Happy': 1/7, 'Sad': 1/7, 'Fearful': 1/7, 'Neutral': 1/7, 'Angry': 1/7, 'Disgusted': 1/7,'Surprised': 1/7}
+                # detailed_results = json.dumps(normalize_dict(category))
+                detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
+                results = next(iter(category))
+                results = unify_video(results)
+                                ## Bodyyyyyy
                 # category = query_body_video(url,media_name)
             # Convert dictionary to string
                 # detailed_results = category
@@ -209,60 +239,66 @@ def add_media_function(request):
                 # results = unify_video(results)
                 # print('Face Model Results:',results)
                 # total_results['face'] = results
-                ## ADUIOIIOOO
-                video = VideoFileClip(url)
-                audio = video.audio
-                if (audio):
-                    output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
-                    audio.write_audiofile(output_audio, codec='pcm_s16le')
-                    category = queryLocal(output_audio)
-                    flash('Audio has been uploaded.')
-                    audio_results = json.dumps(category)
-                    results = (category)[0]['label']
-                    results = unify_audio(results)
-                else:
-                    print('No audio exists!')
+                # ## ADUIOIIOOO
+                # video = VideoFileClip(url)
+                # audio = video.audio
+                # if (audio):
+                #     output_audio = os.path.join(os.path.abspath(os.path.dirname(
+                #     __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                #     audio.write_audiofile(output_audio, codec='pcm_s16le')
+                #     category = queryLocal(output_audio)
+                #     flash('Audio has been uploaded.')
+                #     audio_results = json.dumps(category)
+                #     results = (category)[0]['label']
+                #     results = unify_audio(results)
+                # else:
+                #     print('No audio exists!')
 
-        elif urlink:
-            if media_type == 'Audio':
-                url = urlink
-                category = query(url)
+
+            elif urlink:
+                url=urlink
+                flag = 'url'
+                category = query_face(url,flag)
                 # Convert dictionary to string
-                detailed_results = json.dumps(category)
-                results = (category)[0]['label']
-                results = unify_audio(results)
-
-            elif media_type == 'Video':
-                category = query_face(url)
-            # Convert dictionary to string
-                detailed_results = json.dumps(normalize_dict(category))
-            # results = list(category.keys())[0]
+                # detailed_results = json.dumps(normalize_dict(category))
+                detailed_results = json.dumps(normalize_dict(sorting_video_face((category))))
+                #results = list(category.keys())[0]
                 results = next(iter(category))
                 results = unify_video(results)
-            # category = query_face(url)
-            # category = 'Unknown'
-            # call body model --->
-            else:
-                category = 'Unknown'
+                #category = query_face(url)
+                #category = 'Unknown'
+                # call body model ---> 
+        else:
+            category = 'Unknown'
 
-        user_id = current_user.id
-        controller.addMedia(media_name=media_name, url=url, type=media_type, user_id=user_id,
-                            location_address=location_add, member_id=emp_id, results=results)
-        flash('Media added successfuly!', category='success')
-        # created_media = Media.query.filter_by(url=url).first()
-        # controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])
-        # show data
-        # return redirect(url_for('pages_history'))
+  
+    companyName = current_user.companyName
+    controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, results = results, detailed_results= detailed_results)
+    flash('Media added successfuly!', category='success')
+    #created_media = Media.query.filter_by(url=url).first()
+     #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
+     #show data 
+     #return redirect(url_for('pages_history'))
 
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
-    if request.method == 'POST':
-        add_media_function(request)
-        return redirect(url_for('pages_history'))
-    return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+
+  user = AdminUser.query.filter_by(email="Admin@gmail.com").first()
+  if user:
+      print(f"User with email '{user.email}' already exists")
+  else:
+      # Create a new user object and add it to the database session
+      user = createAdmins()
+      user_locations = create_locations(user)
+      members = create_members(user, user_locations)
+      create_media(user, user_locations, members)
+
+  if request.method == 'POST':
+     add_media_function(request)
+     return redirect(url_for('pages_history'))
+  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
 # Pages
@@ -278,28 +314,150 @@ def pages_history():
 
 @app.route('/pages/manage/', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def pages_manage():
-    locations_table = UserLocations.query.filter_by(
-        user_id=current_user.id).all()
+  if request.method == 'POST':
+     companyName = current_user.companyName
+     if request.form.get('Location_form'):       
+        location = request.form.get('location')
+        controller.addUserLocation(name=location, companyName = companyName)
+
+     elif request.form.get('Employee_form'):
+        empo_name = request.form.get('name')
+        empo_gender = request.form.get('gender')
+        empo_id = request.form.get('id')
+        empo_location = request.form.get('location')
+        controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+        
+  return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
+
+@app.route('/pages/support')
+@login_required
+def support_page():
+  return render_template('pages/dashboard/support.html', segment='support', parent='pages',user=current_user)
+
+##ِAdding About Us Page###
+@app.route('/about')
+def about():
+    return render_template('pages/dashboard/about.html')
+
+##########FEEDBACK & ContactUs PAGE ADDED NEWLY ####################
+
+# ...
+
+        # Save feedback to JSON file
+'''        try:
+            with open('apps/feedbacks.json', 'a') as f:
+                data = {
+                    'name': name,
+                    'email': email,
+                    'message': message
+                }
+                json.dump(data, f)
+                f.write('\n')
+        except Exception as e:
+            flash(f'Error occurred while saving feedback: {str(e)}', category='error')'''
+    
+
+@app.route('/feedback_form', methods=['GET', 'POST'])
+def feedback_form():
     if request.method == 'POST':
-        user_id = current_user.id
-        if request.form.get('Location_form'):
-            location = request.form.get('location')
-            controller.addUserLocation(name=location, user_id=user_id)
+        
+        name = request.form.get('name')
+        email = request.form.get('email')
+        message = request.form.get('message')
+        controller.AddFeedback(name=name, email=email, message=message)
+        flash('Feedback Received!', category='success')
 
-        elif request.form.get('Employee_form'):
-            empo_name = request.form.get('name')
-            empo_gender = request.form.get('gender')
-            empo_id = request.form.get('id')
-            empo_location = request.form.get('location')
-            controller.addUserMember(name=empo_name, user_id=user_id, member_id=empo_id,
-                                     member_gender=empo_gender, location_id=empo_location)
-
-    return render_template('pages/dashboard/manage.html', emp_locations=locations_table, segment='manage', parent='pages', user=current_user)
-
-# Adding Media Analysis view
+    return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
 
 
+          #########
+@app.route('/contact_form', methods=['GET', 'POST'])
+def contact_form():
+    if request.method == 'POST':
+       
+        email = request.form.get('email')
+        message = request.form.get('message')
+        controller.AddContact(email=email , message=message)
+        flash('We will get back to you soon!', category='success')
+  
+    return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+
+####################END OF FEEDBACK & ContactUs ADDED NEWLY##################3
+
+################Start of Statistics################
+#Adding the top locations with satisfied results
+@app.route('/satisfied_locations')
+def satisfied_locations():
+    satisfied_results = (
+        Media.query
+        .with_entities(
+            Media.location_address,
+            func.count(case((Media.results == 'Satisfied', 1))).label('count')
+        )
+        .group_by(Media.location_address)
+        .order_by(func.count().desc())
+        # .limit(5)  # to get top 5 locations
+        .all()
+    )
+
+    # Separate the location addresses and counts into separate lists
+    top_locations = [result.location_address for result in satisfied_results]
+    counts = [result.count for result in satisfied_results]
+
+    data = {'top_locations': top_locations, 'counts': counts}
+    return json.dumps(data)
+
+
+
+@app.route('/satisfied_employees')
+def satisfied_employees():
+    satisfied_results = (
+        db.session.query(UserMembers.name, func.count())
+        .join(Media, Media.member_id == UserMembers.member_id)
+        .filter(Media.results == 'Satisfied')
+        .group_by(UserMembers.name)
+        .order_by(func.count().desc())
+        .all()
+    )
+
+    # Separate the member names and counts into separate lists
+    top_members = [result[0] for result in satisfied_results]
+    counts = [result[1] for result in satisfied_results]
+    data = {'top_members': top_members, 'counts': counts}
+    return json.dumps(data)
+  
+##Report## 
+
+
+@app.route('/employee_report')
+def employee_report():
+    # Retrieve the required data
+    employees = UserMembers.query.all()
+
+    # Format the data into a report
+    report_data = []
+    for employee in employees:
+        media = Media.query.filter_by(member_id=employee.id).first()
+        if media:
+            employee_data = {
+                'Name': employee.name,
+                'ID': employee.id,
+                'Location': media.location_address,
+                'Results': AnalysisResults.query.filter_by(media_id=media.id).first().results
+            }
+            report_data.append(employee_data)
+
+    # Return the report data as JSON response
+    return json.dumps(report_data)
+
+
+####################End of Statistics####################
+
+
+
+# Adding Media Analysis view 
 @app.route('/pages/MediaAnalysis/<video>')
 @login_required
 def pages_analysis(video):
@@ -331,20 +489,6 @@ def pages_uploadMedia():
 @login_required
 def pages_settings():
     return render_template('pages/settings.html', segment='settings', parent='pages', user=current_user)
-
-
-@app.route('/pages/upgrade-to-pro/')
-def pages_upgrade_to_pro():
-    return render_template('pages/upgrade-to-pro.html', segment='upgrade_to_pro', parent='pages')
-
-# Pages -- Tables
-
-
-@app.route('/pages/tables/bootstrap-tables/')
-@login_required
-def pages_tables_bootstrap_tables():
-    return render_template('pages/tables/bootstrap-tables.html', segment='bootstrap_tables', parent='tables', user=current_user)
-
 # Pages -- Pages examples
 
 
@@ -357,21 +501,19 @@ def pages_examples_404():
 def pages_examples_500():
     return render_template('pages/examples/500.html', segment='500', parent='pages')
 
+
+
+
+
+
+
+
+
 # Accounts
 
 
 @app.route('/accounts/sign-in/', methods=['GET', 'POST'])
 def accounts_sign_in():
-    user = User.query.filter_by(email='help@gg').first()
-    if user:
-        print(f"User with email '{user.email}' already exists")
-    else:
-        # Create a new user object and add it to the database session
-        user = create_user()
-        user_locations = create_locations(user)
-        members = create_members(user, user_locations)
-        medias = create_media(user, user_locations, members)
-
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
@@ -393,6 +535,7 @@ def accounts_sign_in():
 def accounts_sign_up():
     if request.method == 'POST':
         email = request.form.get('email')
+        companyName = request.form.get('companyName')
         password1 = request.form.get('password1')
         password2 = request.form.get('password2')
         # return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
@@ -411,8 +554,7 @@ def accounts_sign_up():
             flash('Password must be at least 7 characters.', category='error')
             # return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages')
         else:
-            new_user = User(email=email, password=generate_password_hash(
-                password1, method='sha256'))
+            new_user = RegularUser(email = email, companyName = companyName , password = generate_password_hash(password1, method='sha256')) 
             db.session.add(new_user)
             db.session.commit()
             login_user(new_user, remember=True)
@@ -434,11 +576,6 @@ def accounts_reset_password():
     return render_template('accounts/reset-password.html', segment='reset_password', parent='accounts')
 
 
-@app.route('/accounts/lock/')
-def accounts_lock():
-    return render_template('accounts/lock.html', segment='lock', parent='accounts')
-
-
 @app.route('/accounts/password-change/')
 def accounts_password_change():
     return render_template('accounts/password-change.html', segment='password-change', parent='accounts')
@@ -449,30 +586,3 @@ def accounts_password_change():
 def logout():
     logout_user()
     return redirect(url_for('accounts_sign_in'))
-
-# Pages Components
-
-
-@app.route('/pages/components/buttons/')
-def pages_components_buttons():
-    return render_template('pages/components/buttons.html', segment='buttons', parent='components')
-
-
-@app.route('/pages/components/notifications/')
-def pages_components_notifications():
-    return render_template('pages/components/notifications.html', segment='notifications', parent='components')
-
-
-@app.route('/pages/components/forms/')
-def pages_components_forms():
-    return render_template('pages/components/forms.html', segment='forms', parent='components')
-
-
-@app.route('/pages/components/modals/')
-def pages_components_modals():
-    return render_template('pages/components/modals.html', segment='modals', parent='components')
-
-
-@app.route('/pages/components/typography/')
-def pages_components_typography():
-    return render_template('pages/components/typography.html', segment='typography', parent='components')

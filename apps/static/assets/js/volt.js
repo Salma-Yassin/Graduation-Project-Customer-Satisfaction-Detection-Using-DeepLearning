@@ -395,7 +395,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                         // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
                         fill: 'freeze'
                     }
-                };
+                };    
 
                 // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
                 if (data.index !== 0) {
@@ -424,18 +424,11 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
         if (d.querySelector(".ct-chart-face")) {
             /// will be changed:
-            /*results = $.parseJSON(results);
-            console.log(results)
-
-            var scores = [];
-            var labels = [];
-            results.forEach(({ score }) => scores.push(score));
-            results.forEach(({ label }) => labels.push(label));
-            console.log(scores)*/
+          
             var value_chart_old = Object.values(results)
             var value_chart = []
             value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
-            //value_chart=(value_chart*100).toFixed(2)
+        
             var chart = new Chartist.Pie('.ct-chart-face', {
                 series: value_chart,
                 labels: value_chart
@@ -445,56 +438,58 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 startAngle: 0,
                 showLabel: true
             });
-
-            chart.on('draw', function (data) {
-                if (data.type === 'slice') {
-                    // Get the total path length in order to use for dash array animation
-                    var pathLength = data.element._node.getTotalLength();
-
-                    // Set a dasharray that matches the path length as prerequisite to animate dashoffset
-                    data.element.attr({
-                        'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
-                    });
-
-                    // Create animation definition while also assigning an ID to the animation for later sync usage
-                    var animationDefinition = {
-                        'stroke-dashoffset': {
-                            id: 'anim' + data.index,
-                            dur: 1000,
-                            from: -pathLength + 'px',
-                            to: '0px',
-                            easing: Chartist.Svg.Easing.easeOutQuint,
-                            // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
-                            fill: 'freeze'
-                        }
-                    };
-
-                    // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
-                    if (data.index !== 0) {
-                        animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
-                    }
-
-                    // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
-                    data.element.attr({
-                        'stroke-dashoffset': -pathLength + 'px'
-                    });
-
-                    // We can't use guided mode as the animations need to rely on setting begin manually
-                    // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
-                    data.element.animate(animationDefinition, false);
-                }
-            });
-
-            // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
-            chart.on('created', function () {
-                if (window.__anim21278907124) {
-                    clearTimeout(window.__anim21278907124);
-                    window.__anim21278907124 = null;
-                }
-                window.__anim21278907124 = setTimeout(chart.update.bind(chart), 10000);
-            });
-
         }
+
+        /*var scores = [];
+            var labels = [];
+            results.forEach(({ score }) => scores.push((score * 100).toFixed(2)));
+            results.forEach(({ label }) => labels.push(label));
+            console.log(scores)
+            console.log(labels)*/
+        var value_chart_old = Object.values(results)
+        var value_chart = []
+        value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
+
+        var chart = new Chartist.Pie('.ct-chart-audio', {
+            series: value_chart,
+            labels: value_chart
+        }, {
+            donut: true,
+            donutWidth: 80,
+            startAngle: 0,
+            showLabel: true
+            //labelOffset: 40,
+        });
+
+        chart.on('draw', function (data) {
+            if (data.type === 'slice') {
+                // Get the total path length in order to use for dash array animation
+                var pathLength = data.element._node.getTotalLength();
+
+                // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                data.element.attr({
+                    'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                });
+
+                // Create animation definition while also assigning an ID to the animation for later sync usage
+                var animationDefinition = {
+                    'stroke-dashoffset': {
+                        id: 'anim' + data.index,
+                        dur: 1000,
+                        from: -pathLength + 'px',
+                        to: '0px',
+                        easing: Chartist.Svg.Easing.easeOutQuint,
+                        // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                        fill: 'freeze'
+                    }
+                };
+
+                // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                if (data.index !== 0) {
+                    animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                }
+            };
+        });
     })
 
     //Chartist

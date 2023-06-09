@@ -143,6 +143,18 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
     emotion.append("Neutral")
 
 
+# @app.route('/face_inference')
+# def query_face(file_url,flag):
+#     # cont = requests.get(file_url, verify= False)
+#     response = predictEmotionFace(file_url,flag)
+#     return response
+
+# @app.route('/tone_inferenceLocal')
+# def queryLocal(file):
+#     with open(file, "rb") as f:
+#         data = f.read()
+#     response = requests.post(API_URL, headers = headers, data = data).json()
+#     return response
 
 
   if to_print == True:

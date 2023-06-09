@@ -8,47 +8,59 @@ import datetime
 
 db = SQLAlchemy()
 
-
 class User(db.Model, UserMixin):
+    __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     email = db.Column(db.String(150), unique=True, nullable=False)
+    companyName = db.Column(db.String(150), nullable=False)
     password = db.Column(db.String(150), nullable=False)
-    #name = db.Column(db.String(150), nullable=False)
-    #locations = relationship(
-    #    "UserLocations", backref="Users", passive_deletes=True)
-    #members = relationship(
-    #    "UserMembers", backref="Users", passive_deletes=True)
-    # media = relationship("Media", backref="Users", passive_deletes=True)
+    role = db.Column(db.Integer, nullable = False)
+    __mapper_args__ = {
+        'polymorphic_identity': 'user',
+        'polymorphic_on': 'role'
+    }
 
+class AdminUser(User):
+    __tablename__ = 'admin'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity': 'admin'
+    }
+    
 
-    # created_at = db.Column(db.DateTime(timezone=True),server_default=func.now())
-    # User Data
+class RegularUser(User):
+
+    __tablename__ = 'regular'
+    id = db.Column(db.Integer, db.ForeignKey('user.id'), primary_key=True)
+    __mapper_args__ = {
+        'polymorphic_identity': 'regular'
+    }
+
+   
     
 @dataclass
 class UserLocations(db.Model):
     id : int
     name : str
-    user_id : int
+    companyName : str
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),
-                        nullable=False)
+    companyName = db.Column(db.ForeignKey(User.companyName, ondelete='CASCADE'),nullable=False)
 
 
 @dataclass
 class UserMembers(db.Model):
     id : int
     name : str
-    user_id : int
+    companyName : str
     member_id : int
     gender : str
     location_id : int  
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
-    user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),
-                        nullable=False)
+    companyName = db.Column(db.ForeignKey(User.companyName, ondelete='CASCADE'),nullable=False)
     member_id = db.Column(db.Integer, nullable=False, unique=True)
     gender = db.Column(db.String, nullable=False)
     location_id = db.Column(db.ForeignKey(UserLocations.id), nullable=False)
@@ -63,7 +75,7 @@ class Media(db.Model):
     location_address : str
     member_id : int
     type : str
-    user_id : int
+    companyName : str
     results : str
     face_results : str
     body_results : str
@@ -79,7 +91,7 @@ class Media(db.Model):
     #member_id = db.Column(db.ForeignKey(UserMembers.id))
     member_id = db.Column(db.Integer)
     type = db.Column(db.String(), nullable=False)
-    user_id = db.Column(db.ForeignKey(User.id, ondelete='CASCADE'),nullable=False)
+    companyName = db.Column(db.ForeignKey(User.companyName, ondelete='CASCADE'),nullable=False)
     created_at = db.Column(db.DateTime(timezone=True),server_default=func.now())
     results = db.Column(db.String, nullable=False)
     face_results = db.Column(db.String(150))
@@ -102,3 +114,20 @@ class Media(db.Model):
 
 
     # Other Analysis Data
+####ADDED NEWLY FOR FEEDBACK
+
+@dataclass
+class Feedback(db.Model):
+ 
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(150),nullable=False)
+    email = db.Column(db.String(150),unique=True, nullable=False)
+    message = db.Column(db.Text)
+    
+
+@dataclass
+class Contact(db.Model): 
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(150), unique=True, nullable=False)
+    message = db.Column(db.Text)    
+

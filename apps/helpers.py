@@ -41,8 +41,23 @@ from google.oauth2 import service_account
 #     cv2.destroyAllWindows()
 
 def sorting_audio(category):
-    sorted_audio = {'hap' , 'sad', 'neu', 'ang'}
+    # sorted_audio = {'hap' , 'sad', 'neu', 'ang'}
+    sorted_result = {}
+    for item in category:
+        sorted_result[item['label']] = item['score']
 
+    sorted_result = {'hap': sorted_result['hap'], 'sad': sorted_result['sad'], 'neu': sorted_result['neu'], 'amg': sorted_result['ang']}
+    return sorted_result
+
+def sorting_video_face(category):
+    # sorted_audio = {'hap' , 'sad', 'neu', 'ang'}
+    sorted_result = {}
+    print(category)
+    # for k,v in category.item:
+    #     sorted_result[k] = v
+
+    sorted_result = {'Happy': category['Happy'], 'Sad': category['Sad'], 'Fearful': category['Fearful'], 'Neutral': category['Neutral'], 'Angry': category['Angry'], 'Disgusted': category['Disgusted'],'Surprised': category['Surprised'] }
+    return sorted_result
 
 def unify_audio(result):
     if (result == 'hap'):
@@ -50,7 +65,7 @@ def unify_audio(result):
     elif(result == 'neu'):
         unified_result = 'Neutral'
     else:
-        unified_result = 'Unsatisifed'
+        unified_result = 'Unsatisfied'
     return unified_result
 
 ##{"Happy": 186, "Neutral": 104, "Fearful": 33, "Angry": 15, "Sad": 6, "Disgusted": 0, "Surprised": 0}
@@ -60,7 +75,7 @@ def unify_video(result):
     elif(result == 'Neutral'):
         unified_result = 'Neutral'
     else:
-        unified_result = 'Unsatisifed'
+        unified_result = 'Unsatisfied'
     return unified_result
 
 def normalize_dict(d):
