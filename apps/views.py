@@ -226,7 +226,7 @@ def add_media_function(request):
                 file.save(file_path)
                 print(file_path)
                 url=file_path
-                category=queryLocal(url,media_name)
+                category=queryLocal(url)
                 flash('File has been uploaded.')
                 audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
@@ -234,7 +234,7 @@ def add_media_function(request):
 
             elif urlink: 
                 url=urlink
-                category = query(url,media_name)
+                category = query(url)
                 # Convert dictionary to string
                 audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
@@ -249,44 +249,32 @@ def add_media_function(request):
                 flag = 'local'
                 url=file_path
                 category = query_face(url,flag,media_name)
-                # category = {'Happy': 1/7, 'Sad': 1/7, 'Fearful': 1/7, 'Neutral': 1/7, 'Angry': 1/7, 'Disgusted': 1/7,'Surprised': 1/7}
-                # detailed_results = json.dumps(normalize_dict(category))
                 face_results = json.dumps(normalize_dict(sorting_video_face((category))))
                 results = next(iter(category))
                 results = unify_video(results)
-                                ## Bodyyyyyy
-                # category = query_body_video(url,media_name)
-            # Convert dictionary to string
-                # detailed_results = category
-            # results = list(category.keys())[0]
-                # results = category
-                # print('Body Model Results:',results)
-                # total_results = dict()
-                # total_results['body'] = results
-                ## FAAAACCCEEE
-                # category = query_face(url)
-            # Convert dictionary to string
-                # detailed_results = json.dumps(normalize_dict(category))
-            # results = list(category.keys())[0]
-                # results = next(iter(category))
-                # results = unify_video(results)
-                # print('Face Model Results:',results)
-                # total_results['face'] = results
-                # ## ADUIOIIOOO
-                # video = VideoFileClip(url)
-                # audio = video.audio
-                # if (audio):
-                #     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                #     __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
-                #     audio.write_audiofile(output_audio, codec='pcm_s16le')
-                #     category = queryLocal(output_audio)
-                #     flash('Audio has been uploaded.')
-                #     audio_results = json.dumps(category)
-                #     results = (category)[0]['label']
-                #     results = unify_audio(results)
-                # else:
-                #     print('No audio exists!')
+                print('Face Model Results:',face_results)
 
+                ## Bodyyyyyy
+                category = query_body_video(url,media_name)
+                body_results = category
+                print('Body Model Results:', body_results)
+
+                ## AUDIO
+                video = VideoFileClip(url)
+                audio = video.audio
+                if (audio):
+                    print("Audio Analysis Started")
+                    output_audio = os.path.join(os.path.abspath(os.path.dirname(
+                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                    audio.write_audiofile(output_audio, codec='pcm_s16le')
+                    category = queryLocal(output_audio)
+                    print(category)
+                    audio_results = json.dumps(category)
+                    results = (category)[0]['label']
+                    results = unify_audio(results)
+                    print('Audio Model Results:', audio_results)
+                else:
+                    print('No audio exists!')
 
             elif urlink:
                 url=urlink
@@ -300,7 +288,23 @@ def add_media_function(request):
                 results = unify_video(results)
                 #category = query_face(url)
                 #category = 'Unknown'
-                # call body model ---> 
+                video = VideoFileClip(url)
+                audio = video.audio
+                if (audio):
+                    output_audio = os.path.join(os.path.abspath(os.path.dirname(
+                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                    audio.write_audiofile(output_audio, codec='pcm_s16le')
+                    category = query(output_audio)
+                    audio_results = json.dumps(category)
+                    results = (category)[0]['label']
+                    audio_results = unify_audio(results)
+                    print('Audio Model Results:',audio_results)
+                else:
+                    print('No audio exists!')
+
+            # Merge Function
+
+
         else:
             category = 'Unknown'
 

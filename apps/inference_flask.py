@@ -10,7 +10,7 @@ headers = {"Authorization": "Bearer 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"}
 
 
 @app.route('/tone_inference')
-def query(file_url, media_name):
+def query(file_url):
     cont = requests.get(file_url, verify=False)
     response = requests.post(API_URL, headers=headers,
                              data=cont, verify=False).json()
@@ -44,7 +44,7 @@ def query_body_image(image_txt_path):
 
 
 @app.route('/tone_inferenceLocal')
-def queryLocal(file,media_name):
+def queryLocal(file):
     with open(file, "rb") as f:
         data = f.read()
     response = requests.post(API_URL, headers=headers, data=data).json()

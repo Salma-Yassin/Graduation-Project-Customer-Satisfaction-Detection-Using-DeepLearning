@@ -248,7 +248,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   writer.release()
   video_stream.release() 
   video = VideoFileClip(os.path.join(result_path, 'result_vid.avi'))
-  video.write_videofile(os.path.join(output_path, filename + '.mp4'), codec='libx264')
+  video.write_videofile(os.path.join(output_path, filename + '_body.mp4'), codec='libx264')
   video.close()
   print ('Completed video')
   return dominant_emotion

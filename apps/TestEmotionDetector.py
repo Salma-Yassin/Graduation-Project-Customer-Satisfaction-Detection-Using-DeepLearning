@@ -154,7 +154,7 @@ def predictEmotionFace(url_base, flag, media_name):
     output_video.release()
     cv2.destroyAllWindows()
     video = VideoFileClip("Results/output_video_6.mp4")
-    video.write_videofile("apps/static/filat/"+media_name+".mp4", codec='libx264')
+    video.write_videofile("apps/static/filat/"+media_name+"_face.mp4", codec='libx264')
     video.close()
     emotionOutputDict = {} 
     for key in emotion_dict.keys():
