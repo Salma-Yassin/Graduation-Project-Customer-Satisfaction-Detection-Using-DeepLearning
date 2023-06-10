@@ -28,10 +28,10 @@ def query_face(file_url,flag, media_name):
 @app.route('/body_video_inference')
 def query_body_video(video_path,name):
     # cont = requests.get(file_url, verify= False)
-    emotion = functionpaths_video(video_path,name)
+    emotion, details = functionpaths_video(video_path,name)
     emotion = sorted(emotion.items(), key=lambda x: x[1], reverse=True)
     output = json.dumps(emotion, indent=4)
-    return output
+    return output, details
 
 
 @app.route('/body_image_inference')

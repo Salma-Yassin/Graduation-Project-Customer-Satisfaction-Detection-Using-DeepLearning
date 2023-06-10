@@ -255,7 +255,7 @@ def add_media_function(request):
                 print('Face Model Results:',face_results)
 
                 ## Bodyyyyyy
-                category = query_body_video(url,media_name)
+                category, detailed_results = query_body_video(url,media_name)
                 body_results = category
                 print('Body Model Results:', body_results)
 
