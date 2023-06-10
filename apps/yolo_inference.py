@@ -196,6 +196,34 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   dominant_emotion_counter_neutral=0
   dominant_emotion_counter_positive=0
   dominant_emotion_counter_negative=0
+  detailed_dominant_emotion = {}
+  Affection = 0
+  Anger = 0
+  Annoyance = 0
+  Anticipation = 0
+  Aversion = 0
+  Confidence = 0
+  Disapproval = 0
+  Disconnection = 0
+  Disquietment = 0
+  Doubt_Confusion = 0
+  Embarrassment = 0
+  Engagement = 0
+  Esteem = 0
+  Excitement = 0
+  Fatigue = 0
+  Fear = 0
+  Happiness = 0
+  Pain = 0
+  Peace = 0
+  Pleasure = 0
+  Sadness = 0
+  Sensitivity = 0
+  Suffering = 0
+  Surprise = 0
+  Sympathy = 0
+  Yearning = 0
+
   while True:
     (grabbed, frame) = video_stream.read()
     if not grabbed:
@@ -206,7 +234,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
     THICKNESS_SCALE = 1e-3
     try: 
       bbox_yolo = get_bbox(yolo, device, image_context)
-      for pred_idx, pred_bbox in enumerate(bbox_yolo):
+      for pred_idx, detailed_pred_cat, pred_bbox in enumerate(bbox_yolo):
         pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
         write_text_vad = list()
         for continuous in pred_cont:
@@ -230,6 +258,86 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
             dominant_emotion_counter_negative = dominant_emotion_counter_negative + 1
             dominant_emotion["Negative"]=dominant_emotion_counter_negative
 
+          for emo in detailed_pred_cat:
+            if emo == 'Affection':
+                Affection+=1
+                detailed_dominant_emotion['Affection']=Affection
+            if emo == 'Anger':
+                Anger+=1
+                detailed_dominant_emotion['Anger']=Anger
+            if emo == 'Annoyance':
+              Annoyance+=1
+              detailed_dominant_emotion['Annoyance']=Annoyance
+            if emo == 'Anticipation':
+                Anticipation+=1
+                detailed_dominant_emotion['Anticipation']=Anticipation
+            if emo == 'Aversion':
+                Aversion+=1
+                detailed_dominant_emotion['Aversion']=Aversion
+            if emo == 'Confidence':
+                Confidence+=1
+                detailed_dominant_emotion['Confidence']=Confidence
+            if emo == 'Disapproval':
+                Disapproval+=1
+                detailed_dominant_emotion['Disapproval']=Disapproval
+            if emo == 'Disconnection':
+                Disconnection+=1
+                detailed_dominant_emotion['Disconnection']=Disconnection
+            if emo == 'Disquietment':
+                Disquietment+=1
+                detailed_dominant_emotion['Disquietment']=Disquietment
+            if emo == 'Doubt/Confusion':
+                Doubt_Confusion+=1
+                detailed_dominant_emotion['Doubt/Confusion']=Doubt_Confusion
+            if emo == 'Embarrassment':
+              Embarrassment+=1
+              detailed_dominant_emotion['Embarrassment']=Embarrassment
+            if emo == 'Engagement':
+              Engagement+=1
+              detailed_dominant_emotion['Engagement']=Engagement
+            if emo == 'Esteem':
+              Esteem+=1
+              detailed_dominant_emotion['Esteem']=Esteem
+            if emo == 'Excitement':
+                Excitement+=1
+                detailed_dominant_emotion['Excitement']=Excitement
+            if emo == 'Fatigue':
+                Fatigue+=1
+                detailed_dominant_emotion['Fatigue'] =Fatigue
+            if emo == 'Fear':
+                Fear+=1
+                detailed_dominant_emotion['Fear'] =Fear
+            if emo == 'Happiness':
+                Happiness+=1
+                detailed_dominant_emotion['Happiness'] =Happiness
+            if emo == 'Pain':
+              Pain+=1
+              detailed_dominant_emotion['Pain'] =Pain
+            if emo == 'Peace':
+              Peace+=1
+              detailed_dominant_emotion['Peace'] =Peace
+            if emo == 'Pleasure':
+                Pleasure+=1
+                detailed_dominant_emotion['Pleasure'] =Pleasure
+            if emo == 'Sadness':
+              Sadness+=1
+              detailed_dominant_emotion['Sadness'] =Sadness
+            if emo == 'Sensitivity':
+                Sensitivity+=1
+                detailed_dominant_emotion['Sensitivity'] =Sensitivity
+            if emo == 'Suffering':
+                Suffering+=1
+                detailed_dominant_emotion['Suffering'] =Suffering
+            if emo == 'Surprise':
+                Surprise+=1
+                detailed_dominant_emotion['Surprise'] =Surprise
+            if emo == 'Sympathy':
+              Sympathy+=1
+              detailed_dominant_emotion['Sympathy'] =Sympathy
+            if emo == 'Yearning':
+                Yearning+=1
+                detailed_dominant_emotion['Yearning']=Yearning
+
         for continuous in pred_cont:
           write_line.append(str('%.4f' %(continuous)))
         write_line = ' '.join(write_line) 
@@ -251,7 +359,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   video.write_videofile(os.path.join(output_path, filename + '_body.mp4'), codec='libx264')
   video.close()
   print ('Completed video')
-  return dominant_emotion
+  return dominant_emotion, detailed_dominant_emotion
 
 
 def check_paths(args):

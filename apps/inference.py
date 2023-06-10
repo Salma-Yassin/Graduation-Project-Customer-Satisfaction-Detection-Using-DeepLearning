@@ -166,7 +166,7 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
     for emotion in cat_emotions:
       print ('Categorical %16s' %(emotion))
   
-  return emotion, 10*pred_cont
+  return emotion, cat_emotions, 10*pred_cont
 
 
 def inference_emotic(images_list, model_path, result_path, context_norm, body_norm, ind2cat, ind2vad, args):
