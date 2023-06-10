@@ -13,5 +13,3 @@ env__/
 apps/db.sqlite3
 apps/debug_exp
 *.db
-apps/static/filat/
-Results/
