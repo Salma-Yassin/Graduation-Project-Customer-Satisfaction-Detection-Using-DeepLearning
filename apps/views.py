@@ -255,8 +255,7 @@ def add_media_function(request):
                 print('Face Model Results:',face_results)
 
                 ## Bodyyyyyy
-                category, detailed_results = query_body_video(url,media_name)
-                body_results = category
+                category, body_results = query_body_video(url,media_name)
                 print('Body Model Results:', body_results)
 
                 ## AUDIO
@@ -265,7 +264,7 @@ def add_media_function(request):
                 if (audio):
                     print("Audio Analysis Started")
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)
@@ -291,7 +290,7 @@ def add_media_function(request):
                 audio = video.audio
                 if (audio):
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)

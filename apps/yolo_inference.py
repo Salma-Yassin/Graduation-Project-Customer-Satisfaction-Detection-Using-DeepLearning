@@ -410,15 +410,15 @@ context_norm = [context_mean, context_std]
 body_norm = [body_mean, body_std]
 
 def functionpaths_video(url_path,filename='result_vid'):
-  modelpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
-  outputpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\static\filat"
+  modelpath = "apps/debug_exp/models"
+  resultspath = "apps/debug_exp/results"
+  outputpath = "apps/static/filat"
   emotion, details =yolo_video(url_path, filename, resultspath, modelpath, outputpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion, details
 
 def functionpaths_image(images_path):
-  modelpath=r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
+  modelpath = "apps/debug_exp/models"
+  resultspath = "apps/debug_exp/results"
   emotion=yolo_infer(images_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
