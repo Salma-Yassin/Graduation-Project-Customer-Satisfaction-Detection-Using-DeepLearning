@@ -103,7 +103,7 @@ def predictEmotionFace(url_base, flag, media_name):
     #output_file.release()
     #cv2.destroyAllWindows()
 
-    cap = cv2.VideoCapture(url_base)
+    cap = cv2.VideoCapture(file)
     print(cap.isOpened()) # add this line after line 20 
     c = 0
 

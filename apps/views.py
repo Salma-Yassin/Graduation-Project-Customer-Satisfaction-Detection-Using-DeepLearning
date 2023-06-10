@@ -23,7 +23,7 @@ from .controller import controller
 from moviepy.editor import *
 from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face
 from functools import wraps
-
+from .TestEmotionDetector import extractIDfromURL
 # App modules
 from apps import app
 import random
@@ -275,32 +275,32 @@ def add_media_function(request):
                     print('Audio Model Results:', audio_results)
                 else:
                     print('No audio exists!')
+                video.close()
 
             elif urlink:
                 url=urlink
                 flag = 'url'
                 category = query_face(url,flag,media_name)
-                # Convert dictionary to string
-                # detailed_results = json.dumps(normalize_dict(category))
                 face_results = json.dumps(normalize_dict(sorting_video_face((category))))
-                #results = list(category.keys())[0]
                 results = next(iter(category))
                 results = unify_video(results)
-                #category = query_face(url)
-                #category = 'Unknown'
+
+                id = extractIDfromURL(url)
+                url = "https://drive.google.com/uc?id=" + id
                 video = VideoFileClip(url)
                 audio = video.audio
                 if (audio):
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
                     __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
-                    category = query(output_audio)
+                    category = queryLocal(output_audio)
                     audio_results = json.dumps(category)
                     results = (category)[0]['label']
                     audio_results = unify_audio(results)
                     print('Audio Model Results:',audio_results)
                 else:
                     print('No audio exists!')
+                video.close()
 
             # Merge Function
 
