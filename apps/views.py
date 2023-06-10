@@ -265,7 +265,7 @@ def add_media_function(request):
                 if (audio):
                     print("Audio Analysis Started")
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)
@@ -291,11 +291,12 @@ def add_media_function(request):
                 audio = video.audio
                 if (audio):
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],'output.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
+                    print(category)
                     audio_results = json.dumps(category)
-                    results = (category)[0]['label']
+                    # results = (category)[0]['label']
                     audio_results = unify_audio(results)
                     print('Audio Model Results:',audio_results)
                 else:
@@ -499,9 +500,9 @@ def employee_report():
 @app.route('/pages/MediaAnalysis/<video>')
 @login_required
 def pages_analysis(video):
-    filename = secure_filename(video + ".mp4")
+    filename = secure_filename(video)
     print(filename)
-    return render_template('pages/dashboard/mediaAnalysis.html', filename=filename, segment='media', parent='pages', user=current_user)
+    return render_template('pages/dashboard/mediaAnalysis.html', face=filename+'_face.mp4',body=filename+'_body.mp4', segment='media', parent='pages', user=current_user)
 
 # Adding Media Analysis view
 @app.route('/display/<filename>')

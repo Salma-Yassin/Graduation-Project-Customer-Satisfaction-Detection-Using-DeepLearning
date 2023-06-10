@@ -278,7 +278,10 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
             $('#example tbody').on('click', 'button', function () {
                 var data = table.row($(this).parents('tr')).data();
-                detailed_data = data.detailed_results
+                face_data = data.face_results;
+                body_data = data.body_results;
+                audio_data = data.audio_results;
+                var flag = false;
                 // detailed_data = $.parseJSON(data.detailed_results);
                 //console.log(detailed_data);
 
@@ -319,8 +322,40 @@ d.addEventListener("DOMContentLoaded", function (event) {
                             console.log(error);
                         }
                     });
+
+                    if (audio_data != '') {
+                        flag = true;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/update_chart_audio',
+                            data: JSON.stringify(data.audio_results),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log(response);
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                        $.ajax({
+                            type: 'POST',
+                            url: '/play_media',
+                            data: JSON.stringify(data.url),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log(response);
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
                     // Navigate to another view
                     window.location.href = '/pages/MediaAnalysis/' + data.media_name;
+                    if (!flag)
+                    {
+                        d.getElementById("audio-div").attr('display','none');
+                    }
                 } else if (data.type === 'Audio') {
                     // Do something for audio
                     console.log('Audio clicked');
@@ -336,6 +371,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                             console.log(error);
                         }
                     });
+
                     $.ajax({
                         type: 'POST',
                         url: '/play_media',
@@ -374,6 +410,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
     getchartBody.done(function (results) {
         results = $.parseJSON(results);
         if (d.querySelector(".ct-chart-body")) {
+            //To be changed upon data
             var scores = [];
             var labels = [];
             results.forEach((row) => {
@@ -450,14 +487,20 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
         if (d.querySelector(".ct-chart-face")) {
             /// will be changed:
-
-            var value_chart_old = Object.values(results)
-            var value_chart = []
-            value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
+            var scores = [];
+            var labels = [];
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
+            });
+            
+            // var value_chart_old = Object.values(results)
+            // var value_chart = []
+            // value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
 
             var chart = new Chartist.Pie('.ct-chart-face', {
-                series: value_chart,
-                labels: value_chart
+                series: scores,
+                labels: labels
             }, {
                 donut: true,
                 donutWidth: 80,
@@ -474,13 +517,20 @@ d.addEventListener("DOMContentLoaded", function (event) {
         results = $.parseJSON(results);
 
         if (d.querySelector(".ct-chart-audio")) {
-            var value_chart_old = Object.values(results)
-            var value_chart = []
-            value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
+            var scores = [];
+            var labels = [];
+            results.forEach((row) => {
+                labels.push(row['label']);
+                scores.push((row['score'] * 100).toFixed(2));
+            });
+
+            // var value_chart_old = Object.values(results)
+            // var value_chart = []
+            // value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
 
             var chart = new Chartist.Pie('.ct-chart-audio', {
-                series: value_chart,
-                labels: value_chart
+                series: scores,
+                labels: labels
             }, {
                 donut: true,
                 donutWidth: 80,
