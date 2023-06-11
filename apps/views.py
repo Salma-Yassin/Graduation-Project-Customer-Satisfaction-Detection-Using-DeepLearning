@@ -215,7 +215,7 @@ def add_media_function(request):
     face_results=''
     body_results='' 
     audio_results=''
-
+    redirect(url_for('loading_page'))
     if media_name_check:
         flash('Media Name used, enter another one', category='error')
     else: 
@@ -248,16 +248,18 @@ def add_media_function(request):
                 print(file_path)
                 flag = 'local'
                 url=file_path
+                ## Bodyyyyyy
+                category = query_body_video(url,media_name)
+                body_results = category
+                print('Body Model Results:', body_results)
+                ###face
                 category = query_face(url,flag,media_name)
                 face_results = json.dumps(normalize_dict(sorting_video_face((category))))
                 results = next(iter(category))
                 results = unify_video(results)
                 print('Face Model Results:',face_results)
 
-                ## Bodyyyyyy
-                category = query_body_video(url,media_name)
-                body_results = category
-                print('Body Model Results:', body_results)
+                
 
                 ## AUDIO
                 video = VideoFileClip(url)
@@ -308,22 +310,107 @@ def add_media_function(request):
 
         else:
             category = 'Unknown'
+        
 
   
     companyName = current_user.companyName
     controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, 
                         results = results, face_results=face_results, body_results=body_results, audio_results=audio_results)
     flash('Media added successfuly!', category='success')
+    
     #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
      #show data 
      #return redirect(url_for('pages_history'))
 
 
+@app.route('/employees', methods=['GET','POST'])
+@login_required
+def user_employees():
+    # user=User.query.filter_by(id=current_user.id)
+    # print(user)
+    user=current_user
+    companyName=current_user.companyName
+    employees=UserMembers.query.filter_by(companyName=companyName).all()
+    return render_template('pages/dashboard/useremployees.html',segment='useremployees', employees=employees,user=user)  
+
+@app.route('/edit_user_employees/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_user_employees(id):
+    user_member = UserMembers.query.filter_by(id=id).first()
+    user_id = current_user.id
+    print(user_id)
+    locations = UserLocations.query.filter_by(companyName=current_user.companyName).all()
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        location_id = request.form.get('location_id')
+        controller.editUserMember(user_member.id, companyName=current_user.companyName, name=name, location_id=location_id)
+        flash('Employee updated successfully', 'success')
+        return redirect(url_for('user_employees'))
+
+    return render_template('pages/dashboard/edit_useremployees.html', parent='pages', locations=locations, id=id, user_member=user_member, user=current_user)
+
+
+
+
+@app.route('/delete_user_employees', methods=['POST'])
+@login_required
+def delete_user_employees():
+    employee_id = request.form.get('employee_id')
+    controller.deleteUserMember(employee_id)
+    return redirect(url_for('user_employees'))
+
+@app.route('/user_locations', methods=['GET','POST'])
+@login_required
+def user_Locations():
+    # user=User.query.filter_by(id=current_user.id)
+    # print(user)
+    user=current_user
+    companyName=current_user.companyName
+    Locations=UserLocations.query.filter_by(companyName=companyName).all()
+    return render_template('pages/dashboard/userlocations.html',segment='userlocations', Locations=Locations,user=user) 
+
+@app.route('/edit_user_locations/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_user_locations(id):
+    user_location = UserLocations.query.filter_by(id=id).first()
+    user_id = current_user.id
+    print(user_id)
+    locations = UserLocations.query.filter_by(companyName=current_user.companyName).all()
+
+    if request.method == 'POST':
+        name = request.form.get('name')
+        if name:
+            controller.editUserLocation(id=id, companyName=current_user.companyName, name=name)
+            flash('Location updated successfully', 'success')
+            return redirect(url_for('user_Locations'))
+    
+
+    return render_template('pages/dashboard/edit_userlocationshtml', parent='pages', locations=locations, id=id, user_location=user_location, user=current_user)
+
+
+
+
+@app.route('/delete_user_locations/<int:id>', methods=['POST'])
+@login_required
+def delete_user_locations(id):
+    location_id = id
+    controller.deleteUserLocation(location_id)
+    flash('Location deleted successfully', 'success')
+    return redirect(url_for('user_Locations'))
+
+
+
+@app.route('/loading')
+def loading_page():
+    return render_template('pages/dashboard/loading.html')
+
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def pages_dashboard():
-
+  emp=UserMembers.query.filter_by(companyName=current_user.companyName).all()
+  emp_loc=UserLocations.query.filter_by(companyName=current_user.companyName).all()
   user = AdminUser.query.filter_by(email="Admin@gmail.com").first()
   if user:
       print(f"User with email '{user.email}' already exists")
@@ -337,7 +424,7 @@ def pages_dashboard():
   if request.method == 'POST':
      add_media_function(request)
      return redirect(url_for('pages_history'))
-  return render_template('pages/dashboard/dashboard.html', segment='dashboard', parent='pages', user=current_user)
+  return render_template('pages/dashboard/dashboard.html', emp=emp,emp_loc=emp_loc,segment='dashboard', parent='pages', user=current_user)
 
 
 # Pages

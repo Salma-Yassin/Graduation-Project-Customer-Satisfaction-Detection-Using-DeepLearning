@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <h1>Employee List</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Employee Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for employee in employees %}
+      <tr>
+        <td>{{ employee.name }}</td>
+        <td>
+          <div class="d-flex">
+            <form method="GET" action="{{ url_for('edit_user_employees', id=employee.id) }}">
+              <input type="hidden" name="employee_id" value="{{ employee.id }}">
+              <button type="submit" class="btn btn-primary">Edit</button>
+            </form>
+            <span style="margin: 10px;"></span>
+            <form method="POST" action="{{ url_for('delete_user_employees') }}">
+              <input type="hidden" name="employee_id" value="{{ employee.id }}">
+              <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

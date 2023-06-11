@@ -234,8 +234,8 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
     THICKNESS_SCALE = 1e-3
     try: 
       bbox_yolo = get_bbox(yolo, device, image_context)
-      for pred_idx, detailed_pred_cat, pred_bbox in enumerate(bbox_yolo):
-        pred_cat, pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
+      for pred_idx, pred_bbox in enumerate(bbox_yolo):
+        pred_cat, detailed_pred_cat,pred_cont = infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models, image_context=image_context, bbox=pred_bbox, to_print=False)
         write_text_vad = list()
         for continuous in pred_cont:
           write_text_vad.append(str('%.1f' %(continuous)))
@@ -337,6 +337,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
             if emo == 'Yearning':
                 Yearning+=1
                 detailed_dominant_emotion['Yearning']=Yearning
+            print(detailed_dominant_emotion)
 
         for continuous in pred_cont:
           write_line.append(str('%.4f' %(continuous)))
@@ -410,15 +411,15 @@ context_norm = [context_mean, context_std]
 body_norm = [body_mean, body_std]
 
 def functionpaths_video(url_path,filename='result_vid'):
-  modelpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
-  outputpath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\static\filat"
+  modelpath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
+  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
+  outputpath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\static\filat"
   emotion=yolo_video(url_path, filename, resultspath, modelpath, outputpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
 def functionpaths_image(images_path):
-  modelpath=r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"E:\ZC\CIE 5\Grad Project\Application\GP_Trial_Repo\apps\debug_exp\results"
+  modelpath=r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
+  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
   emotion=yolo_infer(images_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 

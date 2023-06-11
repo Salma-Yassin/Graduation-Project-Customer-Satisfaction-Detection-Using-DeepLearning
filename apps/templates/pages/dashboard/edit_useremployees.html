@@ -1,0 +1,23 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Edit User Member</h1>
+  <form method="POST" action="{{ url_for('edit_user_employees', id=user_member.id) }}">
+    <div class="mb-3">
+      <label for="name" class="form-label">Name</label>
+      <input type="text" class="form-control" id="name" name="name" value="{{ user_member.name }}" required>
+    </div>
+    <div class="mb-3">
+      <label for="location_id" class="form-label">Location</label>
+      <select class="form-select" id="location_id" name="location_id" required>
+        {% for location in locations %}
+          <option value="{{ location.id }}" {% if location.id == user_member.location_id %}selected{% endif %}>{{ location.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Save</button>
+  </form>
+</div>
+{% endblock content %}
