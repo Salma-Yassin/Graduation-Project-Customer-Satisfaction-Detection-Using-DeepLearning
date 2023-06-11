@@ -257,6 +257,7 @@ def add_media_function(request):
                 ## Bodyyyyyy
                 category, body_results = query_body_video(url,media_name)
                 print('Body Model Results:', body_results)
+                print('category body', category)
 
                 ## AUDIO
                 video = VideoFileClip(url)
@@ -269,8 +270,8 @@ def add_media_function(request):
                     category = queryLocal(output_audio)
                     print(category)
                     audio_results = json.dumps(category)
-                    results = (category)[0]['label']
-                    results = unify_audio(results)
+                    # results = (category)[0]['label']
+                    # results = unify_audio(results)
                     print('Audio Model Results:', audio_results)
                 else:
                     print('No audio exists!')
@@ -296,7 +297,7 @@ def add_media_function(request):
                     print(category)
                     audio_results = json.dumps(category)
                     # results = (category)[0]['label']
-                    audio_results = unify_audio(results)
+                    # audio_results = unify_audio(results)
                     print('Audio Model Results:',audio_results)
                 else:
                     print('No audio exists!')
