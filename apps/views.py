@@ -249,10 +249,9 @@ def add_media_function(request):
                 flag = 'local'
                 url=file_path
                 ## Bodyyyyyy
-                category = query_body_video(url,media_name)
-                body_results = category
+                category, body_results = query_body_video(url,media_name)
                 print('Body Model Results:', body_results)
-                ###face
+                ##face
                 category = query_face(url,flag,media_name)
                 face_results = json.dumps(normalize_dict(sorting_video_face((category))))
                 results = next(iter(category))
@@ -315,7 +314,7 @@ def add_media_function(request):
   
     companyName = current_user.companyName
     controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, 
-                        results = results, face_results=face_results, body_results=body_results, audio_results=audio_results)
+                        results = results, face_results=face_results, body_results=str(body_results), audio_results=audio_results)
     flash('Media added successfuly!', category='success')
     
     #created_media = Media.query.filter_by(url=url).first()

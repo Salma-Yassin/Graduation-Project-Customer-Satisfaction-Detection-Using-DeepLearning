@@ -72,7 +72,6 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
     pred_cont = pred_cont.squeeze(0).to("cpu").data.numpy()
 
     bool_cat_pred = torch.gt(pred_cat, thresholds)
-  print(pred_cat)
   cat_emotions = list()
   neu_counter=0
   pos_counter=0
@@ -81,7 +80,6 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
   for i in range(len(bool_cat_pred)):
     if bool_cat_pred[i] == True:
       cat_emotions.append(ind2cat[i])
-      print(cat_emotions)
       if ind2cat[i]== "Affection":
         pos_counter=pos_counter+1
       if ind2cat[i]== "Anger":
@@ -165,7 +163,6 @@ def infer(context_norm, body_norm, ind2cat, ind2vad, device, thresholds, models,
     print ('Categorical Emotion Predictions')
     for emotion in cat_emotions:
       print ('Categorical %16s' %(emotion))
-  print(cat_emotions)
   return emotion, cat_emotions, 10*pred_cont
 
 

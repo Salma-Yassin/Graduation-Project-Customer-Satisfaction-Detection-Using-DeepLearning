@@ -38,7 +38,6 @@ def predictEmotionFace(url_base, flag, media_name):
         id = extractIDfromURL(url_base)
         # start the webcam feed
         url = "https://drive.google.com/uc?id=" + id
-        print(url)
         file =url
     elif(flag == 'local'):
         file = url_base
@@ -104,7 +103,6 @@ def predictEmotionFace(url_base, flag, media_name):
     #cv2.destroyAllWindows()
 
     cap = cv2.VideoCapture(file)
-    print(cap.isOpened()) # add this line after line 20 
     c = 0
 
     # get the frame width and height
@@ -147,7 +145,6 @@ def predictEmotionFace(url_base, flag, media_name):
         # write the modified frame to the output video
         frame = cv2.resize(frame, (frame_width , frame_height), interpolation=cv2.INTER_LINEAR)
         output_video.write(frame)
-        print('1')
 
     # release the resources
     cap.release()
