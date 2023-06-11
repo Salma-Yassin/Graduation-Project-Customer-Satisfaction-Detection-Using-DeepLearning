@@ -260,35 +260,35 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
 
           for emo in detailed_pred_cat:
             if emo == 'Affection':
-                Affection+=1
-                detailed_dominant_emotion['Affection']=Affection
+              Affection+=1
+              detailed_dominant_emotion['Affection']=Affection
             if emo == 'Anger':
-                Anger+=1
-                detailed_dominant_emotion['Anger']=Anger
+              Anger+=1
+              detailed_dominant_emotion['Anger']=Anger
             if emo == 'Annoyance':
               Annoyance+=1
               detailed_dominant_emotion['Annoyance']=Annoyance
             if emo == 'Anticipation':
-                Anticipation+=1
-                detailed_dominant_emotion['Anticipation']=Anticipation
+              Anticipation+=1
+              detailed_dominant_emotion['Anticipation']=Anticipation
             if emo == 'Aversion':
-                Aversion+=1
-                detailed_dominant_emotion['Aversion']=Aversion
+              Aversion+=1
+              detailed_dominant_emotion['Aversion']=Aversion
             if emo == 'Confidence':
-                Confidence+=1
-                detailed_dominant_emotion['Confidence']=Confidence
+              Confidence+=1
+              detailed_dominant_emotion['Confidence']=Confidence
             if emo == 'Disapproval':
-                Disapproval+=1
-                detailed_dominant_emotion['Disapproval']=Disapproval
+              Disapproval+=1
+              detailed_dominant_emotion['Disapproval']=Disapproval
             if emo == 'Disconnection':
-                Disconnection+=1
-                detailed_dominant_emotion['Disconnection']=Disconnection
+              Disconnection+=1
+              detailed_dominant_emotion['Disconnection']=Disconnection
             if emo == 'Disquietment':
-                Disquietment+=1
-                detailed_dominant_emotion['Disquietment']=Disquietment
+              Disquietment+=1
+              detailed_dominant_emotion['Disquietment']=Disquietment
             if emo == 'Doubt/Confusion':
-                Doubt_Confusion+=1
-                detailed_dominant_emotion['Doubt/Confusion']=Doubt_Confusion
+              Doubt_Confusion+=1
+              detailed_dominant_emotion['Doubt/Confusion']=Doubt_Confusion
             if emo == 'Embarrassment':
               Embarrassment+=1
               detailed_dominant_emotion['Embarrassment']=Embarrassment

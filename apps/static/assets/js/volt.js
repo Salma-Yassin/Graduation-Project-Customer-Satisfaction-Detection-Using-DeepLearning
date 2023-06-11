@@ -278,9 +278,9 @@ d.addEventListener("DOMContentLoaded", function (event) {
 
             $('#example tbody').on('click', 'button', function () {
                 var data = table.row($(this).parents('tr')).data();
-                face_data = data.face_results;
-                body_data = data.body_results;
-                audio_data = data.audio_results;
+                var face_data = data.face_results;
+                var body_data = data.body_results;
+                var audio_data = data.audio_results;
                 var flag = false;
                 // detailed_data = $.parseJSON(data.detailed_results);
                 //console.log(detailed_data);
@@ -299,7 +299,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     $.ajax({
                         type: 'POST',
                         url: '/update_chart_face',
-                        data: JSON.stringify(data.face_results),
+                        data: JSON.stringify(face_data),
                         contentType: 'application/json',
                         success: function (response) {
                             console.log(response);
@@ -313,7 +313,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     $.ajax({
                         type: 'POST',
                         url: '/update_chart_body',
-                        data: JSON.stringify(data.body_results),
+                        data: JSON.stringify(body_data),
                         contentType: 'application/json',
                         success: function (response) {
                             console.log(response);
@@ -328,7 +328,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                         $.ajax({
                             type: 'POST',
                             url: '/update_chart_audio',
-                            data: JSON.stringify(data.audio_results),
+                            data: JSON.stringify(audio_data),
                             contentType: 'application/json',
                             success: function (response) {
                                 console.log(response);
@@ -362,7 +362,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     $.ajax({
                         type: 'POST',
                         url: '/update_chart_audio',
-                        data: JSON.stringify(data.audio_results),
+                        data: JSON.stringify(audio_data),
                         contentType: 'application/json',
                         success: function (response) {
                             console.log(response);

@@ -267,13 +267,13 @@ def add_media_function(request):
                 if (audio):
                     print("Audio Analysis Started")
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)
                     audio_results = json.dumps(category)
-                    results = (category)[0]['label']
-                    results = unify_audio(results)
+                    # results = (category)[0]['label']
+                    # results = unify_audio(results)
                     print('Audio Model Results:', audio_results)
                 else:
                     print('No audio exists!')
@@ -293,13 +293,13 @@ def add_media_function(request):
                 audio = video.audio
                 if (audio):
                     output_audio = os.path.join(os.path.abspath(os.path.dirname(
-                    __file__)), app.config['UPLOAD_FOLDER'],media_name,'.wav')
+                    __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)
                     audio_results = json.dumps(category)
                     # results = (category)[0]['label']
-                    audio_results = unify_audio(results)
+                    # audio_results = unify_audio(results)
                     print('Audio Model Results:',audio_results)
                 else:
                     print('No audio exists!')
