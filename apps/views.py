@@ -21,7 +21,7 @@ from .inference_flask import query, query_face, queryLocal, query_body_video, qu
 import sys
 from .controller import controller
 from moviepy.editor import *
-from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face, summerize_video_body, overall_result
 from functools import wraps
 from .TestEmotionDetector import extractIDfromURL
 # App modules
@@ -237,10 +237,12 @@ def add_media_function(request):
                 category = query(url)
                 # Convert dictionary to string
                 audio_results = json.dumps(sorting_audio(category))
+                print('audio_results:  ', audio_results)
                 results = (category)[0]['label']
                 results = unify_audio(results)
         
         elif media_type == 'Video':
+            
             if file: 
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
@@ -248,17 +250,18 @@ def add_media_function(request):
                 print(file_path)
                 flag = 'local'
                 url=file_path
+
                 ## Bodyyyyyy
-                category, body_results = query_body_video(url,media_name)
-                print('Body Model Results:', body_results)
+                category, detailed_results = query_body_video(url,media_name)
+                body_results_count = summerize_video_body(detailed_results)
+                body_results = json.dumps(normalize_dict((body_results_count)))
+                
+
                 ##face
                 category = query_face(url,flag,media_name)
-                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
-                results = next(iter(category))
-                results = unify_video(results)
-                print('Face Model Results:',face_results)
+                face_results_count = sorting_video_face((category))
+                face_results = json.dumps(normalize_dict(face_results_count))
 
-                
 
                 ## AUDIO
                 video = VideoFileClip(url)
@@ -269,22 +272,31 @@ def add_media_function(request):
                     __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
-                    print(category)
+                    #print(category)
+                    audio_results_count = category
                     audio_results = json.dumps(category)
-                    # results = (category)[0]['label']
-                    # results = unify_audio(results)
                     print('Audio Model Results:', audio_results)
                 else:
+                    audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                    audio_results = json.dumps(audio_results_count)
                     print('No audio exists!')
                 video.close()
 
             elif urlink:
                 url=urlink
                 flag = 'url'
+
+                # ## Bodyyyyyy
+                # category, detailed_results = query_body_video(url,media_name)
+                # body_results_count = summerize_video_body(detailed_results)
+                # body_results = json.dumps(normalize_dict((body_results_count)))
+
+                ## Face
                 category = query_face(url,flag,media_name)
-                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
-                results = next(iter(category))
-                results = unify_video(results)
+                face_results_count = sorting_video_face((category))
+                #print('face_results_count', face_results_count)
+                face_results = json.dumps(normalize_dict(face_results_count))
+                
 
                 id = extractIDfromURL(url)
                 url = "https://drive.google.com/uc?id=" + id
@@ -297,14 +309,23 @@ def add_media_function(request):
                     category = queryLocal(output_audio)
                     print(category)
                     audio_results = json.dumps(category)
-                    # results = (category)[0]['label']
-                    # audio_results = unify_audio(results)
+                    audio_results_count = category
                     print('Audio Model Results:',audio_results)
                 else:
+                    audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                    audio_results = json.dumps(audio_results_count)
                     print('No audio exists!')
                 video.close()
 
             # Merge Function
+            results_counts = overall_result(body_results_count, face_results_count, audio_results_count)
+            highest_emotion = max(results_counts, key=lambda x: results_counts[x])
+            results = unify_video(highest_emotion)
+            # print ('resutls count',results_counts)
+            # print('highest_emotion',highest_emotion)
+            # print('results',results)
+            
+            
 
 
         else:
@@ -314,7 +335,7 @@ def add_media_function(request):
   
     companyName = current_user.companyName
     controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, 
-                        results = results, face_results=face_results, body_results=str(body_results), audio_results=audio_results)
+                        results = results, face_results=face_results, body_results=body_results, audio_results=audio_results)
     flash('Media added successfuly!', category='success')
     
     #created_media = Media.query.filter_by(url=url).first()
