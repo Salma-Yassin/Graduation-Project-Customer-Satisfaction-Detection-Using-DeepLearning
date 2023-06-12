@@ -430,7 +430,7 @@ def edit_user_locations(id):
             return redirect(url_for('user_Locations'))
     
 
-    return render_template('pages/dashboard/edit_userlocationshtml', parent='pages', locations=locations, id=id, user_location=user_location, user=current_user)
+    return render_template('pages/dashboard/edit_userlocations.html', parent='pages', locations=locations, id=id, user_location=user_location, user=current_user)
 
 
 
