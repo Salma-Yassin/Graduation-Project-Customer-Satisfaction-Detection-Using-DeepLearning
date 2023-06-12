@@ -52,29 +52,25 @@ def sorting_audio(category):
 def overall_result(body_results, face_results, audio_results):
     categories = {'Happy': 0, 'Sad': 0, 'Fearful': 0, 'Neutral': 0, 'Angry': 0}
 
-    for emotion, score in face_results.items():
-        if emotion in categories:
-            categories[emotion] += score
+    for emotion in categories:
+        e1 = face_results[emotion]
+        e2 = body_results[emotion]
 
-    for emotion, score in body_results.items():
-        if emotion in categories:
-            categories[emotion] += score
-    
-    for emotion, score in audio_results.items():
-        audio_results[emotion] = int(round(score*9, 0)) + 1
-
-    for emotion, score in audio_results.items():
-        if emotion == 'hap':
-            categories['Happy'] += score
-        elif emotion == 'sad':
-            categories['Sad'] += score
-        elif emotion == 'neu':
-            categories['Neutral'] += score
-        elif emotion == 'ang':
-            categories['Angry'] += score
-
-
+        if emotion == 'Happy':
+            e3 = audio_results['hap']
+        elif emotion == 'Sad':
+            e3 = audio_results['sad']
+        elif emotion == 'Neutral':
+            e3 = audio_results['neu']
+        elif emotion == 'Angry':
+            e3 = audio_results['ang']
+        else:
+            e3 = 0
+        avg =(e1+e2+e3)/3
+        categories[emotion] = avg
     return categories
+
+
 
 def summerize_video_body(in_category):
   

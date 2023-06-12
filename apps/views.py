@@ -253,14 +253,14 @@ def add_media_function(request):
 
                 ## Bodyyyyyy
                 category, detailed_results = query_body_video(url,media_name)
-                body_results_count = summerize_video_body(detailed_results)
-                body_results = json.dumps(normalize_dict((body_results_count)))
+                body_results_count =normalize_dict( summerize_video_body(detailed_results))
+                body_results = json.dumps(((body_results_count)))
                 
 
                 ##face
                 category = query_face(url,flag,media_name)
-                face_results_count = sorting_video_face((category))
-                face_results = json.dumps(normalize_dict(face_results_count))
+                face_results_count = normalize_dict(sorting_video_face((category)))
+                face_results = json.dumps((face_results_count))
 
 
                 ## AUDIO
@@ -286,16 +286,16 @@ def add_media_function(request):
                 url=urlink
                 flag = 'url'
 
-                # ## Bodyyyyyy
-                # category, detailed_results = query_body_video(url,media_name)
-                # body_results_count = summerize_video_body(detailed_results)
-                # body_results = json.dumps(normalize_dict((body_results_count)))
+                ## Bodyyyyyy
+                category, detailed_results = query_body_video(url,media_name)
+                body_results_count = normalize_dict(summerize_video_body(detailed_results))
+                body_results = json.dumps(((body_results_count)))
 
                 ## Face
                 category = query_face(url,flag,media_name)
-                face_results_count = sorting_video_face((category))
+                face_results_count = normalize_dict(sorting_video_face((category)))
                 #print('face_results_count', face_results_count)
-                face_results = json.dumps(normalize_dict(face_results_count))
+                face_results = json.dumps((face_results_count))
                 
 
                 id = extractIDfromURL(url)
@@ -321,9 +321,9 @@ def add_media_function(request):
             results_counts = overall_result(body_results_count, face_results_count, audio_results_count)
             highest_emotion = max(results_counts, key=lambda x: results_counts[x])
             results = unify_video(highest_emotion)
-            # print ('resutls count',results_counts)
-            # print('highest_emotion',highest_emotion)
-            # print('results',results)
+            print ('resutls count',results_counts)
+            print('highest_emotion',highest_emotion)
+            print('results',results)
             
             
 
@@ -346,6 +346,7 @@ def add_media_function(request):
 
 @app.route('/employees', methods=['GET','POST'])
 @login_required
+@admin_required
 def user_employees():
     # user=User.query.filter_by(id=current_user.id)
     # print(user)
@@ -356,6 +357,7 @@ def user_employees():
 
 @app.route('/edit_user_employees/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_user_employees(id):
     user_member = UserMembers.query.filter_by(id=id).first()
     user_id = current_user.id
@@ -376,6 +378,7 @@ def edit_user_employees(id):
 
 @app.route('/delete_user_employees', methods=['POST'])
 @login_required
+@admin_required
 def delete_user_employees():
     employee_id = request.form.get('employee_id')
     controller.deleteUserMember(employee_id)
@@ -383,6 +386,7 @@ def delete_user_employees():
 
 @app.route('/user_locations', methods=['GET','POST'])
 @login_required
+@admin_required
 def user_Locations():
     # user=User.query.filter_by(id=current_user.id)
     # print(user)
@@ -393,6 +397,7 @@ def user_Locations():
 
 @app.route('/edit_user_locations/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_user_locations(id):
     user_location = UserLocations.query.filter_by(id=id).first()
     user_id = current_user.id
@@ -414,6 +419,7 @@ def edit_user_locations(id):
 
 @app.route('/delete_user_locations/<int:id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_user_locations(id):
     location_id = id
     controller.deleteUserLocation(location_id)
