@@ -46,18 +46,76 @@ def sorting_audio(category):
     for item in category:
         sorted_result[item['label']] = item['score']
 
-    sorted_result = {'hap': sorted_result['hap'], 'sad': sorted_result['sad'], 'neu': sorted_result['neu'], 'amg': sorted_result['ang']}
+    sorted_result = {'hap': sorted_result['hap'], 'sad': sorted_result['sad'], 'neu': sorted_result['neu'], 'ang': sorted_result['ang']}
     return sorted_result
 
-def sorting_video_face(category):
+def overall_result(body_results, face_results, audio_results):
+    categories = {'Happy': 0, 'Sad': 0, 'Fearful': 0, 'Neutral': 0, 'Angry': 0}
+
+    for emotion, score in face_results.items():
+        if emotion in categories:
+            categories[emotion] += score
+
+    for emotion, score in body_results.items():
+        if emotion in categories:
+            categories[emotion] += score
+    
+    for emotion, score in audio_results.items():
+        audio_results[emotion] = int(round(score*9, 0)) + 1
+
+    for emotion, score in audio_results.items():
+        if emotion == 'hap':
+            categories['Happy'] += score
+        elif emotion == 'sad':
+            categories['Sad'] += score
+        elif emotion == 'neu':
+            categories['Neutral'] += score
+        elif emotion == 'ang':
+            categories['Angry'] += score
+
+
+    return categories
+
+def summerize_video_body(in_category):
+  
+    summerized_categories = {'Happy': ['Engagement', 'Pleasure', 'Affection', 'Happiness', 'Esteem','Excitement', 'Surprise'],
+                'Sad': ['Annoyance', 'Aversion', 'Sadness', 'Sensitivity', 'Suffering', 'Pain', 'Sympathy', 'Fatigue'],
+                'Fearful': ['Disquietment', 'Doubt_Confusion', 'Fear'],
+                'Neutral': ['Embarrassment', 'Peace', 'Yearning', 'Anticipation'],
+                'Angry': ['Disapproval', 'Disconnection']}
+
+    mapped_results = {}
+
+    for category, emotions in summerized_categories.items():
+        total_score = 0
+        for emotion in emotions:
+            total_score += in_category.get(emotion, 0)
+        mapped_results[category] = total_score
+    return mapped_results
+
+
+def sorting_video_face(in_category):
     # sorted_audio = {'hap' , 'sad', 'neu', 'ang'}
     sorted_result = {}
-    print(category)
+    
+    new_categories = {'Happy': ['Happy', 'Surprised'],
+                'Sad': ['Sad'],
+                'Fearful': ['Fearful'],
+                'Neutral': ['Neutral'],
+                'Angry': ['Angry', 'Disgusted']}
+    mapped_results = {}
+
+    for category, emotions in new_categories.items():
+        total_score = 0
+        for emotion in emotions:
+            total_score += in_category.get(emotion, 0)
+        mapped_results[category] = total_score
+    return mapped_results
     # for k,v in category.item:
     #     sorted_result[k] = v
 
-    sorted_result = {'Happy': category['Happy'], 'Sad': category['Sad'], 'Fearful': category['Fearful'], 'Neutral': category['Neutral'], 'Angry': category['Angry'], 'Disgusted': category['Disgusted'],'Surprised': category['Surprised'] }
-    return sorted_result
+    # sorted_result = {'Happy': category['Happy'], 'Sad': category['Sad'], 'Fearful': category['Fearful'], 'Neutral': category['Neutral'], 'Angry': category['Angry'], 'Disgusted': category['Disgusted'],'Surprised': category['Surprised'] }
+    # return sorted_result
 
 def unify_audio(result):
     if (result == 'hap'):

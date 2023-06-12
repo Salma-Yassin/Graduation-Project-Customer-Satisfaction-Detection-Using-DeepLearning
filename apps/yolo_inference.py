@@ -196,7 +196,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   dominant_emotion_counter_neutral=0
   dominant_emotion_counter_positive=0
   dominant_emotion_counter_negative=0
-  detailed_dominant_emotion = {}
+
   Affection = 0
   Anger = 0
   Annoyance = 0
@@ -223,9 +223,17 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   Surprise = 0
   Sympathy = 0
   Yearning = 0
+  detailed_dominant_emotion = {'Affection':0, 'Anger': 0, 'Annoyance': 0,  'Anticipation' : 0, 
+                                 'Aversion' : 0,  'Confidence' : 0,  'Disapproval' : 0,  'Disconnection' : 0, 
+                                   'Disquietment' : 0,  'Doubt_Confusion' : 0,  'Embarrassment' : 0,  'Engagement' : 0,
+                                       'Esteem' : 0,  'Excitement' : 0,  'Fatigue' : 0,  'Fear' : 0, 'Happiness' : 0,  
+                                       'Pain' : 0,  'Peace' : 0,  'Pleasure' : 0,  'Sadness' : 0,  'Sensitivity' : 0, 
+                                         'Suffering' : 0,  'Surprise' : 0,  'Sympathy' : 0,'Yearning' : 0}
+
 
   while True:
     (grabbed, frame) = video_stream.read()
+    print("===================Reading=============")
     if not grabbed:
       break
     image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
