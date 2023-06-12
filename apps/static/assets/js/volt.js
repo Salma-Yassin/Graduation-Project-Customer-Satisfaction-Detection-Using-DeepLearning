@@ -170,87 +170,466 @@ d.addEventListener("DOMContentLoaded", function (event) {
         });
     }
 
+    var getLocationData = $.get('/empolyee_data');
+    getLocationData.done(function (empolyees) {
+        if (d.querySelector('#empolyee_id_data')) {
+            console.log(empolyees);
+            const select = d.getElementById('empolyee_id_data');
+
+            empolyees.forEach(option => {
+                const optionElem = d.createElement('option');
+                optionElem.value = option.member_id;
+                optionElem.text = option.name;
+                select.appendChild(optionElem);
+            });
+
+        }
+    })
+
+    var getLocationData = $.get('/location_data');
+    getLocationData.done(function (locations) {
+        if (d.querySelector('#empolyee_location')) {
+            console.log(locations);
+            const select = d.getElementById('empolyee_location');
+
+            locations.forEach(option => {
+                const optionElem = d.createElement('option');
+                optionElem.value = option.name;
+                optionElem.text = option.name;
+                select.appendChild(optionElem);
+            });
+
+        }
+    })
+
+
+    var detailed_data = 'ay 7agaaa';
     var getMediaData = $.get('/media_data');
 
     getMediaData.done(function (results) {
         if (d.querySelector('#example')) {
-            console.log(results)
-
+            console.log(results);
             var table = jQuery('#example').DataTable({
                 data: results,
-                columns: [{ data: 'id' },
-                { data: 'type' },
-                { data: 'results' },
-                { data: 'member_id' },
-                { data: 'location_address' },
-                {
-                    data: 'url', 
-                    render: function (data) {
-                        return '<a href="' +data+ '" target="_blank">' + data + '</a>';
+                scrollX: false,
+                columns: [
+                    { data: 'id', title: '<b>ID</b>' },
+                    { data: 'type' },
+                    {
+                        data: 'results',
+                        render: function (data) {
+                            if (data === 'Satisfied') {
+                                return '<span class="badge bg-success fs-6">' + data + '</span>';
+                            } else if (data === 'Unsatisfied') {
+                                return '<span class="badge bg-danger fs-6">' + data + '</span>';
+                            } else {
+                                return '<span class="badge bg-warning fs-6">' + data + '</span>';
+                            }
+                        }
+                    },
+                    { data: 'member_id' },
+                    { data: 'location_address' },
+                    /*{
+                        data: 'url',
+                        render: function (data) {
+                            return '<a href="' + data + '" target="_blank">' + data + '</a>';
+                        }
+                    },*/
+                    { data: 'media_name' },
+                    {
+                        data: null,
+                        className: 'details-control',
+                        defaultContent: '<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-whatever="@mdo"><svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>Details</button>',
+                        orderable: false
                     }
-                }],
-                //searchPanes: true
+                ],
+                columnDefs: [
+                    {
+                        targets: 5, // url column
+                        width: '20%'
+                    }
+                ],
+
                 initComplete: function () {
                     this.api()
                         .columns()
                         .every(function () {
                             var column = this;
-                            var select = $('<select><option value=""></option></select>')
-                                .appendTo($(column.footer()).empty())
-                                .on('change', function () {
-                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                            if (!column.nodes().to$().hasClass('details-control')) {
+                                var select = $('<select><option value=""></option></select>')
+                                    .appendTo($(column.footer()).empty())
+                                    .on('change', function () {
+                                        var val = $.fn.dataTable.util.escapeRegex($(this).val());
 
-                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
-                                });
+                                        column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                    });
 
-                            column
-                                .data()
-                                .unique()
-                                .sort()
-                                .each(function (d, j) {
-                                    select.append('<option value="' + d + '">' + d + '</option>');
-                                });
+                                column
+                                    .data()
+                                    .unique()
+                                    .sort()
+                                    .each(function (d, j) {
+                                        select.append('<option value="' + d + '">' + d + '</option>');
+                                    });
+                            }
                         });
-                },
+                }
             });
 
-            //table.searchPanes.container().prependTo(table.table().container());
-            //table.searchPanes.resizePanes();
+            $('#example tbody').on('click', 'button', function () {
+                var data = table.row($(this).parents('tr')).data();
+                var face_data = data.face_results;
+                var body_data = data.body_results;
+                var audio_data = data.audio_results;
+                var flag = false;
+                // detailed_data = $.parseJSON(data.detailed_results);
+                //console.log(detailed_data);
+                //localStorage.setItem("passing_data", detailed_data);
+                // console.log(data.type);
+                // var scores=[];
+                // var labels=[];
+                //detailed_data.forEach(({score}) => scores.push(score));
+                //console.log(scores)
+                //detailed_data.forEach(({label}) => console.log(label));
+
+                if (data.type === 'Video') {
+                    // Do something for videos
+                    console.log('Video clicked');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/update_chart_face',
+                        data: JSON.stringify(face_data),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                    // Do something for videos
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/update_chart_body',
+                        data: JSON.stringify(body_data),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+
+                    if (audio_data != '') {
+                        flag = true;
+                        $.ajax({
+                            type: 'POST',
+                            url: '/update_chart_audio',
+                            data: JSON.stringify(audio_data),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log(response);
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                        $.ajax({
+                            type: 'POST',
+                            url: '/play_media',
+                            data: JSON.stringify(data.url),
+                            contentType: 'application/json',
+                            success: function (response) {
+                                console.log(response);
+                            },
+                            error: function (error) {
+                                console.log(error);
+                            }
+                        });
+                    }
+                    // Navigate to another view
+                    window.location.href = '/pages/MediaAnalysis/' + data.media_name;
+                    if (!flag)
+                    {
+                        d.getElementById("audio-div").attr('display','none');
+                    }
+                } else if (data.type === 'Audio') {
+                    // Do something for audio
+                    console.log('Audio clicked');
+                    $.ajax({
+                        type: 'POST',
+                        url: '/update_chart_audio',
+                        data: JSON.stringify(audio_data),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+
+                    $.ajax({
+                        type: 'POST',
+                        url: '/play_media',
+                        data: JSON.stringify(data.url),
+                        contentType: 'application/json',
+                        success: function (response) {
+                            console.log(response);
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    });
+                    // Navigate to another view
+                    window.location.href = '/pages/MediaAnalysisAudio/';
+                } else {
+                    // Do something else
+                    console.log('Unknown type clicked');
+                }
+            });
         }
+    });
+
+
+    var getplayMedia = $.get('/play_media');
+    getplayMedia.done(function (results) {
+        // console.log(results)
+        if (results) {
+            const audioPlay = d.getElementById("play-audio");
+            audioPlay.src = results;
+        }
+
     })
 
+    //Donught Chart Body:
+    var getchartBody = $.get('/update_chart_body');
+    getchartBody.done(function (results) {
+        results = $.parseJSON(results);
+        if (d.querySelector(".ct-chart-body")) {
+            //To be changed upon data\
+            var scores = [];
+            var labels = [];
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
+            });
+            
+
+            var chart = new Chartist.Pie('.ct-chart-body', {
+                series: scores,
+                labels: labels
+            }, {
+                donut: true,
+                donutWidth: 80,
+                startAngle: 0,
+                showLabel: true
+            });
+        }
+
+        /* chart.on('draw', function (data) {
+             if (data.type === 'slice') {
+                 // Get the total path length in order to use for dash array animation
+                 var pathLength = data.element._node.getTotalLength();
+ 
+                 // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                 data.element.attr({
+                     'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                 });
+ 
+                 // Create animation definition while also assigning an ID to the animation for later sync usage
+                 var animationDefinition = {
+                     'stroke-dashoffset': {
+                         id: 'anim' + data.index,
+                         dur: 1000,
+                         from: -pathLength + 'px',
+                         to: '0px',
+                         easing: Chartist.Svg.Easing.easeOutQuint,
+                         // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                         fill: 'freeze'
+                     }
+                 };    
+ 
+                 // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                 if (data.index !== 0) {
+                     animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                 }
+ 
+                 // We need to set an initial value before the animation starts as we are not in guided mode which would do that for us
+                 data.element.attr({
+                     'stroke-dashoffset': -pathLength + 'px'
+                 });
+ 
+                 // We can't use guided mode as the animations need to rely on setting begin manually
+                 // See http://gionkunz.github.io/chartist-js/api-documentation.html#chartistsvg-function-animate
+                 data.element.animate(animationDefinition, false);
+             }
+         });
+ 
+         // For the sake of the example we update the chart every time it's created with a delay of 8 seconds
+         chart.on('created', function () {
+             if (window.__anim21278907124) {
+                 clearTimeout(window.__anim21278907124);
+                 window.__anim21278907124 = null;
+             }
+             window.__anim21278907124 = setTimeout(chart.update.bind(chart), 10000);
+         });*/
+
+
+    })
+
+    //Donught Chart Face:
+    var getchartFace = $.get('/update_chart_face');
+    getchartFace.done(function (results) {
+        results = $.parseJSON(results);
+
+        if (d.querySelector(".ct-chart-face")) {
+            /// will be changed:
+            var scores = [];
+            var labels = [];
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
+            });
+            
+            // var value_chart_old = Object.values(results)
+            // var value_chart = []
+            // value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
+
+            var chart = new Chartist.Pie('.ct-chart-face', {
+                series: scores,
+                labels: labels
+            }, {
+                donut: true,
+                donutWidth: 80,
+                startAngle: 0,
+                showLabel: true
+            });
+        }
+
+    })
+
+    //Donught Chart Audio:
+    var getchartAudio = $.get('/update_chart_audio');
+    getchartAudio.done(function (results) {
+        results = $.parseJSON(results);
+
+        if (d.querySelector(".ct-chart-audio")) {
+            var scores = [];
+            var labels = [];
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
+            });
+
+            // var value_chart_old = Object.values(results)
+            // var value_chart = []
+            // value_chart_old.forEach((item) => value_chart.push((item * 100).toFixed(2)));
+
+            var chart = new Chartist.Pie('.ct-chart-audio', {
+                series: scores,
+                labels: labels
+            }, {
+                donut: true,
+                donutWidth: 80,
+                startAngle: 0,
+                showLabel: true
+                //labelOffset: 40,
+            });
+
+            chart.on('draw', function (data) {
+                if (data.type === 'slice') {
+                    // Get the total path length in order to use for dash array animation
+                    var pathLength = data.element._node.getTotalLength();
+
+                    // Set a dasharray that matches the path length as prerequisite to animate dashoffset
+                    data.element.attr({
+                        'stroke-dasharray': pathLength + 'px ' + pathLength + 'px'
+                    });
+
+                    // Create animation definition while also assigning an ID to the animation for later sync usage
+                    var animationDefinition = {
+                        'stroke-dashoffset': {
+                            id: 'anim' + data.index,
+                            dur: 1000,
+                            from: -pathLength + 'px',
+                            to: '0px',
+                            easing: Chartist.Svg.Easing.easeOutQuint,
+                            // We need to use `fill: 'freeze'` otherwise our animation will fall back to initial (not visible)
+                            fill: 'freeze'
+                        }
+                    };
+
+                    // If this was not the first slice, we need to time the animation so that it uses the end sync event of the previous animation
+                    if (data.index !== 0) {
+                        animationDefinition['stroke-dashoffset'].begin = 'anim' + (data.index - 1) + '.end';
+                    }
+                };
+            });
+        }
+
+    })
 
     //Chartist
-
     const handleChartData = (results) => {
-        var cat = ['hap','sad','neu','ang']
+        var cat = ['Unsatisfied', 'Neutral', 'Satisfied']
         var days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-
-        
         var all = []
-
-        for (let i = 0 ; i < cat.length ; i++){
+        for (let i = 0; i < cat.length; i++) {
             var series = []
-            for (let j = 0 ; j < days.length ; j++)
-            {
-                series = [...series , results.data.filter(row =>((row.results)).includes(cat[i])).filter(row =>((row.created_at)).includes(days[j])).length]
+            for (let j = 0; j < days.length; j++) {
+                series = [...series, results.filter(row => ((row.results)).includes(cat[i])).filter(row => ((row.created_at)).includes(days[j])).length]
             }
-            all = [...all,series]
+            all = [...all, series]
         }
-       
-       return all
-
+        return all
     }
 
-    var getMedia_dummy_Data = $.get('/data');
+    var getMedia_dummy_Data = $.get('/media_data');
 
-    getMedia_dummy_Data.done(function(results){
-       
+    getMedia_dummy_Data.done(function (results) {
+
         var all = handleChartData(results)
+
+        var all_satisfied = all[2];
+        var all_unsatisfied = all[0];
+        var all_neutral = all[1];
+
+        const sum_satisfied = all_satisfied.reduce((total, current) => total + current, 0);
+        const sum_unsatisifed = all_unsatisfied.reduce((total, current) => total + current, 0);
+        const sum_neutral = all_neutral.reduce((total, current) => total + current, 0);
+        const all_customers = sum_satisfied + sum_unsatisifed + sum_neutral
+        var satisfied_per;
+        if (all_customers == 0) {
+            satisfied_per = sum_satisfied * 100 / 1;
+        } else {
+            satisfied_per = sum_satisfied * 100 / all_customers;
+        }
+
+        // console.log(all_customers); // output: 15
+
+        const textCustomers = d.getElementById("text-value-total-customers");
+        textCustomers.textContent = all_customers;
+
+        const textSatisifed = d.getElementById("text-value-total-satisfied");
+        textSatisifed.textContent = sum_satisfied;
+
+        const textUnSatisifed = d.getElementById("text-value-total-unsatisfied");
+        textUnSatisifed.textContent = sum_unsatisifed;
+
+        const textNeutral = d.getElementById("text-value-total-neutral");
+        textNeutral.textContent = sum_neutral;
+
+        const textSatisfiedPerc = d.getElementById("text-value-total-sat-percentage");
+        textSatisfiedPerc.textContent = satisfied_per.toFixed(2);
+
+
         console.log(all)
 
         if (d.querySelector('.ct-chart-ranking')) {
-           
+
             //var series = results.data.filter(row =>((row.created_at)).includes('Fri')
 
             var chart = new Chartist.Bar('.ct-chart-ranking', {
@@ -273,7 +652,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     offset: 0
                 }
             });
-    
+
             chart.on('draw', function (data) {
                 if (data.type === 'line' || data.type === 'area') {
                     data.element.animate({
@@ -288,17 +667,17 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 }
             });
         }
-        if(d.querySelector('.ct-chart-sales-value')) {
+        if (d.querySelector('.ct-chart-sales-value')) {
             //Chart 5
-              new Chartist.Line('.ct-chart-sales-value', {
+            new Chartist.Line('.ct-chart-sales-value', {
                 labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
                 series: all
-              }, {
+            }, {
                 low: 0,
                 showArea: true,
                 fullWidth: true,
                 plugins: [
-                  Chartist.plugins.tooltip()
+                    Chartist.plugins.tooltip()
                 ],
                 axisX: {
                     // On the x-axis start means top and end means bottom
@@ -309,7 +688,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
                     // On the y-axis start means left and end means right
                     showGrid: false,
                     showLabel: false,
-                    labelInterpolationFnc: function(value) {
+                    labelInterpolationFnc: function (value) {
                         return '$' + (value / 1) + 'k';
                     }
                 }
@@ -317,7 +696,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
         }
 
     });
-    
+
 
     if (d.querySelector('.ct-chart-traffic-share')) {
         var data = {
@@ -333,7 +712,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             low: 0,
             high: 8,
             donut: true,
-            donutWidth: 20,
+            donutWidth: 50,
             donutSolid: true,
             fullWidth: false,
             showLabel: false,

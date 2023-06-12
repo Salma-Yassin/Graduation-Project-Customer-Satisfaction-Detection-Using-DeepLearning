@@ -2,7 +2,7 @@ flask/
 *.pyc
 dev
 node_modules
-apps/instance/database.db
+instance/
 app/build
 yarn.lock
 yarn-error.log
@@ -11,3 +11,11 @@ env/
 env__/
 .vscode/symbols.json
 apps/db.sqlite3
+apps/debug_exp
+*.db
+apps/static/
+Results/
+apps/updatePlayMedia.json
+apps/updateChartFace.json
+apps/updateChartBody.json
+apps/updateChartAudio.json

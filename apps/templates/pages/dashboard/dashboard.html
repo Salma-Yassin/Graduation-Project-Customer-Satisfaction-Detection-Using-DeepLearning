@@ -8,91 +8,16 @@
 {% endif %}
 
 <div class="py-4">
-  <div>
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"
-      data-bs-whatever="@mdo">
-      <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-      </svg>
-      Upload a Media file
-    </button>
-    </button>
-
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Uploading</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form method="POST">
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">URL</label>
-                <input type="text" class="form-control" name="url">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Type</label>
-                <input type="text" class="form-control" name="media_type">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Employee ID</label>
-                <!-- assuming employee has a n id -->
-                <input type="text" class="form-control" id="recipient-name" name="employee_id">
-              </div>
-              <div class="mb-3">
-                <label for="recipient-name" class="col-form-label">Location</label>
-                <input type="text" class="form-control" id="recipient-name" name="location">
-              </div>
-              <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Upload</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!--<div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
-          </path>
-        </svg>
-        Add User
-      </a>
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M5.5 13a3.5 3.5 0 01-.369-6.98 4 4 0 117.753-1.977A4.5 4.5 0 1113.5 13H11V9.413l1.293 1.293a1 1 0 001.414-1.414l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13H5.5z">
-          </path>
-          <path d="M9 13h2v5a1 1 0 11-2 0v-5z"></path>
-        </svg>
-        Upload Files
-      </a>
-      <div role="separator" class="dropdown-divider my-1"></div>
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path fill-rule="evenodd"
-            d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03zM12.12 15.12A3 3 0 017 13s.879.5 2.5.5c0-1 .5-4 1.25-4.5.5 1 .786 1.293 1.371 1.879A2.99 2.99 0 0113 13a2.99 2.99 0 01-.879 2.121z"
-            clip-rule="evenodd"></path>
-        </svg>
-        Upgrade to Pro
-      </a>
-    </div>-->
-  </div>
+  {% include 'pages/dashboard/uploadMediaForm.html' %}
 </div>
 <div class="row">
   <div class="col-12 col-xl-8 mb-4">
-    <div class="col-12 px-0 mb-4">
-      <div class="card border-0 shadow">
+    <div class="col-12 px-0 mb-4 h-100">
+      <div class="card border-0 shadow h-100">
         <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
           <div class="d-block">
-            <div class="fs-5 fw-normal mb-2 h6 text-gray">Total Satisfied Customers</div>
-            <h2 class="h3 fw-extrabold">452</h2>
+            <div class="fs-5 fw-normal mb-2 h6 text-gray">Total Customers</div>
+            <h2 class="h3 fw-extrabold " id="text-value-total-customers"></h2>
             <div class="small mt-2">
               <span class="fas fa-angle-up text-success"></span>
             </div>
@@ -100,95 +25,99 @@
           <div class="d-block ms-auto">
             <div class="d-flex align-items-center text-end mb-2">
               <span class="dot rounded-circle bg-gray-800 me-2"></span>
-              <span class="fw-normal small">July</span>
+              <span class="fw-normal small">Unsatisfied</span>
             </div>
-            <div class="d-flex align-items-center text-end">
+            <div class="d-flex align-items-center text-end mb-2">
               <span class="dot rounded-circle bg-secondary me-2"></span>
-              <span class="fw-normal small">August</span>
+              <span class="fw-normal small">Neutral</span>
             </div>
             <div class="d-flex align-items-center text-end">
-              <span class="dot rounded-circle bg-gray-500 me-2"></span>
-              <span class="fw-normal small">Sep</span>
+              <span class="dot rounded-circle bg-success me-2"></span>
+              <span class="fw-normal small">Satisfied</span>
             </div>
           </div>
         </div>
         <div class="card-body p-2">
           <div class="ct-chart-ranking ct-golden-section ct-series-a"></div>
         </div>
+        
+
+        
       </div>
     </div>
   </div>
   <div class="col-12 col-xl-4">
-  <div class="row">
-    <div class="col-12 mb-4">
-      <div class="card border-0 shadow">
-        <div class="card-body">
-          <div class="row d-block d-xl-flex align-items-center">
-            <div
-              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-              <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-laughing"
-                  viewBox="0 0 16 16">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                  <path
-                    d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
-                </svg>
+    <div class="row h-100 align-items-stretch">
+      <div class="col-12 mb-4">
+        <div class="card border-0 shadow h-100">
+          <div class="card-body">
+            <div class="row d-block d-xl-flex align-items-center">
+              <div
+                class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-laughing"
+                    viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path
+                      d="M12.331 9.5a1 1 0 0 1 0 1A4.998 4.998 0 0 1 8 13a4.998 4.998 0 0 1-4.33-2.5A1 1 0 0 1 4.535 9h6.93a1 1 0 0 1 .866.5zM7 6.5c0 .828-.448 0-1 0s-1 .828-1 0S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 0-1 0s-1 .828-1 0S9.448 5 10 5s1 .672 1 1.5z" />
+                  </svg>
+                </div>
               </div>
-            </div>
-            <div class="col-12 col-xl-7 px-xl-0">
-              <div class="d-none d-sm-block">
-                <h2 class="h6 text-gray-400 mb-0">Satisfied Customers</h2>
-                <h3 class="fw-extrabold mb-2">300k</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="col-12 mb-4">
-      <div class="card border-0 shadow">
-        <div class="card-body">
-          <div class="row d-block d-xl-flex align-items-center">
-            <div
-              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-              <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-expressionless"
-                  viewBox="0 0 16 16">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                  <path
-                    d="M4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm5 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
-                </svg>
-              </div>
-            </div>
-            <div class="col-12 col-xl-7 px-xl-0">
-              <div class="d-none d-sm-block">
-                <h2 class="h6 text-gray-400 mb-0">Neutral Customers</h2>
-                <h3 class="fw-extrabold mb-2">500k</h3>
+              <div class="col-12 col-xl-7 px-xl-0">
+                <div class="d-none d-sm-block">
+                  <h2 class="h6 text-gray-400 mb-0">Satisfied Customers</h2>
+                  <h3 class="fw-extrabold mb-2" id="text-value-total-satisfied"></h3>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="col-12 mb-4">
-      <div class="card border-0 shadow">
-        <div class="card-body">
-          <div class="row d-block d-xl-flex align-items-center">
-            <div
-              class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-              <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-frown"
-                  viewBox="0 0 16 16">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-                  <path
-                    d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
-                </svg>
+      <div class="col-12 mb-4">
+        <div class="card border-0 shadow h-100">
+          <div class="card-body">
+            <div class="row d-block d-xl-flex align-items-center">
+              <div
+                class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-expressionless"
+                    viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path
+                      d="M4 10.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zm5 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="col-12 col-xl-7 px-xl-0">
+                <div class="d-none d-sm-block">
+                  <h2 class="h6 text-gray-400 mb-0">Neutral Customers</h2>
+                  <h3 class="fw-extrabold mb-2" id="text-value-total-neutral"></h3>
+                </div>
               </div>
             </div>
-            <div class="col-12 col-xl-7 px-xl-0">
-              <div class="d-none d-sm-block">
-                <h2 class="h6 text-gray-400 mb-0"> Unsatisfied Customers</h2>
-                <h3 class="fw-extrabold mb-2">50k</h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 mb-4">
+        <div class="card border-0 shadow h-100">
+          <div class="card-body">
+            <div class="row d-block d-xl-flex align-items-center">
+              <div
+                class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" class="bi bi-emoji-frown"
+                    viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                    <path
+                      d="M4.285 12.433a.5.5 0 0 0 .683-.183A3.498 3.498 0 0 1 8 10.5c1.295 0 2.426.703 3.032 1.75a.5.5 0 0 0 .866-.5A4.498 4.498 0 0 0 8 9.5a4.5 4.5 0 0 0-3.898 2.25.5.5 0 0 0 .183.683zM7 6.5C7 7.328 6.552 8 6 8s-1-.672-1-1.5S5.448 5 6 5s1 .672 1 1.5zm4 0c0 .828-.448 1.5-1 1.5s-1-.672-1-1.5S9.448 5 10 5s1 .672 1 1.5z" />
+                  </svg>
+                </div>
+              </div>
+              <div class="col-12 col-xl-7 px-xl-0">
+                <div class="d-none d-sm-block">
+                  <h2 class="h6 text-gray-400 mb-0"> Unsatisfied Customers</h2>
+                  <h3 class="fw-extrabold mb-2" id="text-value-total-unsatisfied"></h3>
+                </div>
               </div>
             </div>
           </div>
@@ -196,7 +125,6 @@
       </div>
     </div>
   </div>
-</div>
 </div>
 <div class="row">
   <div class="col-12 mb-4">
@@ -204,11 +132,21 @@
       <div class="card-header d-sm-flex flex-row align-items-center flex-0">
         <div class="d-block mb-3 mb-sm-0">
           <div class="fs-5 fw-normal mb-2">Customer Retention</div>
-          <h2 class="fs-3 fw-extrabold">10K</h2>
+          <h2 class="fs-3 fw-extrabold" id="text-value-total-sat-percentage"></h2>
         </div>
-        <div class="d-flex ms-auto">
-          <a href="#" class="btn btn-secondary text-dark btn-sm me-2">Month</a>
-          <a href="#" class="btn btn-dark btn-sm me-3">Week</a>
+        <div class="d-block ms-auto">
+          <div class="d-flex align-items-center text-end mb-2">
+            <span class="dot rounded-circle bg-gray-800 me-2"></span>
+            <span class="fw-normal small">Unsatisfied</span>
+          </div>
+          <div class="d-flex align-items-center text-end mb-2">
+            <span class="dot rounded-circle bg-secondary me-2"></span>
+            <span class="fw-normal small">Neutral</span>
+          </div>
+          <div class="d-flex align-items-center text-end">
+            <span class="dot rounded-circle bg-success me-2"></span>
+            <span class="fw-normal small">Satisfied</span>
+          </div>
         </div>
       </div>
       <div class="card-body p-2">
@@ -217,6 +155,288 @@
     </div>
   </div>
 
+</div>
+<div >
+  <!--Adding Feedback button goes here-->
+        <style>
+          /* Style the "Rate Our Service" section */
+          .feedback-form .rate-our-service {
+            margin-bottom: 10px;
+          }
+          
+          .feedback-form .rate-our-service label {
+            font-weight: bold;
+            margin-right: 5px;
+          }
+        
+          /* Position the button on the right side */
+          .feedback-button {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 9999;
+            background-color: #007bff;
+            color: #fff;
+            padding: 0px 0px;
+            border-radius: 45px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        
+          /* Style the feedback icon */
+          .feedback-button:after {
+            content: "\2605";  /* 1F4C4 */
+            margin-right: 2px;
+            font-size: 25px;
+          }
+          
+          /* Show button name on hover */
+          .feedback-button:hover::before {
+            content: "Feedback";
+            display: inline-block;
+            margin-left: 5px;
+          }      
+          
+          /* Style the feedback form */
+          .feedback-form {
+            display: none;
+            position: fixed;
+            right: 15px;
+            bottom: 15px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #aaa;
+            border-radius: 20px;
+            z-index: 9998;
+          }
+        
+          /* Style the input fields */
+          .feedback-form input[type="text"],
+          .feedback-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        
+          .feedback-form input[type="submit"] {
+            background-color: #031b35;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        
+          /* Position the close button */
+          .feedback-close-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: transparent;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+          }
+        
+          /* Style the close button icon */
+          .feedback-close-btn:before {
+            content: '×';
+          }
+        
+          /* Style the feedback button name */
+          .feedback-button-name {
+            display: none;
+            margin-left: 5px;
+            font-size: 16px;
+          }
+        
+          /* Show feedback button name on hover */
+          .feedback-button:hover .feedback-button-name {
+            display: block;
+          }
+        
+        </style>
+        
+        <button class="feedback-button"><i class="far fa-thumbs-up"></i></button>
+        
+        <div class="feedback-form">
+          <h3>We Value Your Feedback!</h3>
+          <form method="POST" action="{{ url_for('feedback_form') }}">
+
+        
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        
+            <label for="message">Your Feedback:</label>
+            <textarea id="message" name="message" required></textarea>
+        
+            <input type="submit" value="Submit">
+            <button class="feedback-close-btn"></button>
+          </form>
+        </div>
+        
+        <script src="https://kit.fontawesome.com/1234567890.js" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/rateYo/2.3.2/jquery.rateyo.min.js"></script>
+        
+        <script>
+          // Show/hide feedback form on button click
+          const feedbackButton = document.querySelector('.feedback-button');
+          const feedbackForm = document.querySelector('.feedback-form');
+          const feedbackCloseButton = document.querySelector('.feedback-close-btn');
+        
+          feedbackButton.addEventListener('click', function() {
+            feedbackForm.style.display = 'block';
+        
+            // Initialize RateYo plugin
+            $("#rating-stars").rateYo({
+              fullStar: true,
+              onSet: function(rating) {
+                document.getElementById("rating").value = rating;
+              }
+            });
+          });
+        
+          feedbackCloseButton.addEventListener('click', function() {
+            feedbackForm.style.display = 'none';
+          });
+        
+          feedbackForm.addEventListener('submit', function() { 
+            alert('Thank you for your feedback!');
+            feedbackForm.style.display = 'none';
+          });
+        </script>
+        
+        <!--Adding Feedback button ends here-->
+     
+        <!--Adding Contact Us button Starts here-->
+        <style>
+          /* Position the button on the right side */
+          .contact-btn {
+            position: fixed;
+            right: 20px;
+            bottom: 60px;
+            z-index: 8888;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 1px 1px;
+            border-radius: 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease-in-out;
+          }
+        
+          /* Style the telephone icon */
+          .contact-btn::after {
+            content: "\260E";
+            margin-right: 2px;
+          }
+        
+          /* Show button name on hover */
+          .contact-btn:hover::before {
+            content: "Contact Us";
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 16px;
+          }
+        
+          /* Style the contact form */
+          .contact-form {
+            display: none;
+            position: fixed;
+            right: 35px;
+            bottom: 35px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0px 0px 10px #aaa;
+            border-radius: 20px;
+            z-index: 9998;
+          }
+        
+          /* Style the input fields */
+          .contact-form input[type="text"],
+          .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+          }
+        
+          .contact-form input[type="submit"] {
+            background-color: #031b35;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+          }
+        
+          /* Position the close button */
+          .close-cbtn {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            background-color: transparent;
+            border: none;
+            font-size: 2em;
+            cursor: pointer;
+          }
+        
+          /* Style the close button icon */
+          .close-cbtn:before {
+            content: '×';
+          }
+        </style>
+        
+        <button class="contact-btn"></button>
+
+        <div class="contact-form">
+          <h3>Reach Out to Us</h3>
+          <form method="POST" action="{{ url_for('contact_form') }}">
+        
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" class="form-control" required>
+        
+            <label for="message">Message:</label>
+            <textarea id="message" name="message" required></textarea>
+        
+            <input type="submit" value="Submit">
+            <button class="close-cbtn"></button>
+          </form>
+        </div>
+      
+      <script>
+        // Show/hide contact form on button click
+        const contactBtn = document.querySelector('.contact-btn');
+        const contactForm = document.querySelector('.contact-form');
+        const closeBtn = document.querySelector('.close-cbtn');
+        
+        contactBtn.addEventListener('click', function() {
+          contactForm.style.display = 'block';
+        });
+        
+        closeBtn.addEventListener('click', function() {
+          contactForm.style.display = 'none';
+        });
+        
+        contactForm.addEventListener('submit', function() {
+          alert('Thank you for contacting us!');
+          contactForm.style.display = 'none';
+        });
+      </script>
+        <!--Adding Contact Us button Ends here-->
 </div>
 
 

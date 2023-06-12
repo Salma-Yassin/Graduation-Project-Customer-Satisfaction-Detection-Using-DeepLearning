@@ -1,0 +1,62 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="accordion accordion-flush" id="accordionFlushExample">
+  <div class="accordion-item mb-4">
+    <h2 class="accordion-header" id="flush-headingOne">
+      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+        data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseTwo">
+        <h2 class="h5">Add Location</h2>
+      </button>
+    </h2>
+    <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
+      data-bs-parent="#accordionFlushExample">
+      <div class="accordion-body">
+        <div class="card card-body border-0 shadow mb-4">
+          <form method="POST">
+            <input type="hidden" name="Location_form" value="1">
+            <div class="row align-items-center">
+              <div class="col-md-6 mb-3">
+                <div>
+                  <label for="first_name">Location</label>
+                  <input class="form-control" type="text" name="location" id="location"
+                    aria-label="Location select example" placeholder="Enter your location" required>
+                </div>
+              </div>
+            </div>
+            <div class="mt-3">
+              <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save Location</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="container-fluid py-4">
+  <h3>User Locations</h3>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for location in Locations %}
+      <tr>
+        <td>{{ location.name }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('edit_user_locations', id=location.id) }}" style="display: inline;">
+            <button type="submit" class="btn btn-primary">Edit</button>
+          </form>
+          <form method="POST" action="{{ url_for('delete_user_locations', id=location.id) }}" style="display: inline;">
+            <button type="submit" class="btn btn-danger">Delete</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock content %}

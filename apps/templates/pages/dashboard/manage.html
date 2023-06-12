@@ -8,288 +8,435 @@
 {% endif %}
 
 <div class="py-4">
-  <div class="dropdown">
-    <button class="btn btn-gray-800 d-inline-flex align-items-center me-2 dropdown-toggle" data-bs-toggle="dropdown"
-      aria-haspopup="true" aria-expanded="false">
-      <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-        xmlns="http://www.w3.org/2000/svg">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-      </svg>
-      New Task
-    </button>
-    <div class="dropdown-menu dashboard-dropdown dropdown-menu-start mt-2 py-1">
-      <a class="dropdown-item d-flex align-items-center" href="#">
-        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20"
-          xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M8 9a3 3 0 100-6 3 3 0 000 6zM8 11a6 6 0 016 6H2a6 6 0 016-6zM16 7a1 1 0 10-2 0v1h-1a1 1 0 100 2h1v1a1 1 0 102 0v-1h1a1 1 0 100-2h-1V7z">
-          </path>
-        </svg>
-        Add User
-      </a>
+</div>
+<div class="row">
 
-      <div role="separator" class="dropdown-divider my-1"></div>
+
+  <!--<!-Adding Employee Report->
+  <div class="col-12 col-8">
+    <div class="row">
+      <div class="col-12 col-6 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+            <h2 class="fs-5 fw-bold mb-0">Employee Report</h2>
+          </div>
+          <div class="card-body">
+            <ul id="employee-report-list"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>-->
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var employeeReportList = document.getElementById('employee-report-list');
+
+      fetch('/employee_report')
+        .then(response => response.json())
+        .then(data => {
+          data.forEach(employee => {
+            var listItem = document.createElement('li');
+
+            var heading = document.createElement('h2');
+            heading.textContent = employee.Name;
+            listItem.appendChild(heading);
+
+            var idParagraph = document.createElement('p');
+            idParagraph.textContent = 'ID: ' + employee.ID;
+            listItem.appendChild(idParagraph);
+
+            var locationParagraph = document.createElement('p');
+            locationParagraph.textContent = 'Location: ' + employee.Location;
+            listItem.appendChild(locationParagraph);
+
+            var resultsParagraph = document.createElement('p');
+            resultsParagraph.textContent = 'Results: ' + employee.Results;
+            listItem.appendChild(resultsParagraph);
+
+            employeeReportList.appendChild(listItem);
+          });
+        })
+        .catch(error => console.error('Error:', error));
+    });
+  </script>
+</div>
+<!--End of Adding Employee Report-->
+
+<!--Adding Employee Statistics-->
+
+<div class="row">
+  <div class="col-12 col-6 mb-4">
+    <div class="card border-0 shadow">
+      <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+        <h2 class="fs-5 fw-bold mb-0">Employees Statistics</h2>
+        <!--<a href="#" class="btn btn-sm btn-primary">See all</a> -->
+      </div>
+      <div class="card-body p-2">
+        <ul class="list-group list-group-flush list my--3" id="employee-list"></ul>
+      </div>
+
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          // Fetch data from the server
+          fetch('/satisfied_employees')
+            .then(response => response.json())
+            .then(data => {
+              var top_members = data.top_members;
+              var counts = data.counts;
+
+              // Get the employee list element
+              var employeeList = document.getElementById('employee-list');
+
+              // Generate list items for each employee
+              for (var i = 0; i < top_members.length; i++) {
+                var member = top_members[i];
+                var count = counts[i];
+
+                // Create the list item
+                var listItem = document.createElement('li');
+                listItem.className = 'list-group-item px-0';
+
+                // Create the row container
+                var rowContainer = document.createElement('div');
+                rowContainer.className = 'row align-items-center';
+
+                // Create the content column
+                var contentColumn = document.createElement('div');
+                contentColumn.className = 'col';
+
+                // Create the heading and link
+                var heading = document.createElement('h4');
+                heading.className = 'h6 mb-0';
+
+                var link = document.createElement('a');
+                link.href = '#';
+                link.textContent = member;
+
+                // Create the small text
+                var smallText = document.createElement('div');
+                smallText.className = 'small fw-bold text-gray-500';
+                smallText.textContent = count + ' Satisfied Customers';
+
+                // Append link and small text to heading
+                heading.appendChild(link);
+                heading.appendChild(smallText);
+
+                // Create the progress bar
+                var progressBar = document.createElement('div');
+                progressBar.className = 'progress mb-0';
+
+                var progressBarInner = document.createElement('div');
+                progressBarInner.className = 'progress-bar bg-success';
+                progressBarInner.setAttribute('role', 'progressbar');
+                progressBarInner.setAttribute('aria-valuenow', count);
+                progressBarInner.setAttribute('aria-valuemin', '0');
+                progressBarInner.setAttribute('aria-valuemax', '100');
+                progressBarInner.style.width = count * 10 + '%';
+
+                if (count*10 <= 20) {
+                    // Set progress bar color to danger (red) if count is less than or equal to 30
+                    progressBarInner.classList.add('bg-danger');
+                  } else if (count*10 <= 60) {
+                    // Set progress bar color to warning (yellow) if count is less than or equal to 70
+                    progressBarInner.classList.add('bg-warning');
+                  } else if(count*10 > 60){
+                    // Set progress bar color to success (green) if count is greater than 70
+                    progressBarInner.classList.add('bg-success');
+                  }
+
+                // Append progress bar inner to progress bar
+                progressBar.appendChild(progressBarInner);
+
+                // Append heading and progress bar to content column
+                contentColumn.appendChild(heading);
+                contentColumn.appendChild(progressBar);
+
+                // Append content column to row container
+                rowContainer.appendChild(contentColumn);
+
+                // Append row container to list item
+                listItem.appendChild(rowContainer);
+
+                // Append list item to employee list
+                employeeList.appendChild(listItem);
+              }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+      </script>
+    </div>
+  </div>
+
+
+
+  <!-- Adding the bar chart -->
+  <div class="col-12  mb-4">
+    <div class="col-12 px-0 mb-4">
+      <div class="card border-0 shadow h-100">
+        <div class="card-body">
+          <div class="ct-chart employee-chart ct-golden-section"></div>
+        </div>
+
+        <!-- Include Chartist library -->
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <!-- Initialize the chart after the DOM is loaded -->
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            // Fetch data from the server
+            fetch('/satisfied_employees')
+              .then(response => response.json())
+              .then(data => {
+                var top_members = data.top_members;
+                var counts = data.counts;
+
+                // Create the chart using Chartist
+                var chart = new Chartist.Bar('.employee-chart', {
+                  labels: top_members,
+                  series: [counts]
+                }, {
+                  low: 0,
+                  showArea: true,
+                  plugins: [
+                    Chartist.plugins.tooltip()
+                  ],
+                  axisX: {
+                    position: 'end'
+                  },
+                  axisY: {
+                    showGrid: false,
+                    showLabel: false,
+                    offset: 0
+                  }
+                });
+
+                chart.on('draw', function (data) {
+                  if (data.type === 'line' || data.type === 'area') {
+                    data.element.animate({
+                      document: {
+                        begin: 2000 * data.index,
+                        dur: 2000,
+                        from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                        to: data.path.clone().stringify(),
+                        easing: Chartist.Svg.Easing.easeOutQuint
+                      }
+                    });
+                  }
+                });
+              })
+              .catch(error => console.error('Error:', error));
+          });
+        </script>
+
+        <!--ENd of Displaying Bar Chart-->
+
+        <!--Displaying the bar chart-->
+      </div>
     </div>
   </div>
 </div>
-<div class="row">
-  <div class="accordion accordion-flush" id="accordionFlushExample">
-    <div class="accordion-item mb-4">
-      <h2 class="accordion-header" id="flush-headingOne">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-          data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseTwo">
-          <h2 class="h5">General Location information</h2>
-        </button>
-      </h2>
-      <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne"
-        data-bs-parent="#accordionFlushExample">
-        <div class="accordion-body">
-          <div class="card card-body border-0 shadow mb-4">
-            <form>
+
+
+
+<!--Adding Location Statistics-->
+<div class="col-12 col-8">
+  <div class="row">
+    <div class="col-12 col-6 mb-4">
+      <div class="card border-0 shadow">
+        <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+          <h2 class="fs-5 fw-bold mb-0">Locations Statistics</h2>
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush list my--3">
+            {% for location_stat in top_locations %}
+            <li class="list-group-item px-0">
               <div class="row align-items-center">
-                <div class="col-md-6 mb-3">
-                  <label for="location">Location</label>
-                  <select class="form-select mb-0" id="location" aria-label="Location select example">
-                    <option selected>Location</option>
-                    <option value="1">Cairo</option>
-                    <option value="2">Alex</option>
-                    <option value="3">Giza</option>
-                    <option value="4">October</option>
-                    <option value="5">Maadi</option>
-                  </select>
+                <div class="col">
+                  <h4 class="h6 mb-0">
+                    <a href="#">{{ location_stat }}</a>
+                    <div class="small fw-bold text-gray-500">
+                      <span>{{ location_stat.satisfied_customers }} Satisfied Customers</span>
+                      <span class="ml-2">{{ counts[loop.index0] }} Counts</span>
+                    </div>
+                  </h4>
+                  <div class="progress mb-0">
+                    <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
+                      aria-valuemax="100" style="width:'{{ location_stat.progress_percentage }}';">
+                    </div>
+                  </div>
                 </div>
               </div>
-              <div class="mt-3">
-                <button class="btn btn-gray-800 mt-2 animate-up-2" type="button">Add New Location</button>
-              </div>
-              <div class="mt-3">
-                <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
-              </div>
-            </form>
-          </div>
+            </li>
+            {% endfor %}
+          </ul>
         </div>
-      </div>
-    </div>
-    <div class="accordion-item mb-4">
-      <h2 class="accordion-header" id="flush-headingTwo">
-        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-          data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-          <h2 class="h5">General Team information</h2>
-        </button>
-      </h2>
-      <div id="flush-collapseTwo" class="accordion-collapse collapse" aria-labelledby="flush-headingTwo"
-        data-bs-parent="#accordionFlushExample">
-        <div class="accordion-body">
-          <div class="card card-body border-0 shadow mb-4">
-            <form>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div>
-                    <label for="first_name">First Name</label>
-                    <input class="form-control" id="first_name" type="text" placeholder="Enter your first name"
-                      required>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div>
-                    <label for="last_name">Last Name</label>
-                    <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required>
-                  </div>
-                </div>
-              </div>
-              <div class="row align-items-center">
-                <div class="col-md-6 mb-3">
-                  <label for="birthday">Birthday</label>
-                  <div class="input-group">
-                    <span class="input-group-text">
-                      <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                          d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                          clip-rule="evenodd"></path>
-                      </svg>
-                    </span>
-                    <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy"
-                      required>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="gender">Gender</label>
-                  <select class="form-select mb-0" id="gender" aria-label="Gender select example">
-                    <option selected>Gender</option>
-                    <option value="1">Female</option>
-                    <option value="2">Male</option>
-                  </select>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="email">Email</label>
-                    <input class="form-control" id="email" type="email" placeholder="name@company.com" required>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-group">
-                    <label for="id">ID</label>
-                    <input class="form-control" id="id" type="number" placeholder="202018018" required>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <label for="location">Location</label>
-                  <select class="form-select mb-0" id="location" aria-label="Location select example">
-                    <option selected>Location</option>
-                    <option value="1">Cairo</option>
-                    <option value="2">Alex</option>
-                    <option value="3">Giza</option>
-                    <option value="4">October</option>
-                    <option value="5">Maadi</option>
-                  </select>
-                </div>
-              </div>
-              <div class="mt-3">
-                <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save Member</button>
-              </div>
-            </form>
-          </div>
+        <!--yaara addition starts here-->
+        <!--<canvas id="location-chart" width="400" height="200"></canvas>-->
+        <div class="card-body">
+          <ul class="list-group list-group-flush list my--3" id="location-list"></ul>
         </div>
-      </div>
-    </div>
-    
-    <div class="col-12 col-8">
-      <div class="row">
-        <div class="col-12 col-6 mb-4">
-          <div class="card border-0 shadow">
-            <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-              <h2 class="fs-5 fw-bold mb-0">Team members</h2>
-              <a href="#" class="btn btn-sm btn-primary">See all</a>
-            </div>
-            <div class="card-body">
-              <ul class="list-group list-group-flush list my--3">
-                <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-1.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col">
-                      <h4 class="h6 mb-0">
-                        <a href="#">Chris Wood</a>
-                        <div class="small fw-bold text-gray-500"><span>75 %</span></div>
-                      </h4>
-                      <div class="progress mb-0">
-                        <div class="progress-bar bg-success" role="progressbar" aria-valuenow="75" aria-valuemin="0"
-                          aria-valuemax="100" style="width: 75%;"></div>
-                      </div>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-success dot rounded-circle me-1"></div>
-                        <small>Online</small>
-                      </div>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-2.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
-                      <h4 class="h6 mb-0">
-                        <a href="#">Jose Leos</a>
-                      </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-warning dot rounded-circle me-1"></div>
-                        <small>In a meeting</small>
-                      </div>
-                    </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-3.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
-                      <h4 class="h6 mb-0">
-                        <a href="#">Bonnie Green</a>
-                      </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-danger dot rounded-circle me-1"></div>
-                        <small>Offline</small>
-                      </div>
-                    </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
-                    </div>
-                  </div>
-                </li>
-                <li class="list-group-item px-0">
-                  <div class="row align-items-center">
-                    <div class="col-auto">
-                      <!-- Avatar -->
-                      <a href="#" class="avatar">
-                        <img class="rounded" alt="Image placeholder"
-                          src="{{ url_for('static' , filename = 'assets/img/team/profile-picture-4.jpg' )}}">
-                      </a>
-                    </div>
-                    <div class="col-auto ms--2">
-                      <h4 class="h6 mb-0">
-                        <a href="#">Neil Sims</a>
-                      </h4>
-                      <div class="d-flex align-items-center">
-                        <div class="bg-danger dot rounded-circle me-1"></div>
-                        <small>Offline</small>
-                      </div>
-                    </div>
-                    <div class="col text-end">
-                      <a href="#" class="btn btn-sm btn-secondary d-inline-flex align-items-center">
-                        <svg class="icon icon-xxs me-2" fill="currentColor" viewBox="0 0 20 20"
-                          xmlns="http://www.w3.org/2000/svg">
-                          <path fill-rule="evenodd"
-                            d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zM7 8H5v2h2V8zm2 0h2v2H9V8zm6 0h-2v2h2V8z"
-                            clip-rule="evenodd"></path>
-                        </svg>
-                        Message
-                      </a>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            // Fetch data from the server
+            fetch('/satisfied_locations')
+              .then(response => response.json())
+              .then(data => {
+                console.log(data)
+                var top_locations = data.top_locations;
+                var counts = data.counts;
+
+                // Get the location list element
+                var locationList = document.getElementById('location-list');
+
+                // Generate list items for each location
+                for (var i = 0; i < top_locations.length; i++) {
+                  var location = top_locations[i];
+                  var count = counts[i];
+
+                  // Create the list item
+                  var listItem = document.createElement('li');
+                  listItem.className = 'list-group-item px-0';
+
+                  // Create the row container
+                  var rowContainer = document.createElement('div');
+                  rowContainer.className = 'row align-items-center';
+
+                  // Create the content column
+                  var contentColumn = document.createElement('div');
+                  contentColumn.className = 'col';
+
+                  // Create the heading and link
+                  var heading = document.createElement('h4');
+                  heading.className = 'h6 mb-0';
+
+                  var link = document.createElement('a');
+                  link.href = '#';
+                  link.textContent = location;
+
+                  // Create the small text
+                  var smallText = document.createElement('div');
+                  smallText.className = 'small fw-bold text-gray-500';
+                  smallText.textContent = count + ' Satisfied Customers';
+
+                  // Append link and small text to heading
+                  heading.appendChild(link);
+                  heading.appendChild(smallText);
+
+                  // Create the progress bar
+                  var progressBar = document.createElement('div');
+                  progressBar.className = 'progress mb-0';
+
+                  var progressBarInner = document.createElement('div');
+                  progressBarInner.className = 'progress-bar';
+                  progressBarInner.setAttribute('role', 'progressbar');
+                  progressBarInner.setAttribute('aria-valuenow', count);
+                  progressBarInner.setAttribute('aria-valuemin', '0');
+                  progressBarInner.setAttribute('aria-valuemax', '100');
+                  progressBarInner.style.width = count * 10 + '%';
+
+                  if (count*10 <= 40) {
+                    // Set progress bar color to danger (red) if count is less than or equal to 30
+                    progressBarInner.classList.add('bg-danger');
+                  } else if (count*10 <= 70) {
+                    // Set progress bar color to warning (yellow) if count is less than or equal to 70
+                    progressBarInner.classList.add('bg-warning');
+                  } else if(count*10 > 70){
+                    // Set progress bar color to success (green) if count is greater than 70
+                    progressBarInner.classList.add('bg-success');
+                  }
+
+                  // Append progress bar inner to progress bar
+                  progressBar.appendChild(progressBarInner);
+
+                  // Append heading and progress bar to content column
+                  contentColumn.appendChild(heading);
+                  contentColumn.appendChild(progressBar);
+
+                  // Append content column to row container
+                  rowContainer.appendChild(contentColumn);
+
+                  // Append row container to list item
+                  listItem.appendChild(rowContainer);
+
+                  // Append list item to location list
+                  locationList.appendChild(listItem);
+                }
+              })
+              .catch(error => console.error('Error:', error));
+          });
+        </script>
       </div>
     </div>
   </div>
 
-  {% endblock content %}
+  <div class="col-12  mb-4">
+    <div class="col-12 px-0 mb-4">
+      <div class="card border-0 shadow h-100">
+        <div class="card-body">
+          <div class="ct-chart location-chart ct-golden-section ct-series-a">
+          </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+        <script>
+          document.addEventListener('DOMContentLoaded', function () {
+            // Fetch data from the server
+            fetch('/satisfied_locations')
+              .then(response => response.json())
+              .then(data => {
+                var top_locations = data.top_locations;
+                var counts = data.counts;
+
+                // Create the chart using Chartist
+                var chart = new Chartist.Bar('.location-chart', {
+                  labels: top_locations,
+                  series: [counts]
+                }, {
+                  low: 0,
+                  showArea: true,
+                  plugins: [
+                    Chartist.plugins.tooltip()
+                  ],
+                  axisX: {
+                    position: 'end'
+                  },
+                  axisY: {
+                    showGrid: false,
+                    showLabel: false,
+                    offset: 0
+                  }
+                });
+
+                chart.on('draw', function (data) {
+                  if (data.type === 'line' || data.type === 'area') {
+                    data.element.animate({
+                      document: {
+                        begin: 2000 * data.index,
+                        dur: 2000,
+                        from: data.path.clone().scale(1, 0).translate(0, data.chartRect.height()).stringify(),
+                        to: data.path.clone().stringify(),
+                        easing: Chartist.Svg.Easing.easeOutQuint
+                      }
+                    });
+                  }
+                });
+              })
+              .catch(error => console.error('Error:', error));
+          });
+        </script>
+
+
+        <!--yaara addition ends here-->
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+
+{% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+<div class="container">
+  <h1>Loading...</h1>
+  <div id="progress" class="progress">
+    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+  </div>
+</div>
+
+<script>
+  function updateProgress(progress) {
+    const progressBar = document.querySelector('.progress-bar');
+    progressBar.style.width = progress + '%';
+    progressBar.setAttribute('aria-valuenow', progress);
+  }
+
+  // You can use JavaScript or AJAX to periodically check the progress and update it on the page.
+  // For simplicity, this example uses a timeout function to simulate the progress update.
+  setTimeout(function() {
+    // Replace `progressValue` with the actual progress value received from the backend
+    const progressValue = 50;
+    updateProgress(progressValue);
+  }, 2000);
+</script>
+{% endblock content %}
