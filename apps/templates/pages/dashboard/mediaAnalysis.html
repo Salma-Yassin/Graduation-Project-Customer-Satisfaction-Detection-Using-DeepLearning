@@ -28,7 +28,8 @@
         <div class="card-body p-2" style="text-align: center;">
           <div style="margin: 10px auto; max-width: 100%; max-height: 100%; overflow: hidden;">
             <video autoplay="autoplay" controls="controls" preload="preload" style="width: 100%; height: auto;">
-              <source src="{{ url_for('display_video', filename=body) }}" type="video/mp4"></source>
+              <source src="{{ url_for('display_video', filename=body) }}" type="video/mp4">
+              </source>
             </video>
           </div>
         </div>
@@ -169,7 +170,8 @@
         <div class="card-body p-2" style="text-align: center;">
           <div style="margin: 10px auto; max-width: 100%; max-height: 100%; overflow: hidden;">
             <video autoplay="autoplay" controls="controls" preload="preload" style="width: 100%; height: auto;">
-              <source src="{{ url_for('display_video', filename=face) }}" type="video/mp4"></source>
+              <source src="{{ url_for('display_video', filename=face) }}" type="video/mp4">
+              </source>
             </video>
           </div>
         </div>
@@ -297,38 +299,61 @@
   </div>
 </div>
 <div id="audio-div">
+  <div class="py-4">
+    <div class="col-12 col-8 mb-4">
+      <div class="col-12 px-0 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+            <div class="d-block">
+              <h2 class="h3 fw-extrabold">Audio Play</h2>
+            </div>
+          </div>
+          {% if audio %}
+          <div class="card-body p-2" style="text-align: center;">
+            <audio controls autoplay style="width: 80%;" >
+              <source src="{{ url_for('display_video', filename=audio) }}" type="audio/wav">
+              </source>
+
+            </audio>
+
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
   <div class="row">
     <div class="col-12 col-xl-8 mb-4">
       <div class="col-12 px-0 mb-4">
-          <div class="card border-0 shadow">
-            <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
-              <div class="d-block">
-                <h2 class="h3 fw-extrabold">Audio Model Analysis</h2>
-              </div>
-            </div>
-            
-            <div class="card-body p-2">
-                <div class="ct-chart-audio ct-golden-section ct-series-a"></div>
-                <div class="d-block ms-auto">
-                  <div class="d-flex align-items-center text-end mb-2">
-                    <span class="dot rounded-circle bg-gray-800 me-2"></span>
-                    <span class="fw-normal small">Happy</span>
-                  </div>
-                  <div class="d-flex align-items-center text-end mb-2">
-                    <span class="dot rounded-circle bg-secondary me-2"></span>
-                    <span class="fw-normal small">Sad</span>
-                  </div>
-                  <div class="d-flex align-items-center text-end mb-2">
-                    <span class="dot rounded-circle bg-success me-2"></span>
-                    <span class="fw-normal small">Neutral</span>
-                  </div>
-                  <div class="d-flex align-items-center text-end">
-                    <span class="dot rounded-circle bg-tertiary me-2"></span>
-                    <span class="fw-normal small">Angry</span>
-                  </div>
-                </div>
+        <div class="card border-0 shadow">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+            <div class="d-block">
+              <h2 class="h3 fw-extrabold">Audio Model Analysis</h2>
             </div>
           </div>
+
+          <div class="card-body p-2">
+            <div class="ct-chart-audio ct-golden-section ct-series-a"></div>
+            <div class="d-block ms-auto">
+              <div class="d-flex align-items-center text-end mb-2">
+                <span class="dot rounded-circle bg-gray-800 me-2"></span>
+                <span class="fw-normal small">Happy</span>
+              </div>
+              <div class="d-flex align-items-center text-end mb-2">
+                <span class="dot rounded-circle bg-secondary me-2"></span>
+                <span class="fw-normal small">Sad</span>
+              </div>
+              <div class="d-flex align-items-center text-end mb-2">
+                <span class="dot rounded-circle bg-success me-2"></span>
+                <span class="fw-normal small">Neutral</span>
+              </div>
+              <div class="d-flex align-items-center text-end">
+                <span class="dot rounded-circle bg-tertiary me-2"></span>
+                <span class="fw-normal small">Angry</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

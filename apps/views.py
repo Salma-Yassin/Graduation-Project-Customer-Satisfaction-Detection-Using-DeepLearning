@@ -227,6 +227,7 @@ def add_media_function(request):
                 print(file_path)
                 url=file_path
                 category=queryLocal(url)
+                print(category)
                 flash('File has been uploaded.')
                 audio_results = json.dumps(sorting_audio(category))
                 results = (category)[0]['label']
@@ -260,6 +261,7 @@ def add_media_function(request):
                 ##face
                 category = query_face(url,flag,media_name)
                 face_results_count = normalize_dict(sorting_video_face((category)))
+                print('face_results_count', face_results_count)
                 face_results = json.dumps((face_results_count))
 
 
@@ -272,10 +274,12 @@ def add_media_function(request):
                     __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
-                    #print(category)
-                    audio_results_count = category
-                    audio_results = json.dumps(category)
+                    print('category', category)
+                    audio_results_count = sorting_audio(category)
+                    print('audio_results_count', audio_results_count)
+                    audio_results = json.dumps(audio_results_count)
                     print('Audio Model Results:', audio_results)
+
                 else:
                     audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
                     audio_results = json.dumps(audio_results_count)
@@ -629,13 +633,14 @@ def employee_report():
 def pages_analysis(video):
     filename = secure_filename(video)
     print(filename)
-    return render_template('pages/dashboard/mediaAnalysis.html', face=filename+'_face.mp4',body=filename+'_body.mp4', segment='media', parent='pages', user=current_user)
+    return render_template('pages/dashboard/mediaAnalysis.html', audio =filename+'.wav',face=filename+'_face.mp4',body=filename+'_body.mp4', segment='media', parent='pages', user=current_user)
 
 # Adding Media Analysis view
 @app.route('/display/<filename>')
 def display_video(filename):
 	#print('display_video filename: ' + filename)
 	return redirect(url_for('static', filename='filat/' + filename), code=301)
+
 
 @app.route('/pages/MediaAnalysisAudio/')
 @login_required

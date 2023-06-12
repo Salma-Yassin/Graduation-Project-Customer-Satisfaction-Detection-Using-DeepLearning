@@ -10,7 +10,7 @@
 <div class="py-4">
 </div>
 <div class="row">
-  
+
 
   <!--<!-Adding Employee Report->
   <div class="col-12 col-8">
@@ -133,7 +133,18 @@
                 progressBarInner.setAttribute('aria-valuenow', count);
                 progressBarInner.setAttribute('aria-valuemin', '0');
                 progressBarInner.setAttribute('aria-valuemax', '100');
-                progressBarInner.style.width = count + '%';
+                progressBarInner.style.width = count * 10 + '%';
+
+                if (count*10 <= 20) {
+                    // Set progress bar color to danger (red) if count is less than or equal to 30
+                    progressBarInner.classList.add('bg-danger');
+                  } else if (count*10 <= 60) {
+                    // Set progress bar color to warning (yellow) if count is less than or equal to 70
+                    progressBarInner.classList.add('bg-warning');
+                  } else if(count*10 > 60){
+                    // Set progress bar color to success (green) if count is greater than 70
+                    progressBarInner.classList.add('bg-success');
+                  }
 
                 // Append progress bar inner to progress bar
                 progressBar.appendChild(progressBarInner);
@@ -319,12 +330,23 @@
                   progressBar.className = 'progress mb-0';
 
                   var progressBarInner = document.createElement('div');
-                  progressBarInner.className = 'progress-bar bg-success';
+                  progressBarInner.className = 'progress-bar';
                   progressBarInner.setAttribute('role', 'progressbar');
                   progressBarInner.setAttribute('aria-valuenow', count);
                   progressBarInner.setAttribute('aria-valuemin', '0');
                   progressBarInner.setAttribute('aria-valuemax', '100');
-                  progressBarInner.style.width = count + '%';
+                  progressBarInner.style.width = count * 10 + '%';
+
+                  if (count*10 <= 40) {
+                    // Set progress bar color to danger (red) if count is less than or equal to 30
+                    progressBarInner.classList.add('bg-danger');
+                  } else if (count*10 <= 70) {
+                    // Set progress bar color to warning (yellow) if count is less than or equal to 70
+                    progressBarInner.classList.add('bg-warning');
+                  } else if(count*10 > 70){
+                    // Set progress bar color to success (green) if count is greater than 70
+                    progressBarInner.classList.add('bg-success');
+                  }
 
                   // Append progress bar inner to progress bar
                   progressBar.appendChild(progressBarInner);
