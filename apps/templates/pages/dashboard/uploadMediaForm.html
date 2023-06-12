@@ -93,22 +93,6 @@
     flex-direction: column;
   }
 
-  .loading-bar {
-    width: 200px;
-    height: 20px;
-    background-color: #ddd;
-    border-radius: 10px;
-    margin-top: 10px;
-  }
-
-  .loading-progress {
-    width: 0;
-    height: 100%;
-    background-color: #0d6efd;
-    border-radius: 10px;
-    transition: width 0.3s ease-in-out;
-  }
-
   .loading-message {
     margin-top: 10px;
     text-align: center;
@@ -126,10 +110,7 @@
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
-      <div class="loading-bar">
-        <div class="loading-progress"></div>
-      </div>
-      <div class="loading-message">Please wait while your video is processing</div>
+      <div class="loading-message">Please wait while your data is processing...</div>
     </div>
   `;
   document.body.appendChild(loadingOverlay);
@@ -140,13 +121,12 @@
   });
 
   function simulateProcessing() {
-    const progressBar = document.querySelector(".loading-progress");
     const message = document.querySelector(".loading-message");
 
     let progress = 0;
     let intervalId = setInterval(() => {
-      progress += 10;
-      progressBar.style.width = `${progress}%`;
+      progress += 2;
+
 
       if (progress === 100) {
         clearInterval(intervalId);
@@ -157,17 +137,17 @@
   }
 
   function simulateAnalysis() {
-    const progressBar = document.querySelector(".loading-progress");
+
     const message = document.querySelector(".loading-message");
 
     let progress = 0;
     let intervalId = setInterval(() => {
-      progress += 0.001;
-      progressBar.style.width = `${progress}%`;
+      progress += 2;
+
 
       if (progress === 100) {
         clearInterval(intervalId);
-        message.textContent = "Your video analysis is complete";
+        message.textContent = "Hang on a second we are nearly done";
       }
     }, 1000);
   }

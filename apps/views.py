@@ -201,6 +201,9 @@ def get_media_data():
 # Pages -- Dashboard
 # @app.route('/', defaults={'path': 'dashboard.html'})
 def add_media_function(request):
+    bodyComplete=False
+    faceComplete=False
+    toneComplete=False
     # retrive fields from data base
     media_name = request.form.get('media_name')
     urlink = request.form.get('url')
@@ -257,13 +260,15 @@ def add_media_function(request):
                 body_results_count =normalize_dict( summerize_video_body(detailed_results))
                 body_results = json.dumps(((body_results_count)))
                 
+                
 
                 ##face
                 category = query_face(url,flag,media_name)
                 face_results_count = normalize_dict(sorting_video_face((category)))
                 print('face_results_count', face_results_count)
                 face_results = json.dumps((face_results_count))
-
+                
+                
 
                 ## AUDIO
                 video = VideoFileClip(url)
@@ -278,6 +283,7 @@ def add_media_function(request):
                     audio_results_count = sorting_audio(category)
                     print('audio_results_count', audio_results_count)
                     audio_results = json.dumps(audio_results_count)
+                    
                     print('Audio Model Results:', audio_results)
 
                 else:
@@ -341,6 +347,7 @@ def add_media_function(request):
     controller.addMedia(media_name = media_name, url = url , type = media_type, companyName = companyName, location_address = location_add, member_id = emp_id, 
                         results = results, face_results=face_results, body_results=body_results, audio_results=audio_results)
     flash('Media added successfuly!', category='success')
+    return render_template('pages/dashboard/uploadMediaForm.html', bodyComplete=bodyComplete, faceComplete=faceComplete, toneComplete=toneComplete)
     
     #created_media = Media.query.filter_by(url=url).first()
      #controller.addAnalysisResult(media_id= created_media.id, result=category[0]['label'])    
