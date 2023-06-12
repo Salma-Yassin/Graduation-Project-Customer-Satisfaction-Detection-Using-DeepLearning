@@ -20,6 +20,15 @@
       <!--data-background-lg="{{ url_for('static' , filename = 'assets/img/illustrations/signin.svg' )}}">-->
       <div class="col-12 d-flex align-items-center justify-content-center">
         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+          
+          <!-- Brand Logo -->
+          <div class="container text-center mb-4">
+            <a href="/" class="brand-link">
+              <img src="{{ url_for('static', filename='assets/img/team/default.png') }}" alt="AdminLTE Logo"
+                class="brand-image img-circle elevation-3 rounded-circle"
+                style="opacity: 1; width: 100px; height: 100px; border: 3px solid #fff;">
+            </a>
+          </div>
           <div class="text-center text-md-center mb-4 mt-md-0">
             <h1 class="mb-0 h3">Sign in to our platform</h1>
           </div>
@@ -35,8 +44,8 @@
                     <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                   </svg>
                 </span>
-                <input type="email" class="form-control" placeholder="example@company.com" id="email" name ="email" autofocus
-                  required>
+                <input type="email" class="form-control" placeholder="example@company.com" id="email" name="email"
+                  autofocus required>
               </div>
             </div>
             <!-- End of Form -->
@@ -53,7 +62,8 @@
                         clip-rule="evenodd"></path>
                     </svg>
                   </span>
-                  <input type="password" placeholder="Password" class="form-control" id="password" name ="password" required>
+                  <input type="password" placeholder="Password" class="form-control" id="password" name="password"
+                    required>
                 </div>
               </div>
               <!-- End of Form -->

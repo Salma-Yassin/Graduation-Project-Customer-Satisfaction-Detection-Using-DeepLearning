@@ -284,7 +284,6 @@ d.addEventListener("DOMContentLoaded", function (event) {
                 var flag = false;
                 // detailed_data = $.parseJSON(data.detailed_results);
                 //console.log(detailed_data);
-
                 //localStorage.setItem("passing_data", detailed_data);
                 // console.log(data.type);
                 // var scores=[];
@@ -410,13 +409,14 @@ d.addEventListener("DOMContentLoaded", function (event) {
     getchartBody.done(function (results) {
         results = $.parseJSON(results);
         if (d.querySelector(".ct-chart-body")) {
-            //To be changed upon data
+            //To be changed upon data\
             var scores = [];
             var labels = [];
-            results.forEach((row) => {
-                labels.push(row[0]);
-                scores.push(row[1]);
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
             });
+            
 
             var chart = new Chartist.Pie('.ct-chart-body', {
                 series: scores,

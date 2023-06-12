@@ -15,3 +15,7 @@ apps/debug_exp
 *.db
 apps/static/
 Results/
+apps/updatePlayMedia.json
+apps/updateChartFace.json
+apps/updateChartBody.json
+apps/updateChartAudio.json

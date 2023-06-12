@@ -21,7 +21,7 @@ from .inference_flask import query, query_face, queryLocal, query_body_video, qu
 import sys
 from .controller import controller
 from moviepy.editor import *
-from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face
+from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio, sorting_video_face, summerize_video_body, overall_result
 from functools import wraps
 from .TestEmotionDetector import extractIDfromURL
 # App modules
@@ -237,10 +237,12 @@ def add_media_function(request):
                 category = query(url)
                 # Convert dictionary to string
                 audio_results = json.dumps(sorting_audio(category))
+                print('audio_results:  ', audio_results)
                 results = (category)[0]['label']
                 results = unify_audio(results)
         
         elif media_type == 'Video':
+            
             if file: 
                 filename = secure_filename(file.filename)
                 file_path = os.path.join(os.path.abspath(os.path.dirname(__file__)), app.config['UPLOAD_FOLDER'], filename)
@@ -248,18 +250,18 @@ def add_media_function(request):
                 print(file_path)
                 flag = 'local'
                 url=file_path
-                ## Bodyyyyyy
-                category = query_body_video(url,media_name)
-                body_results = category
-                print('Body Model Results:', body_results)
-                ###face
-                category = query_face(url,flag,media_name)
-                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
-                results = next(iter(category))
-                results = unify_video(results)
-                print('Face Model Results:',face_results)
 
+                ## Bodyyyyyy
+                category, detailed_results = query_body_video(url,media_name)
+                body_results_count =normalize_dict( summerize_video_body(detailed_results))
+                body_results = json.dumps(((body_results_count)))
                 
+
+                ##face
+                category = query_face(url,flag,media_name)
+                face_results_count = normalize_dict(sorting_video_face((category)))
+                face_results = json.dumps((face_results_count))
+
 
                 ## AUDIO
                 video = VideoFileClip(url)
@@ -270,22 +272,31 @@ def add_media_function(request):
                     __file__)), app.config['UPLOAD_FOLDER'],media_name+'.wav')
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
-                    print(category)
+                    #print(category)
+                    audio_results_count = category
                     audio_results = json.dumps(category)
-                    # results = (category)[0]['label']
-                    # results = unify_audio(results)
                     print('Audio Model Results:', audio_results)
                 else:
+                    audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                    audio_results = json.dumps(audio_results_count)
                     print('No audio exists!')
                 video.close()
 
             elif urlink:
                 url=urlink
                 flag = 'url'
+
+                ## Bodyyyyyy
+                category, detailed_results = query_body_video(url,media_name)
+                body_results_count = normalize_dict(summerize_video_body(detailed_results))
+                body_results = json.dumps(((body_results_count)))
+
+                ## Face
                 category = query_face(url,flag,media_name)
-                face_results = json.dumps(normalize_dict(sorting_video_face((category))))
-                results = next(iter(category))
-                results = unify_video(results)
+                face_results_count = normalize_dict(sorting_video_face((category)))
+                #print('face_results_count', face_results_count)
+                face_results = json.dumps((face_results_count))
+                
 
                 id = extractIDfromURL(url)
                 url = "https://drive.google.com/uc?id=" + id
@@ -298,14 +309,23 @@ def add_media_function(request):
                     category = queryLocal(output_audio)
                     print(category)
                     audio_results = json.dumps(category)
-                    # results = (category)[0]['label']
-                    # audio_results = unify_audio(results)
+                    audio_results_count = category
                     print('Audio Model Results:',audio_results)
                 else:
+                    audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                    audio_results = json.dumps(audio_results_count)
                     print('No audio exists!')
                 video.close()
 
             # Merge Function
+            results_counts = overall_result(body_results_count, face_results_count, audio_results_count)
+            highest_emotion = max(results_counts, key=lambda x: results_counts[x])
+            results = unify_video(highest_emotion)
+            print ('resutls count',results_counts)
+            print('highest_emotion',highest_emotion)
+            print('results',results)
+            
+            
 
 
         else:
@@ -326,16 +346,27 @@ def add_media_function(request):
 
 @app.route('/employees', methods=['GET','POST'])
 @login_required
+@admin_required
 def user_employees():
     # user=User.query.filter_by(id=current_user.id)
     # print(user)
     user=current_user
     companyName=current_user.companyName
     employees=UserMembers.query.filter_by(companyName=companyName).all()
+
+    if request.method == 'POST':
+        if request.form.get('Employee_form'):
+            empo_name = request.form.get('name')
+            empo_gender = request.form.get('gender')
+            empo_id = request.form.get('id')
+            empo_location = request.form.get('location')
+            controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+            
     return render_template('pages/dashboard/useremployees.html',segment='useremployees', employees=employees,user=user)  
 
 @app.route('/edit_user_employees/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_user_employees(id):
     user_member = UserMembers.query.filter_by(id=id).first()
     user_id = current_user.id
@@ -356,6 +387,7 @@ def edit_user_employees(id):
 
 @app.route('/delete_user_employees', methods=['POST'])
 @login_required
+@admin_required
 def delete_user_employees():
     employee_id = request.form.get('employee_id')
     controller.deleteUserMember(employee_id)
@@ -363,16 +395,23 @@ def delete_user_employees():
 
 @app.route('/user_locations', methods=['GET','POST'])
 @login_required
+@admin_required
 def user_Locations():
     # user=User.query.filter_by(id=current_user.id)
     # print(user)
     user=current_user
     companyName=current_user.companyName
     Locations=UserLocations.query.filter_by(companyName=companyName).all()
+
+    if request.method == 'POST':
+     if request.form.get('Location_form'):       
+        location = request.form.get('location')
+        controller.addUserLocation(name=location, companyName = companyName)
     return render_template('pages/dashboard/userlocations.html',segment='userlocations', Locations=Locations,user=user) 
 
 @app.route('/edit_user_locations/<int:id>', methods=['GET', 'POST'])
 @login_required
+@admin_required
 def edit_user_locations(id):
     user_location = UserLocations.query.filter_by(id=id).first()
     user_id = current_user.id
@@ -394,6 +433,7 @@ def edit_user_locations(id):
 
 @app.route('/delete_user_locations/<int:id>', methods=['POST'])
 @login_required
+@admin_required
 def delete_user_locations(id):
     location_id = id
     controller.deleteUserLocation(location_id)
@@ -444,18 +484,18 @@ def pages_history():
 @login_required
 @admin_required
 def pages_manage():
-  if request.method == 'POST':
-     companyName = current_user.companyName
-     if request.form.get('Location_form'):       
-        location = request.form.get('location')
-        controller.addUserLocation(name=location, companyName = companyName)
+#   if request.method == 'POST':
+#      companyName = current_user.companyName
+#      if request.form.get('Location_form'):       
+#         location = request.form.get('location')
+#         controller.addUserLocation(name=location, companyName = companyName)
 
-     elif request.form.get('Employee_form'):
-        empo_name = request.form.get('name')
-        empo_gender = request.form.get('gender')
-        empo_id = request.form.get('id')
-        empo_location = request.form.get('location')
-        controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+#      elif request.form.get('Employee_form'):
+#         empo_name = request.form.get('name')
+#         empo_gender = request.form.get('gender')
+#         empo_id = request.form.get('id')
+#         empo_location = request.form.get('location')
+#         controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
@@ -610,6 +650,9 @@ def pages_analysis_audio():
 @app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
+    if request.method == 'POST':
+        add_media_function(request)
+        return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
     return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages', user=current_user)
 
 

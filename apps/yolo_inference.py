@@ -129,10 +129,10 @@ def yolo_infer(images_list, result_path, model_path, context_norm, body_norm, in
 
 
     except Exception as e:
-      print ('Exception for image ',image_context_path)
-      print (e)
+      print('Exception for image ',image_context_path)
+      print(e)
     cv2.imwrite(os.path.join(result_path, 'img_%r.jpg' %(idx)), cv2.cvtColor(image_context, cv2.COLOR_RGB2BGR))
-    print ('completed inference for image %d'  %(idx))
+    print('completed inference for image %d'  %(idx))
 
 def extractIDfromURL(url):
   id_regex = r'/d/([-\w]+)'
@@ -190,13 +190,13 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   result_file = os.path.join(result_path, 'inference_list.txt')
   with open(result_file, 'w') as f:
     pass
-  print ('Starting testing on video')
+  print('Starting testing on video')
   c=0
   dominant_emotion=dict()
   dominant_emotion_counter_neutral=0
   dominant_emotion_counter_positive=0
   dominant_emotion_counter_negative=0
-  detailed_dominant_emotion = {}
+
   Affection = 0
   Anger = 0
   Annoyance = 0
@@ -223,9 +223,17 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   Surprise = 0
   Sympathy = 0
   Yearning = 0
+  detailed_dominant_emotion = {'Affection':0, 'Anger': 0, 'Annoyance': 0,  'Anticipation' : 0, 
+                                 'Aversion' : 0,  'Confidence' : 0,  'Disapproval' : 0,  'Disconnection' : 0, 
+                                   'Disquietment' : 0,  'Doubt_Confusion' : 0,  'Embarrassment' : 0,  'Engagement' : 0,
+                                       'Esteem' : 0,  'Excitement' : 0,  'Fatigue' : 0,  'Fear' : 0, 'Happiness' : 0,  
+                                       'Pain' : 0,  'Peace' : 0,  'Pleasure' : 0,  'Sadness' : 0,  'Sensitivity' : 0, 
+                                         'Suffering' : 0,  'Surprise' : 0,  'Sympathy' : 0,'Yearning' : 0}
+
 
   while True:
     (grabbed, frame) = video_stream.read()
+    print("===================Reading=============")
     if not grabbed:
       break
     image_context = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -337,7 +345,6 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
             if emo == 'Yearning':
                 Yearning+=1
                 detailed_dominant_emotion['Yearning']=Yearning
-            print(detailed_dominant_emotion)
 
         for continuous in pred_cont:
           write_line.append(str('%.4f' %(continuous)))
@@ -359,7 +366,7 @@ def yolo_video(video_file, filename, result_path, model_path, output_path, conte
   video = VideoFileClip(os.path.join(result_path, 'result_vid.avi'))
   video.write_videofile(os.path.join(output_path, filename + '_body.mp4'), codec='libx264')
   video.close()
-  print ('Completed video')
+  print('Completed video')
   return dominant_emotion, detailed_dominant_emotion
 
 
@@ -411,15 +418,15 @@ context_norm = [context_mean, context_std]
 body_norm = [body_mean, body_std]
 
 def functionpaths_video(url_path,filename='result_vid'):
-  modelpath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
-  outputpath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\static\filat"
-  emotion=yolo_video(url_path, filename, resultspath, modelpath, outputpath, context_norm, body_norm, ind2cat, ind2vad)
-  return emotion
+  modelpath = "apps/debug_exp/models"
+  resultspath = "apps/debug_exp/results"
+  outputpath = "apps/static/filat"
+  emotion, details=yolo_video(url_path, filename, resultspath, modelpath, outputpath, context_norm, body_norm, ind2cat, ind2vad)
+  return emotion, details
 
 def functionpaths_image(images_path):
-  modelpath=r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\models"
-  resultspath = r"C:\Users\Dell\Desktop\website gradproject\GP_Trial_Repo\apps\debug_exp\results"
+  modelpath="apps/debug_exp/models"
+  resultspath = "apps/debug_exp/results"
   emotion=yolo_infer(images_path, resultspath, modelpath, context_norm, body_norm, ind2cat, ind2vad)
   return emotion
 
