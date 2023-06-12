@@ -104,46 +104,74 @@
           <div class="card-header border-bottom d-flex align-items-center justify-content-between">
             <h2 class="fs-5 fw-bold mb-0">Employee Report</h2>
           </div>
-          <div class="card-body">
-            <ul id="employee-report-list"></ul>
-          </div>
+          <style>
+            /* Style the table */
+            table {
+                font-family: Arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            /* Style the table header */
+            th {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            
+            /* Style the table cells */
+            td {
+                border: 1px solid #ddd;
+                padding: 8px;
+            }
+            
+            /* Style the table rows on hover */
+            tr:hover {
+                background-color: #f5f5f5;
+            }
+            
+            /* Style the table header */
+            th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                background-color: #4CAF50;
+                color: white;
+            }
+        </style>
+        <table>
+          <tr>
+              <th>Name</th>
+              <th>Member ID</th>
+              <th>Location Address</th>
+              <th>No. of Satisfied Customers</th>
+          </tr>
+        </table>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+        $(document).ready(function() {
+            // Retrieve the data from the server
+            fetch('/employee_report')
+                .then(response => response.json())
+                .then(data => {
+                    // Update the HTML table with the data
+                    
+                    data.forEach(result => {
+                        $('#employee-table tbody').append(
+                            `<tr>
+                                <td>${result.name}</td>
+                                <td>${result.member_id}</td>
+                                <td>${result.location_address}</td>
+                                <td>${result.count}</td>
+                            </tr>`
+                        );
+                    });
+                });
+        });
+        </script>
         </div>
       </div>
     </div>
   </div>
-
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      var employeeReportList = document.getElementById('employee-report-list');
-
-      fetch('/employee_report')
-        .then(response => response.json())
-        .then(data => {
-          data.forEach(employee => {
-            var listItem = document.createElement('li');
-
-            var heading = document.createElement('h2');
-            heading.textContent = employee.Name;
-            listItem.appendChild(heading);
-
-            var idParagraph = document.createElement('p');
-            idParagraph.textContent = 'ID: ' + employee.ID;
-            listItem.appendChild(idParagraph);
-
-            var locationParagraph = document.createElement('p');
-            locationParagraph.textContent = 'Location: ' + employee.Location;
-            listItem.appendChild(locationParagraph);
-
-            var resultsParagraph = document.createElement('p');
-            resultsParagraph.textContent = 'Results: ' + employee.Results;
-            listItem.appendChild(resultsParagraph);
-
-            employeeReportList.appendChild(listItem);
-          });
-        })
-        .catch(error => console.error('Error:', error));
-    });
-  </script>
 </div>
 <!--End of Adding Employee Report-->
 

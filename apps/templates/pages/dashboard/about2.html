@@ -1,0 +1,40 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+  {% if not user.is_authenticated %}
+    <a id="login" href="/accounts/sign-in/">Login</a>
+  {% endif %}
+
+  <div class="py-4">
+    <div class="col-12 col-8 mb-4">
+      <div class="col-12 px-0 mb-4">
+        <div class="card border-0 shadow">
+          <div class="card-header d-flex flex-row align-items-center flex-0 border-bottom">
+            <div class="d-block">
+              <div class="fs-5 fw-normal mb-2 h6 text-gray fw-extrabold">About Us</div>
+              <div class="small mt-2">
+                <span class="fas fa-angle-up text-success"></span>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="content">
+
+                <h2>Our Mission</h2>
+                <p>Welcome to our website! We are a team of passionate individuals who are dedicated to providing high-quality products and services to our customers. Our mission is to make your life easier and more enjoyable by offering innovative solutions that meet your needs.</p>
+              </div>
+              <div class="section">
+                <h2>Customer Satisfaction</h2>
+                <p>At our company, we believe that customer satisfaction is the key to success. That's why we go above and beyond to ensure that every customer is 100% satisfied with our products and services. Whether you're looking for a new product or need help with an existing one, our team is always here to assist you.</p>
+              </div>
+              <div class="section">
+                <h2>Thank You</h2>
+                <p>Thank you for choosing us as your partner. We look forward to serving you!</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

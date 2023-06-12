@@ -23,7 +23,7 @@ from .controller import controller
 from .helpers import unify_audio, unify_video, normalize_dict, sorting_audio
 from .helpers import unify_audio, unify_video, normalize_dict
 from functools import wraps
-
+from sqlalchemy import and_
 # App modules
 from apps import app
 import random
@@ -300,9 +300,9 @@ def support_page():
   return render_template('pages/dashboard/support.html', segment='support', parent='pages',user=current_user)
 
 ##ِAdding About Us Page###
-@app.route('/about')
-def about():
-    return render_template('pages/dashboard/about.html')
+@app.route('/pages/about')
+def pages_about():
+  return render_template('pages/dashboard/about.html', segment='about', parent='pages',user=current_user)
 
 ##########FEEDBACK & ContactUs PAGE ADDED NEWLY ####################
 
@@ -396,24 +396,23 @@ def satisfied_employees():
 
 @app.route('/employee_report')
 def employee_report():
-    # Retrieve the required data
-    employees = UserMembers.query.all()
+  employee_results = (
+        db.session.query(UserMembers.name, UserMembers.member_id, Media.location_address, func.count())
+        .join(Media, Media.member_id == UserMembers.member_id)
+        .filter(Media.results == 'Satisfied')
+        .group_by(UserMembers.name, UserMembers.member_id, Media.location_address)
+        .order_by(func.count().desc())
+        .all()
+    )
 
-    # Format the data into a report
-    report_data = []
-    for employee in employees:
-        media = Media.query.filter_by(member_id=employee.id).first()
-        if media:
-            employee_data = {
-                'Name': employee.name,
-                'ID': employee.id,
-                'Location': media.location_address,
-                'Results': AnalysisResults.query.filter_by(media_id=media.id).first().results
-            }
-            report_data.append(employee_data)
-
-    # Return the report data as JSON response
-    return json.dumps(report_data)
+  # Separate the member names, ids, location addresses, and counts into separate lists
+  members = [result[0] for result in employee_results]
+  member_ids = [result[1] for result in employee_results]
+  location_addresses = [result[2] for result in employee_results]
+  counts = [result[3] for result in employee_results]
+  data = {'members': members, 'member_ids': member_ids, 'location_addresses': location_addresses, 'counts': counts}
+  return json.dumps(data)
+    
 
 
 ####################End of Statistics####################
