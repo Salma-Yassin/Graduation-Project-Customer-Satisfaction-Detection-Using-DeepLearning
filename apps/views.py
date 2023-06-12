@@ -215,7 +215,7 @@ def add_media_function(request):
     face_results=''
     body_results='' 
     audio_results=''
-    redirect(url_for('loading_page'))
+    # redirect(url_for('loading_page'))
     if media_name_check:
         flash('Media Name used, enter another one', category='error')
     else: 
@@ -400,7 +400,9 @@ def delete_user_locations(id):
     flash('Location deleted successfully', 'success')
     return redirect(url_for('user_Locations'))
 
-
+@app.route('/popup')
+def popup():
+    return render_template('pages/dashboard/popup.html')
 
 @app.route('/loading')
 def loading_page():
