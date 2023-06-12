@@ -1,22 +1,288 @@
-<!-- templates/about.html -->
-
 {% extends 'layouts/base.html' %}
-
 {% block content %}
-  <h1>About Us</h1>
-  
-  <p>Welcome to our website!</p>
-  
-  <h2>Our Mission</h2>
-  <p>Describe your mission statement or the purpose of your app/organization.</p>
-  
-  <h2>Our Team</h2>
-  <ul>
-    <li>Team member 1</li>
-    <li>Team member 2</li>
-    <li>Team member 3</li>
-  </ul>
-  
-  <h2>Contact Information</h2>
-  <p>Provide contact details or a contact form for users to get in touch with you.</p>
-{% endblock %}
+  {% if not user.is_authenticated %}
+    <a id="login" href="/accounts/sign-in/">Login</a>
+  {% endif %}
+<div class="py-4">
+    <div class="col-24 col-md-8 mx-auto mb-4">
+      <div class="col-24 px-0 mb-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
+        <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <style>
+          body {
+            font: 400 15px Lato, sans-serif;
+            line-height: 1.8;
+            color: #818181;
+          }
+          h2 {
+            font-size: 24px;
+            text-transform: uppercase;
+            color: #303030;
+            font-weight: 600;
+            margin-bottom: 30px;
+          }
+          h4 {
+            font-size: 19px;
+            line-height: 1.375em;
+            color: #303030;
+            font-weight: 400;
+            margin-bottom: 30px;
+          }  
+          .jumbotron {
+            background-color: #f4511e;
+            color: #fff;
+            padding: 100px 25px;
+            font-family: Montserrat, sans-serif;
+          }
+          .container-fluid {
+            padding: 40px 40px;
+          }
+          .bg-grey {
+            background-color: #f6f6f6;
+          }
+          .logo-small {
+            color: #f4511e;
+            font-size: 50px;
+          }
+          .logo {
+            color: #f4511e;
+            font-size: 200px;
+          }
+          .thumbnail {
+            padding: 0 0 15px 0;
+            border: none;
+            border-radius: 0;
+          }
+          .thumbnail img {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 10px;
+          }
+          .carousel-control.right, .carousel-control.left {
+            background-image: none;
+            color: #f4511e;
+          }
+          .carousel-indicators li {
+            border-color: #f4511e;
+          }
+          .carousel-indicators li.active {
+            background-color: #f4511e;
+          }
+          .item h4 {
+            font-size: 19px;
+            line-height: 1.375em;
+            font-weight: 400;
+            font-style: italic;
+            margin: 70px 0;
+          }
+          .item span {
+            font-style: normal;
+          }
+          .panel {
+            border: 1px solid #f4511e; 
+            border-radius:0 !important;
+            transition: box-shadow 0.5s;
+          }
+          .panel:hover {
+            box-shadow: 5px 0px 40px rgba(0,0,0, .2);
+          }
+          .panel-footer .btn:hover {
+            border: 1px solid #f4511e;
+            background-color: #fff !important;
+            color: #f4511e;
+          }
+          .panel-heading {
+            color: #fff !important;
+            background-color: #f4511e !important;
+            padding: 25px;
+            border-bottom: 1px solid transparent;
+            border-top-left-radius: 0px;
+            border-top-right-radius: 0px;
+            border-bottom-left-radius: 0px;
+            border-bottom-right-radius: 0px;
+          }
+          .panel-footer {
+            background-color: white !important;
+          }
+          .panel-footer h3 {
+            font-size: 32px;
+          }
+          .panel-footer h4 {
+            color: #aaa;
+            font-size: 14px;
+          }
+          .panel-footer .btn {
+            margin: 15px 0;
+            background-color: #f4511e;
+            color: #fff;
+          }
+
+          footer .glyphicon {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f4511e;
+          }
+          .slideanim {visibility:hidden;}
+          .slide {
+            animation-name: slide;
+            -webkit-animation-name: slide;
+            animation-duration: 1s;
+            -webkit-animation-duration: 1s;
+            visibility: visible;
+          }
+          @keyframes slide {
+            0% {
+              opacity: 0;
+              transform: translateY(70%);
+            } 
+            100% {
+              opacity: 1;
+              transform: translateY(0%);
+            }
+          }
+          @-webkit-keyframes slide {
+            0% {
+              opacity: 0;
+              -webkit-transform: translateY(70%);
+            } 
+            100% {
+              opacity: 1;
+              -webkit-transform: translateY(0%);
+            }
+          }
+          @media screen and (max-width: 768px) {
+            .col-sm-4 {
+              text-align: center;
+              margin: 25px 0;
+            }
+            .btn-lg {
+              width: 100%;
+              margin-bottom: 35px;
+            }
+          }
+          @media screen and (max-width: 480px) {
+            .logo {
+              font-size: 150px;
+            }
+          }
+        </style>
+        <div class="jumbotron text-center">
+          <h1>MoodAI</h1> 
+          <p>" At MoodAI, we believe that customer satisfaction is an integral part of any successful business. That's why we've developed a cutting-edge service that evaluates customer satisfaction using deep learning techniques. Customers can simply upload their audio and video files, and we take care of the rest. At MoodAI, we are committed to helping businesses like yours achieve optimal customer satisfaction."</p> 
+        </div>
+
+        <!-- Container (About Section) -->
+        <div id="about" class="container-fluid">
+          <div class="row">
+            <div class="col-sm-8">
+              <h2>About MoodAI</h2><br>
+              <h4>Our website is designed to provide you with easy access to the information and resources you need.Whether you're looking for analysis, results, or suggestions, we've got you covered.</h4><br>
+              <p><h6>Our website is designed to provide you with easy access to the information and resources you need. Whether you're looking for analysis, results, or suggestions, we've got you covered. Our user-friendly interface makes it easy to navigate our site and find what you're looking for. We are committed to providing accurate and up-to-date information to ensure that you have the most current and reliable resources at your fingertips. That's why we've developed a cutting-edge service that evaluates customer satisfaction using deep learning techniques. Our service is based on emotion recognition from customers' facial expressions, body posture, and tone of voice, which we analyze using advanced algorithms. Customers can simply upload their audio and video files, and we take care of the rest. Our team is constantly working to improve the functionality and user experience of our site, so that you can get the most out of your visit. Thank you for choosing our site, and we look forward to serving you!</h6></p>
+            </div>
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-signal logo"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="container-fluid bg-grey">
+          <div class="row">
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-globe logo slideanim"></span>
+            </div>
+            <div class="col-sm-8">
+              <h4><strong>Our Values: </strong>
+                Our values include integrity, innovation, collaboration, and social responsibility. We believe in doing the right thing, pushing boundaries to create new solutions, working together to achieve shared goals, and making a positive impact on the world.</h4><br>
+              <h4><strong>Our MISSION:</strong> We are a team of passionate individuals who are dedicated to providing high-quality products and services to our customers. Our mission is to make your life easier and more enjoyable by offering innovative solutions that meet your needs.</h4><br>
+              <h4><strong>Our VISION:</strong> At our core, we are driven by a vision of a better future. We believe in a world where everyone has access to the resources they need to achieve their goals and live their best life. Our vision is to be a leader in providing innovative solutions that empower individuals to reach their full potential. We are committed to making a positive impact in the world by helping people live happier, healthier, and more fulfilling lives. We believe that by working together, we can create a better future for ourselves and for generations to come.</h4>
+            </div>
+          </div>
+        </div>
+
+        <!-- Container (Services Section) -->
+        <div id="services" class="container-fluid text-center">
+          <h2>SERVICES</h2>
+          <h4>What we offer</h4>
+          <br>
+          <div class="row slideanim">
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-user logo-small"></span>
+              <h4>Face & Body Detection</h4>
+              <p>Advanced DL models are used for accurate detection.</p>
+            </div>
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-heart logo-small"></span>
+              <h4>Emotion Detection
+              </h4>
+              <p>Emotion Detection is the main part of our evaluation for customers.</p>
+            </div>
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-music logo-small"></span>
+              <h4>Tone Analysis</h4>
+              <p>We Analyze the tone in order to help in the evaluation.</p>
+            </div>
+          </div>
+          <br><br>
+          <div class="row slideanim">
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-edit logo-small"></span>
+              <h4>Feedback System</h4>
+              <p>We give you a detailed feedback of your customers satisfaction, and for sure we hear your feedback too.</p>
+            </div>
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-thumbs-up logo-small"></span>
+              <h4>Customer Satisfaction Evaluation</h4>
+              <p>A detailed evaluation is given for you in order to know how satisfied they are .</p>
+            </div>
+            <div class="col-sm-4">
+              <span class="glyphicon glyphicon-wrench logo-small"></span>
+              <h4 style="color:#303030;">HARD WORK</h4>
+              <p>Our servvies are a result of the hard work done to make you satisfied.</p>
+            </div>
+          </div>
+        </div>
+
+        <script>
+        $(document).ready(function(){
+          // Add smooth scrolling to all links in navbar + footer link
+          $(".navbar a, footer a[href='#myPage']").on('click', function(event) {
+            // Make sure this.hash has a value before overriding default behavior
+            if (this.hash !== "") {
+              // Prevent default anchor click behavior
+              event.preventDefault();
+
+              // Store hash
+              var hash = this.hash;
+
+              // Using jQuery's animate() method to add smooth page scroll
+              // The optional number (900) specifies the number of milliseconds it takes to scroll to the specified area
+              $('html, body').animate({
+                scrollTop: $(hash).offset().top
+              }, 900, function(){
+          
+                // Add hash (#) to URL when done scrolling (default click behavior)
+                window.location.hash = hash;
+              });
+            } // End if
+          });
+          
+          $(window).scroll(function() {
+            $(".slideanim").each(function(){
+              var pos = $(this).offset().top;
+              var winTop = $(window).scrollTop();
+              if (pos < winTop + 600) {
+                $(this).addClass("slide");
+              }
+            });
+          });
+        })
+      </script>
+      </div>
+    </div>
+  </div>
+{% endblock content %}

@@ -525,9 +525,9 @@ def support_page():
   return render_template('pages/dashboard/support.html', segment='support', parent='pages',user=current_user)
 
 ##ِAdding About Us Page###
-@app.route('/about')
-def about():
-    return render_template('pages/dashboard/about.html')
+@app.route('/pages/about')
+def pages_about():
+  return render_template('pages/dashboard/about.html', segment='about', parent='pages',user=current_user)
 
 ##########FEEDBACK & ContactUs PAGE ADDED NEWLY ####################
 
