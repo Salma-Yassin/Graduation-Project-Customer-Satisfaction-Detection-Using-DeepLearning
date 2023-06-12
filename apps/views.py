@@ -275,10 +275,15 @@ def add_media_function(request):
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print('category', category)
-                    audio_results_count = sorting_audio(category)
-                    print('audio_results_count', audio_results_count)
-                    audio_results = json.dumps(audio_results_count)
-                    print('Audio Model Results:', audio_results)
+                    if ('error' in category.keys()):
+                        audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                        audio_results = json.dumps(audio_results_count)
+                        print('An Error has occured!')
+                    else:
+                        audio_results_count = sorting_audio(category)
+                        print('audio_results_count', audio_results_count)
+                        audio_results = json.dumps(audio_results_count)
+                        print('Audio Model Results:', audio_results)
 
                 else:
                     audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
@@ -312,9 +317,14 @@ def add_media_function(request):
                     audio.write_audiofile(output_audio, codec='pcm_s16le')
                     category = queryLocal(output_audio)
                     print(category)
-                    audio_results = json.dumps(category)
-                    audio_results_count = category
-                    print('Audio Model Results:',audio_results)
+                    if ('error' in category.keys()):
+                        audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
+                        audio_results = json.dumps(audio_results_count)
+                        print('An Error has occured!')
+                    else:
+                        audio_results = json.dumps(category)
+                        audio_results_count = sorting_audio(category)
+                        print('Audio Model Results:',audio_results)
                 else:
                     audio_results_count= {"hap": 0, "sad": 0, "neu": 0, "ang": 0}  # intialize 
                     audio_results = json.dumps(audio_results_count)
