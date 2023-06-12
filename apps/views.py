@@ -526,6 +526,7 @@ def support_page():
 
 ##ِAdding About Us Page###
 @app.route('/pages/about')
+@login_required
 def pages_about():
   return render_template('pages/dashboard/about.html', segment='about', parent='pages',user=current_user)
 

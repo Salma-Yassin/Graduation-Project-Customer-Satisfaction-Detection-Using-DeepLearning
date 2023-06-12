@@ -1,14 +1,12 @@
 {% extends 'layouts/base.html' %}
 {% block content %}
-  {% if not user.is_authenticated %}
-    <a id="login" href="/accounts/sign-in/">Login</a>
-  {% endif %}
+{% if not user.is_authenticated %}
+  <a id="login" href="/accounts/sign-in/">Login</a>
+{% endif %}
 <div class="py-4">
     <div class="col-24 col-md-8 mx-auto mb-4">
       <div class="col-24 px-0 mb-8">
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"> -->
         <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet" type="text/css">
         <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -18,6 +16,9 @@
             font: 400 15px Lato, sans-serif;
             line-height: 1.8;
             color: #818181;
+          }
+          h1 {
+            color: #fff;
           }
           h2 {
             font-size: 24px;
@@ -34,7 +35,7 @@
             margin-bottom: 30px;
           }  
           .jumbotron {
-            background-color: #f4511e;
+            background-color: #374151;
             color: #fff;
             padding: 100px 25px;
             font-family: Montserrat, sans-serif;
@@ -46,11 +47,11 @@
             background-color: #f6f6f6;
           }
           .logo-small {
-            color: #f4511e;
+            color: #374151;
             font-size: 50px;
           }
           .logo {
-            color: #f4511e;
+            color: #374151;
             font-size: 200px;
           }
           .thumbnail {
@@ -65,13 +66,13 @@
           }
           .carousel-control.right, .carousel-control.left {
             background-image: none;
-            color: #f4511e;
+            color: #374151;
           }
           .carousel-indicators li {
-            border-color: #f4511e;
+            border-color: #374151;
           }
           .carousel-indicators li.active {
-            background-color: #f4511e;
+            background-color: #374151;
           }
           .item h4 {
             font-size: 19px;
@@ -192,9 +193,6 @@
 
         <div class="container-fluid bg-grey">
           <div class="row">
-            <div class="col-sm-4">
-              <span class="glyphicon glyphicon-globe logo slideanim"></span>
-            </div>
             <div class="col-sm-8">
               <h4><strong>Our Values: </strong>
                 Our values include integrity, innovation, collaboration, and social responsibility. We believe in doing the right thing, pushing boundaries to create new solutions, working together to achieve shared goals, and making a positive impact on the world.</h4><br>
