@@ -353,6 +353,15 @@ def user_employees():
     user=current_user
     companyName=current_user.companyName
     employees=UserMembers.query.filter_by(companyName=companyName).all()
+
+    if request.method == 'POST':
+        if request.form.get('Employee_form'):
+            empo_name = request.form.get('name')
+            empo_gender = request.form.get('gender')
+            empo_id = request.form.get('id')
+            empo_location = request.form.get('location')
+            controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+            
     return render_template('pages/dashboard/useremployees.html',segment='useremployees', employees=employees,user=user)  
 
 @app.route('/edit_user_employees/<int:id>', methods=['GET', 'POST'])
@@ -393,6 +402,11 @@ def user_Locations():
     user=current_user
     companyName=current_user.companyName
     Locations=UserLocations.query.filter_by(companyName=companyName).all()
+
+    if request.method == 'POST':
+     if request.form.get('Location_form'):       
+        location = request.form.get('location')
+        controller.addUserLocation(name=location, companyName = companyName)
     return render_template('pages/dashboard/userlocations.html',segment='userlocations', Locations=Locations,user=user) 
 
 @app.route('/edit_user_locations/<int:id>', methods=['GET', 'POST'])
@@ -468,18 +482,18 @@ def pages_history():
 @login_required
 @admin_required
 def pages_manage():
-  if request.method == 'POST':
-     companyName = current_user.companyName
-     if request.form.get('Location_form'):       
-        location = request.form.get('location')
-        controller.addUserLocation(name=location, companyName = companyName)
+#   if request.method == 'POST':
+#      companyName = current_user.companyName
+#      if request.form.get('Location_form'):       
+#         location = request.form.get('location')
+#         controller.addUserLocation(name=location, companyName = companyName)
 
-     elif request.form.get('Employee_form'):
-        empo_name = request.form.get('name')
-        empo_gender = request.form.get('gender')
-        empo_id = request.form.get('id')
-        empo_location = request.form.get('location')
-        controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
+#      elif request.form.get('Employee_form'):
+#         empo_name = request.form.get('name')
+#         empo_gender = request.form.get('gender')
+#         empo_id = request.form.get('id')
+#         empo_location = request.form.get('location')
+#         controller.addUserMember(name=empo_name, companyName = companyName , member_id=empo_id, member_gender=empo_gender, location_id=empo_location)
         
   return render_template('pages/dashboard/manage.html', segment='manage', parent='pages',user=current_user)
 
@@ -634,6 +648,9 @@ def pages_analysis_audio():
 @app.route('/pages/UploadAnalysis/', methods=['GET', 'POST'])
 @login_required
 def pages_uploadMedia():
+    if request.method == 'POST':
+        add_media_function(request)
+        return render_template('pages/dashboard/history.html', segment='history', parent='pages', user=current_user)
     return render_template('pages/dashboard/uploadMedia.html', segment='upload', parent='pages', user=current_user)
 
 

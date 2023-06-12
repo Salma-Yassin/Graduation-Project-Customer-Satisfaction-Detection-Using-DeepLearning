@@ -1,12 +1,14 @@
 <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white show" data-simplebar>
   <div class="sidebar-inner px-4 pt-3">
+
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="avatar-md me-4">
         <div class="image">
 
           <img src="{{ url_for('static' , filename = 'assets/img/team/user.png' )}}"
-            class="card-img-top rounded-circle border-white" alt="Bonnie Green" />
+            class="card-img-top rounded-circle border-white" alt="Bonnie Green"
+            style="width: 40px; height: 40px;" />
         </div>
       </div>
       <div class="info">
@@ -16,6 +18,8 @@
       </div>
 
     </div>
+    <hr color="white">
+
     <nav class="mt-2">
       <ul class="nav flex-column pt-3 pt-md-0">
         <li class="nav-item {% if 'dashboard' in segment %}active{% endif %}">
@@ -59,18 +63,22 @@
         <li class="nav-item {% if 'manage' in segment %}active{% endif %}">
           <a href="{{url_for('pages_manage')}}" class="nav-link">
             <span class="sidebar-icon">
-              <svg class="icon icon-xs me-2 bi bi-kanban-fill" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2.5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11zm5 2h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm-5 1a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3zm9-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z"/>
+              <svg class="icon icon-xs me-2 bi bi-kanban-fill" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M2.5 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h11a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2h-11zm5 2h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zm-5 1a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3zm9-1h1a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" />
               </svg>
             </span>
-            <span class="sidebar-text">Manage</span>
+            <span class="sidebar-text">Statistics</span>
           </a>
         </li>
         <li class="nav-item {% if 'useremployees' in segment %}active{% endif %}">
           <a href="{{url_for('user_employees')}}" class="nav-link">
             <span class="sidebar-icon">
-              <svg class="icon icon-xs me-2 bi bi-people-fill" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"/>
+              <svg class="icon icon-xs me-2 bi bi-people-fill" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1H7Zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5.784 6A2.238 2.238 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.325 6.325 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1h4.216ZM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z" />
               </svg>
             </span>
             <span class="sidebar-text">My Employees</span>
@@ -79,16 +87,30 @@
         <li class="nav-item {% if 'userlocations' in segment %}active{% endif %}">
           <a href="{{url_for('user_Locations')}}" class="nav-link">
             <span class="sidebar-icon">
-              <svg class="icon icon-xs me-2 bi bi-geo-alt-fill" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z"/>
+              <svg class="icon icon-xs me-2 bi bi-geo-alt-fill" fill="currentColor" viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 16s6-5.686 6-10A6 6 0 0 0 2 6c0 4.314 6 10 6 10zm0-7a3 3 0 1 1 0-6 3 3 0 0 1 0 6z" />
               </svg>
             </span>
             <span class="sidebar-text">My Locations</span>
           </a>
         </li>
         {% endif %}
-        
+
       </ul>
     </nav>
+
+    <hr color="white">
+
   </div>
+  <!-- Brand Logo -->
+  
+    <div class="container text-center">
+      <a href="/" class="brand-link">
+        <img src="{{ url_for('static', filename='assets/img/team/default.png') }}" alt="AdminLTE Logo"
+          class="brand-image img-circle elevation-3 rounded-circle"
+          style="opacity: 1; width: 100px; height: 100px; border: 3px solid #fff;">
+      </a>
+    </div>
+  
 </nav>
