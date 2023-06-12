@@ -179,7 +179,7 @@ d.addEventListener("DOMContentLoaded", function (event) {
             empolyees.forEach(option => {
                 const optionElem = d.createElement('option');
                 optionElem.value = option.member_id;
-                optionElem.text = option.member_id;
+                optionElem.text = option.name;
                 select.appendChild(optionElem);
             });
 
@@ -519,9 +519,9 @@ d.addEventListener("DOMContentLoaded", function (event) {
         if (d.querySelector(".ct-chart-audio")) {
             var scores = [];
             var labels = [];
-            results.forEach((row) => {
-                labels.push(row['label']);
-                scores.push((row['score'] * 100).toFixed(2));
+            Object.keys(results).forEach((key) => {
+                labels.push(key);
+                scores.push((results[key] * 100).toFixed(2));
             });
 
             // var value_chart_old = Object.values(results)
